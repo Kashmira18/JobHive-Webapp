@@ -1,0 +1,459 @@
+
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign Up – JobHive</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+            rel="stylesheet" />
+
+        <style>
+    :root {
+      --navy:       #0b1437;
+      --navy-mid:   #112060;
+      --blue:       #1565c0;
+      --accent:     #1ac4f8;
+      --accent-2:   #4fc3f7;
+      --white:      #ffffff;
+      --border:     rgba(255,255,255,0.10);
+      --input-bg:   rgba(255,255,255,0.06);
+      --text-muted: rgba(255,255,255,0.55);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .split { display: flex; min-height: 100vh; }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      flex: 1;
+      background: linear-gradient(135deg, #0b1437 0%, #112060 50%, #0d47a1 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px;
+      overflow: hidden;
+    }
+    .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.18; pointer-events: none; }
+    .blob-1 { width: 420px; height: 420px; background: var(--accent);  top: -120px; right: -100px; }
+    .blob-2 { width: 300px; height: 300px; background: #1565c0;        bottom: -80px; left: -60px; }
+    .blob-3 { width: 180px; height: 180px; background: var(--accent-2); top: 50%; left: 30%; }
+    .left::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    .branding { position: relative; z-index: 2; max-width: 480px; }
+    .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 48px; }
+    .logo-row img { width: 42px; height: 42px; object-fit: contain; }
+    .logo-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--white); letter-spacing: -.02em; }
+    .logo-sub  { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .left h1 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+      line-height: 1.25;
+      letter-spacing: -.025em;
+      margin-bottom: 18px;
+    }
+    .left h1 .highlight {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .left p { font-size: .93rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 32px; }
+
+    .stat-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stat-pill {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: .8rem;
+      backdrop-filter: blur(6px);
+    }
+    .stat-pill strong { color: var(--accent); display: block; font-size: 1rem; }
+
+    .left-illustration { position: absolute; bottom: 40px; right: 40px; width: 220px; opacity: 0.08; pointer-events: none; }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      width: 480px;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.025);
+      border-left: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 44px;
+      position: relative;
+    }
+    .card-pro { width: 100%; max-width: 380px; }
+    .card-pro h3 { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.45rem; letter-spacing: -.02em; margin-bottom: 6px; }
+    .card-pro .subtitle { font-size: .83rem; color: var(--text-muted); margin-bottom: 28px; }
+
+    .django-alert {
+      border-radius: 10px; padding: 11px 14px; font-size: .83rem;
+      margin-bottom: 18px; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .django-alert.error   { background: rgba(220,53,69,.15);  border: 1px solid rgba(220,53,69,.3);  color: #ff8a8a; }
+    .django-alert.success { background: rgba(26,196,248,.10); border: 1px solid rgba(26,196,248,.3); color: var(--accent-2); }
+
+    .form-label { font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: 6px; letter-spacing: .02em; }
+    .form-control {
+      background: var(--input-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      font-size: .9rem;
+      padding: 11px 14px;
+      transition: border-color .2s, background .2s;
+    }
+    .form-control::placeholder { color: rgba(255,255,255,.3); }
+    .form-control:focus {
+      background: rgba(255,255,255,.09);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,196,248,.15);
+      color: var(--white);
+      outline: none;
+    }
+    .form-control.is-invalid { border-color: #e53935; box-shadow: 0 0 0 3px rgba(229,57,53,.15); }
+    .invalid-feedback { font-size: .77rem; color: #ff8a8a; margin-top: 5px; }
+
+    .pass-wrap { position: relative; }
+    .pass-wrap .form-control { padding-right: 44px; }
+    .toggle-eye {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 1rem; padding: 4px;
+      transition: color .2s;
+    }
+    .toggle-eye:hover { color: var(--accent); }
+
+    /* Password strength bar */
+    .strength-bar { display: flex; gap: 4px; margin-top: 8px; }
+    .strength-seg { height: 3px; flex: 1; border-radius: 4px; background: rgba(255,255,255,0.1); transition: background .3s; }
+    .strength-label { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
+
+    .btn-next {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #0d6efd);
+      color: var(--white); border: none; border-radius: 10px; padding: 12px;
+      font-family: 'Sora', sans-serif; font-weight: 700; font-size: .9rem;
+      letter-spacing: .01em; cursor: pointer; margin-top: 22px;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 6px 20px rgba(26,196,248,.3);
+    }
+    .btn-next:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,196,248,.4); }
+    .btn-next:active { transform: translateY(0); }
+    .btn-next:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .spinner-ring {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .helper { text-align: center; margin-top: 20px; font-size: .82rem; color: var(--text-muted); }
+    .login-link { color: var(--accent); text-decoration: none; font-weight: 600; transition: color .2s; }
+    .login-link:hover { color: var(--accent-2); }
+
+    @media (max-width: 900px) {
+      .left { display: none; }
+      .right { width: 100%; border-left: none; min-height: 100vh; padding: 40px 24px; background: linear-gradient(160deg, #0b1437 0%, #112060 100%); }
+    }
+    @media (max-width: 480px) {
+      .right { padding: 32px 16px; }
+      .card-pro { max-width: 100%; }
+    }
+  </style>
+    </head>
+
+    <body>
+        <div class="split">
+
+            <!-- ══════════════════════════════
+       LEFT PANEL — Branding
+  ══════════════════════════════ -->
+            <section class="left">
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+                <div class="blob blob-3"></div>
+
+                <div class="branding">
+                    <div class="logo-row">
+                        <img src="{% static 'images/jobhive logo final.png' %}"
+                            alt="JobHive Logo" />
+                        <div>
+                            <div class="logo-name">JobHive</div>
+                            <div class="logo-sub">Secure access ·
+                                Enterprise-grade</div>
+                        </div>
+                    </div>
+
+                    <h1>Join thousands —<br><span class="highlight">your career
+                            starts here.</span></h1>
+                    <p>Create your free account and connect with top employers
+                        across Pakistan and beyond. Post jobs, find talent, and
+                        grow your career with JobHive.</p>
+
+                    <div class="stat-pills">
+                        <div class="stat-pill"><strong>200k+</strong>Active
+                            Users</div>
+                        <div class="stat-pill"><strong>50k+</strong>Jobs
+                            Posted</div>
+                        <div
+                            class="stat-pill"><strong>99.9%</strong>Uptime</div>
+                    </div>
+                </div>
+
+                <svg class="left-illustration" viewBox="0 0 300 300"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="150" cy="150" r="140" fill="none" stroke="white"
+                        stroke-width="2" />
+                    <circle cx="150" cy="150" r="100" fill="none" stroke="white"
+                        stroke-width="1.5" />
+                    <circle cx="150" cy="150" r="60" fill="none" stroke="white"
+                        stroke-width="1" />
+                    <circle cx="150" cy="150" r="20" fill="white" />
+                    <line x1="150" y1="10" x2="150" y2="290" stroke="white"
+                        stroke-width="1" />
+                    <line x1="10" y1="150" x2="290" y2="150" stroke="white"
+                        stroke-width="1" />
+                </svg>
+            </section>
+
+            <!-- ══════════════════════════════
+       RIGHT PANEL — Form
+  ══════════════════════════════ -->
+            <section class="right">
+                <div class="card-pro">
+                    <h3>Create Account</h3>
+                    <p class="subtitle">Fill in your details to get started with
+                        JobHive.</p>
+
+                    <!-- ── Django Messages ── -->
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="django-alert {{ message.tags }}">
+                        <i
+                            class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.non_field_errors %}
+                    <div class="django-alert error">
+                        <i class="bi bi-exclamation-circle"></i>
+                        <span>{{ form.non_field_errors.0 }}</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- ── SIGNUP FORM ── -->
+                    <form method="POST" id="signupForm" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label" for="id_email">Email
+                                Address</label>
+                            <input
+                                id="id_email"
+                                name="email"
+                                type="email"
+                                class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                placeholder="you@example.com"
+                                value="{{ form.email.value|default:'' }}"
+                                autocomplete="email"
+                                required />
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback">{{ form.email.errors.0
+                                }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label"
+                                for="id_password1">Password</label>
+                            <div class="pass-wrap">
+                                <input
+                                    id="id_password1"
+                                    name="password1"
+                                    type="password"
+                                    class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                    placeholder="Create a strong password"
+                                    autocomplete="new-password"
+                                    required />
+                                <button type="button" class="toggle-eye"
+                                    id="togglePass1"
+                                    aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye-slash"
+                                        id="eyeIcon1"></i>
+                                </button>
+                            </div>
+                            <!-- Strength bar -->
+                            <div class="strength-bar" id="strengthBar">
+                                <div class="strength-seg" id="seg1"></div>
+                                <div class="strength-seg" id="seg2"></div>
+                                <div class="strength-seg" id="seg3"></div>
+                                <div class="strength-seg" id="seg4"></div>
+                            </div>
+                            <div class="strength-label"
+                                id="strengthLabel"></div>
+                            {% if form.password1.errors %}
+                            <div class="invalid-feedback d-block">{{
+                                form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-1">
+                            <label class="form-label" for="id_password2">Confirm
+                                Password</label>
+                            <div class="pass-wrap">
+                                <input
+                                    id="id_password2"
+                                    name="password2"
+                                    type="password"
+                                    class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                    placeholder="Re-enter your password"
+                                    autocomplete="new-password"
+                                    required />
+                                <button type="button" class="toggle-eye"
+                                    id="togglePass2"
+                                    aria-label="Toggle confirm password">
+                                    <i class="bi bi-eye-slash"
+                                        id="eyeIcon2"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="matchError"
+                                style="display:none;">Passwords do not
+                                match.</div>
+                            {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">{{
+                                form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Next Button -->
+                        <button type="submit" class="btn-next" id="submitBtn">
+                            <span class="spinner-ring" id="spinnerRing"></span>
+                            <span id="btnText">Next</span>
+                            <i class="bi bi-arrow-right" id="btnIcon"></i>
+                        </button>
+
+                        <!-- Login link -->
+                        <div class="helper">
+                            Already have an account? <a
+                                href="{% url 'login' %}"
+                                class="login-link">Sign In</a>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+  /* ── Toggle Password 1 ── */
+  document.getElementById('togglePass1').addEventListener('click', function () {
+    var inp = document.getElementById('id_password1');
+    var ico = document.getElementById('eyeIcon1');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    ico.className = inp.type === 'text' ? 'bi bi-eye' : 'bi bi-eye-slash';
+  });
+
+  /* ── Toggle Password 2 ── */
+  document.getElementById('togglePass2').addEventListener('click', function () {
+    var inp = document.getElementById('id_password2');
+    var ico = document.getElementById('eyeIcon2');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    ico.className = inp.type === 'text' ? 'bi bi-eye' : 'bi bi-eye-slash';
+  });
+
+  /* ── Password Strength ── */
+  document.getElementById('id_password1').addEventListener('input', function () {
+    var val = this.value;
+    var score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    var colors = ['#e53935', '#fb8c00', '#fdd835', '#00b894'];
+    var labels = ['Weak', 'Fair', 'Good', 'Strong'];
+    var segs   = ['seg1', 'seg2', 'seg3', 'seg4'];
+
+    segs.forEach(function (id, i) {
+      document.getElementById(id).style.background = i < score ? colors[score - 1] : 'rgba(255,255,255,0.1)';
+    });
+    var lbl = document.getElementById('strengthLabel');
+    lbl.textContent = val.length ? (labels[score - 1] || '') : '';
+    lbl.style.color = val.length ? colors[score - 1] : 'var(--text-muted)';
+  });
+
+  /* ── Submit with password match check ── */
+  document.getElementById('signupForm').addEventListener('submit', function (e) {
+    var p1  = document.getElementById('id_password1').value;
+    var p2  = document.getElementById('id_password2').value;
+    var err = document.getElementById('matchError');
+
+    if (p1 !== p2) {
+      e.preventDefault();
+      err.style.display = 'block';
+      document.getElementById('id_password2').classList.add('is-invalid');
+      return;
+    }
+    err.style.display = 'none';
+
+    var btn     = document.getElementById('submitBtn');
+    var spinner = document.getElementById('spinnerRing');
+    var txt     = document.getElementById('btnText');
+    var ico     = document.getElementById('btnIcon');
+    btn.disabled          = true;
+    spinner.style.display = 'block';
+    txt.textContent       = 'Creating account…';
+    ico.style.display     = 'none';
+  });
+</script>
+
+    </body>
+</html>
+{% endblock %}
