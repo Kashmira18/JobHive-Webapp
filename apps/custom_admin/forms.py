@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
@@ -27,16 +27,30 @@ class AdminLoginForm(forms.Form):
 
     def clean(self):
         cleaned = super().clean()
-        email    = cleaned.get("username")
+        email    = cleaned.get("username")   # field ka naam username hai lekin value email hai
         password = cleaned.get("password")
 
         if email and password:
-            user = authenticate(username=email, password=password)
-            if user is None:
+            # Step 1: pehle user dhundo by email
+            try:
+                user_obj = User.objects.get(email=email)
+            except User.DoesNotExist:
                 raise forms.ValidationError("Invalid email or password.")
-            if not user.is_staff:
+
+            # Step 2: password check karo manually
+            if not user_obj.check_password(password):
+                raise forms.ValidationError("Invalid email or password.")
+
+            # Step 3: staff check
+            if not user_obj.is_staff:
                 raise forms.ValidationError("You do not have admin access.")
-            cleaned["user"] = user
+
+            # Step 4: active check
+            if not user_obj.is_active:
+                raise forms.ValidationError("This account is disabled.")
+
+            cleaned["user"] = user_obj
+
         return cleaned
 
 

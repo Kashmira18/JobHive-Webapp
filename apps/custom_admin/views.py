@@ -1,7 +1,3 @@
-# from django.shortcuts import render
-
-# Create your views here.
-
 from django.shortcuts        import render, redirect
 from django.contrib.auth     import login, logout, get_user_model
 from django.contrib          import messages
@@ -10,9 +6,9 @@ from django.utils.encoding   import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail        import send_mail
 from django.conf             import settings
-from django.db.models        import Count
+from django.urls             import reverse
 
-from .forms import AdminLoginForm, AdminForgotPasswordForm, AdminResetPasswordForm
+from .forms      import AdminLoginForm, AdminForgotPasswordForm, AdminResetPasswordForm
 from .decorators import admin_login_required
 
 User = get_user_model()
@@ -22,9 +18,9 @@ User = get_user_model()
 #  LOGIN
 # ─────────────────────────────────────────
 def admin_login(request):
-    """Admin login view."""
-    if request.user.is_authenticated and request.user.is_staff:
-        return redirect("custom_admin:dashboard")
+    # Har baar login page aane par pehle logout
+    if request.user.is_authenticated:
+        logout(request)
 
     form = AdminLoginForm(request.POST or None)
 
@@ -51,28 +47,24 @@ def admin_logout(request):
 #  FORGOT PASSWORD
 # ─────────────────────────────────────────
 def admin_forgot_password(request):
-    """
-    Admin apni email enter karta hai.
-    Agar email valid admin hai to reset link mail hoti hai.
-    """
     form = AdminForgotPasswordForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         email = form.cleaned_data["email"]
         user  = User.objects.get(email=email, is_staff=True)
 
-        # Token + UID generate karein
         uid   = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
 
-        # Reset link
-        # reset_url = request.build_absolute_uri(
-        #     f"/admin-panel/reset-password/{uid}/{token}/"
-        # )
+        # reverse() khud urls.py ka prefix read karta hai
+        # agar urls.py mein path('admin/', ...) hai
+        # to yeh automatically localhost:8000/admin/reset-password/... banega
+        reset_path = reverse("custom_admin:reset_password", kwargs={
+            "uidb64": uid,
+            "token":  token,
+        })
+        reset_url = f"{request.scheme}://{request.get_host()}{reset_path}"
 
-        reset_url = f"{request.scheme}://{request.get_host()}/custom_admin/reset-password/{uid}/{token}/"
-
-        # Email bhejein
         send_mail(
             subject = "JobHive Admin — Password Reset",
             message = (
@@ -83,35 +75,27 @@ def admin_forgot_password(request):
                 f"If you did not request this, ignore this email.\n\n"
                 f"— JobHive Admin Team"
             ),
-            from_email    = settings.EMAIL_HOST_USER,
+            from_email     = settings.EMAIL_HOST_USER,
             recipient_list = [email],
-            fail_silently = False,
+            fail_silently  = False,
         )
 
-        messages.success(
-            request,
-            "Password reset link has been sent to your email address."
-        )
+        messages.success(request, "Password reset link has been sent to your email address.")
         return redirect("custom_admin:forgot_password")
 
     return render(request, "custom_admin/admin_forgot_password.html", {"form": form})
 
 
 # ─────────────────────────────────────────
-#  RESET PASSWORD  (link se aane ke baad)
+#  RESET PASSWORD
 # ─────────────────────────────────────────
 def admin_reset_password(request, uidb64, token):
-    """
-    Email link se aata hai — UID aur token verify karke
-    naya password set karta hai.
-    """
     try:
         uid  = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid, is_staff=True)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
-    # Token validate
     if user is None or not default_token_generator.check_token(user, token):
         return render(request, "custom_admin/admin_reset_invalid.html")
 
@@ -124,9 +108,9 @@ def admin_reset_password(request, uidb64, token):
         return redirect("custom_admin:login")
 
     return render(request, "custom_admin/admin_reset_password.html", {
-        "form":    form,
-        "uidb64":  uidb64,
-        "token":   token,
+        "form":   form,
+        "uidb64": uidb64,
+        "token":  token,
     })
 
 
@@ -135,17 +119,11 @@ def admin_reset_password(request, uidb64, token):
 # ─────────────────────────────────────────
 @admin_login_required
 def admin_dashboard(request):
-    """
-    Main admin dashboard — basic stats show karta hai.
-    Aap apne models import karke stats customize kar saktay hain.
-    """
-    # Basic user stats
     total_users      = User.objects.count()
     total_candidates = User.objects.filter(role="CANDIDATE").count() if hasattr(User, "role") else 0
     total_companies  = User.objects.filter(role="COMPANY").count()   if hasattr(User, "role") else 0
     total_admins     = User.objects.filter(is_staff=True).count()
 
-    # Recent users (last 10)
     recent_users = User.objects.order_by("-date_joined")[:10]
 
     context = {

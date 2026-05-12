@@ -41,7 +41,22 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
+
+        if "@" in username:
+            try:
+                # Email ke zariye user ko dhoondein
+                # user_obj = CustomUser.objects.get(email=username)
+                user_obj = CustomUser.objects.filter(email=username).first()
+                # Agar mil jaye, toh uska asli 'username' nikaal lein
+                target_username = user_obj.username
+            except CustomUser.DoesNotExist:
+                target_username = None
+        else:
+            # Agar email nahi hai, toh input ko hi username samjhein
+            target_username = username
+
+
+        user = authenticate(request, username=target_username, password=password)
 
         if user is not None:
             login(request, user)
