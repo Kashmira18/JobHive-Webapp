@@ -26,12 +26,12 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Production ke liye Gmail:
-EMAIL_BACKEND    = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST       = 'smtp.gmail.com'
-EMAIL_PORT       = 587
-EMAIL_USE_TLS    = True
-EMAIL_HOST_USER  = 'test@jobhive.com'
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Gmail App Password
+# EMAIL_BACKEND    = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST       = 'smtp.gmail.com'
+# EMAIL_PORT       = 587
+# EMAIL_USE_TLS    = True
+# EMAIL_HOST_USER  = 'test@jobhive.com'
+# EMAIL_HOST_PASSWORD = 'your-app-password'  # Gmail App Password
 
 
 # Quick-start development settings - unsuitable for production
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     # custom apps
     "apps.accounts",
     "apps.portal",
+    "apps.custom_admin",
 ]
 
 MIDDLEWARE = [

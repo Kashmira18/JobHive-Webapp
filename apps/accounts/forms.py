@@ -27,10 +27,8 @@ class CustomUserRegistrationForm(UserCreationForm):
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
         user.role = self.cleaned_data["role"]
-        # Company accounts need admin approval
-        if user.role == "COMPANY":
-            user.is_approved = False
-        else:
+        # Company accounts need admin approval but, candidate seedha login
+        if user.role == "CANDIDATE":
             user.is_approved = True
         if commit:
             user.save()
@@ -41,11 +39,11 @@ class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-
+# ── FORGOT PASSWORD ──
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
 
-
+# ── RESET PASSWORD ──
 class SetNewPasswordForm(forms.Form):
     new_password = forms.CharField(widget=forms.PasswordInput, min_length=8)
     confirm_password = forms.CharField(widget=forms.PasswordInput)

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Login – JobHive</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+            rel="stylesheet" />
+        <style>
+    :root{--navy:#0f1535;--accent:#1ab8e8;--border:rgba(255,255,255,0.10);--inp:rgba(255,255,255,0.06);--muted:rgba(255,255,255,0.50);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;}
+    .top-bar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--accent);z-index:10;}
+    .wrap{width:100%;max-width:380px;padding:0 16px;}
+    .brand{text-align:center;margin-bottom:32px;}
+    .brand-icon{width:48px;height:48px;background:var(--accent);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:20px;color:#fff;margin-bottom:12px;}
+    .brand-name{font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;display:block;}
+    .brand-sub{font-size:12px;color:var(--muted);margin-top:2px;display:block;}
+    .card{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:28px 28px 24px;}
+    .card h5{font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px;}
+    .card .sub{font-size:12px;color:var(--muted);margin-bottom:22px;}
+    .form-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);letter-spacing:.04em;margin-bottom:6px;display:block;}
+    .form-control{background:var(--inp);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:13px;padding:10px 12px;transition:border-color .2s,background .2s;width:100%;}
+    .form-control::placeholder{color:rgba(255,255,255,0.25);}
+    .form-control:focus{background:rgba(255,255,255,0.08);border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,184,232,0.15);color:#fff;outline:none;}
+    .form-control.is-invalid{border-color:#e53935;}
+    .invalid-feedback{font-size:11px;color:#ff8a8a;margin-top:4px;display:block;}
+    .pw{position:relative;}
+    .pw .form-control{padding-right:38px;}
+    .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;transition:color .2s;}
+    .eye-btn:hover{color:var(--accent);}
+    /* Forgot link row */
+    .pass-foot{display:flex;justify-content:flex-end;margin-top:8px;}
+    .forgot-link{font-size:11.5px;color:var(--accent);text-decoration:none;font-weight:500;opacity:.85;transition:opacity .2s;}
+    .forgot-link:hover{opacity:1;color:#4fc3f7;}
+    .btn-login{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:20px;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:7px;}
+    .btn-login:hover{background:#13a3cf;transform:translateY(-1px);}
+    .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+    .spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:none;}
+    @keyframes sp{to{transform:rotate(360deg);}}
+    .alert-box{background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.3);border-radius:8px;padding:9px 12px;font-size:12px;color:#ff8a8a;display:flex;align-items:center;gap:7px;margin-bottom:16px;}
+    .footer-note{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+  </style>
+    </head>
+    <body>
+        <div class="top-bar"></div>
+
+        <div class="wrap">
+            <div class="brand">
+                <div class="brand-icon">J</div>
+                <span class="brand-name">JobHive Admin</span>
+                <span class="brand-sub">Restricted access — authorised personnel
+                    only</span>
+            </div>
+
+            <div class="card">
+                <h5>Sign In</h5>
+                <p class="sub">Enter your credentials to continue.</p>
+
+                {% if form.non_field_errors %}
+                <div class="alert-box">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span>{{ form.non_field_errors.0 }}</span>
+                </div>
+                {% endif %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert-box">
+                    <i
+                        class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST" id="adminForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">EMAIL ADDRESS</label>
+                        <input name="username" type="email"
+                            class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                            placeholder="admin@jobhive.com"
+                            value="{{ form.username.value|default:'' }}"
+                            autocomplete="username" required />
+                        {% if form.username.errors %}
+                        <span class="invalid-feedback">{{ form.username.errors.0
+                            }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-1">
+                        <label class="form-label">PASSWORD</label>
+                        <div class="pw">
+                            <input id="adminPass" name="password"
+                                type="password"
+                                class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                                placeholder="••••••••"
+                                autocomplete="current-password" required />
+                            <button type="button" class="eye-btn" id="eyeBtn">
+                                <i class="bi bi-eye-slash" id="eyeIco"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <span class="invalid-feedback">{{ form.password.errors.0
+                            }}</span>
+                        {% endif %}
+                        <!-- Forgot Password Link -->
+                        <div class="pass-foot">
+                            <a href="{% url 'custom_admin:forgot_password' %}"
+                                class="forgot-link">
+                                Forgot password?
+                            </a>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        <span class="spin" id="ring"></span>
+                        <span id="btnTxt">Login</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="footer-note">© 2025 JobHive · Admin Panel</div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+  document.getElementById('eyeBtn').addEventListener('click', function () {
+    var inp = document.getElementById('adminPass');
+    var ico = document.getElementById('eyeIco');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    ico.className = inp.type === 'text' ? 'bi bi-eye' : 'bi bi-eye-slash';
+  });
+  document.getElementById('adminForm').addEventListener('submit', function () {
+    var btn = document.getElementById('loginBtn');
+    var ring = document.getElementById('ring');
+    var txt = document.getElementById('btnTxt');
+    btn.disabled = true; ring.style.display = 'block'; txt.textContent = 'Signing in…';
+  });
+</script>
+    </body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Reset Password – JobHive Admin</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+            rel="stylesheet" />
+        <style>
+    :root{--navy:#0f1535;--accent:#1ab8e8;--border:rgba(255,255,255,0.10);--inp:rgba(255,255,255,0.06);--muted:rgba(255,255,255,0.50);}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;}
+    .top-bar{position:fixed;top:0;left:0;right:0;height:4px;background:var(--accent);z-index:10;}
+    .wrap{width:100%;max-width:380px;padding:0 16px;}
+    .brand{text-align:center;margin-bottom:32px;}
+    .brand-icon{width:48px;height:48px;background:var(--accent);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:20px;color:#fff;margin-bottom:12px;}
+    .brand-name{font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;display:block;}
+    .brand-sub{font-size:12px;color:var(--muted);margin-top:2px;display:block;}
+    .card{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:28px 28px 24px;}
+    .icon-badge{width:52px;height:52px;background:rgba(26,184,232,.15);border:1px solid rgba(26,184,232,.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--accent);margin:0 auto 16px;}
+    .card h5{font-family:'Sora',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px;text-align:center;}
+    .card .sub{font-size:12px;color:var(--muted);margin-bottom:22px;text-align:center;line-height:1.6;}
+    .form-label{font-size:11px;font-weight:600;color:rgba(255,255,255,0.65);letter-spacing:.04em;margin-bottom:6px;display:block;}
+    .form-control{background:var(--inp);border:1.5px solid var(--border);border-radius:8px;color:#fff;font-size:13px;padding:10px 12px;transition:border-color .2s,background .2s;width:100%;}
+    .form-control::placeholder{color:rgba(255,255,255,0.25);}
+    .form-control:focus{background:rgba(255,255,255,0.08);border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,184,232,0.15);color:#fff;outline:none;}
+    .form-control.is-invalid{border-color:#e53935;}
+    .invalid-feedback{font-size:11px;color:#ff8a8a;margin-top:4px;display:block;}
+    /* password */
+    .pw{position:relative;}
+    .pw .form-control{padding-right:38px;}
+    .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;transition:color .2s;}
+    .eye-btn:hover{color:var(--accent);}
+    /* strength bar */
+    .str-bars{display:flex;gap:4px;margin-top:7px;}
+    .str-bar{height:3px;flex:1;border-radius:4px;background:rgba(255,255,255,.10);transition:background .3s;}
+    .str-lbl{font-size:.70rem;color:var(--muted);margin-top:3px;}
+    /* match */
+    .match-msg{font-size:11.5px;margin-top:5px;}
+    .match-ok{color:#81c784;}
+    .match-err{color:#ff8a8a;}
+    .alert-box{background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.3);border-radius:8px;padding:9px 12px;font-size:12px;color:#ff8a8a;display:flex;align-items:center;gap:7px;margin-bottom:16px;}
+    .btn-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-family:'Sora',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:20px;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:7px;}
+    .btn-submit:hover{background:#13a3cf;transform:translateY(-1px);}
+    .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+    .spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:none;}
+    @keyframes sp{to{transform:rotate(360deg);}}
+    .back-link{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:18px;font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s;}
+    .back-link:hover{color:var(--accent);}
+    .footer-note{text-align:center;font-size:11px;color:var(--muted);margin-top:20px;}
+  </style>
+    </head>
+    <body>
+        <div class="top-bar"></div>
+
+        <div class="wrap">
+            <div class="brand">
+                <div class="brand-icon">J</div>
+                <span class="brand-name">JobHive Admin</span>
+                <span class="brand-sub">Set New Password</span>
+            </div>
+
+            <div class="card">
+                <div class="icon-badge"><i class="bi bi-shield-lock"></i></div>
+                <h5>Reset Password</h5>
+                <p class="sub">Create a strong new password for your admin
+                    account.</p>
+
+                {% if form.non_field_errors %}
+                <div class="alert-box">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <span>{{ form.non_field_errors.0 }}</span>
+                </div>
+                {% endif %}
+
+                <form method="POST" id="resetForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- New Password -->
+                    <div class="mb-3">
+                        <label class="form-label">NEW PASSWORD</label>
+                        <div class="pw">
+                            <input id="newPass" name="new_password"
+                                type="password"
+                                class="form-control {% if form.new_password.errors %}is-invalid{% endif %}"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                oninput="evalStr(this.value)" required />
+                            <button type="button" class="eye-btn"
+                                onclick="togPw('newPass','eye1')">
+                                <i class="bi bi-eye-slash" id="eye1"></i>
+                            </button>
+                        </div>
+                        <div class="str-bars">
+                            <div class="str-bar" id="s1"></div><div
+                                class="str-bar" id="s2"></div>
+                            <div class="str-bar" id="s3"></div><div
+                                class="str-bar" id="s4"></div>
+                        </div>
+                        <div class="str-lbl" id="strLbl"></div>
+                        {% if form.new_password.errors %}
+                        <span class="invalid-feedback">{{
+                            form.new_password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-1">
+                        <label class="form-label">CONFIRM PASSWORD</label>
+                        <div class="pw">
+                            <input id="confirmPass" name="confirm_password"
+                                type="password"
+                                class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}"
+                                placeholder="Re-enter your password"
+                                autocomplete="new-password"
+                                oninput="chkMatch()" required />
+                            <button type="button" class="eye-btn"
+                                onclick="togPw('confirmPass','eye2')">
+                                <i class="bi bi-eye-slash" id="eye2"></i>
+                            </button>
+                        </div>
+                        <div class="match-msg d-none" id="matchMsg"></div>
+                        {% if form.confirm_password.errors %}
+                        <span class="invalid-feedback">{{
+                            form.confirm_password.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="spin" id="ring"></span>
+                        <span id="btnTxt">Reset Password</span>
+                    </button>
+                </form>
+
+                <a href="{% url 'custom_admin:login' %}" class="back-link">
+                    <i class="bi bi-arrow-left"></i> Back to Login
+                </a>
+            </div>
+
+            <div class="footer-note">© 2025 JobHive · Admin Panel</div>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+  function togPw(id, eId) {
+    var inp = document.getElementById(id);
+    var ico = document.getElementById(eId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    ico.className = inp.type === 'text' ? 'bi bi-eye' : 'bi bi-eye-slash';
+  }
+
+  function evalStr(val) {
+    var sc = 0;
+    if (val.length >= 8) sc++;
+    if (/[A-Z]/.test(val)) sc++;
+    if (/[0-9]/.test(val)) sc++;
+    if (/[^A-Za-z0-9]/.test(val)) sc++;
+    var clr  = ['#e53935','#fb8c00','#fdd835','#00b894'];
+    var lbls = ['Weak','Fair','Good','Strong'];
+    ['s1','s2','s3','s4'].forEach(function(id,i){
+      document.getElementById(id).style.background = i < sc ? clr[sc-1] : 'rgba(255,255,255,.10)';
+    });
+    var el = document.getElementById('strLbl');
+    el.textContent = val.length ? (lbls[sc-1] || '') : '';
+    el.style.color = val.length ? clr[sc-1] : 'var(--muted)';
+  }
+
+  function chkMatch() {
+    var p1  = document.getElementById('newPass').value;
+    var p2  = document.getElementById('confirmPass').value;
+    var msg = document.getElementById('matchMsg');
+    if (!p2) { msg.classList.add('d-none'); return; }
+    msg.classList.remove('d-none');
+    if (p1 === p2) {
+      msg.className = 'match-msg match-ok';
+      msg.innerHTML = '<i class="bi bi-check-circle me-1"></i>Passwords match';
+    } else {
+      msg.className = 'match-msg match-err';
+      msg.innerHTML = '<i class="bi bi-x-circle me-1"></i>Passwords do not match';
+    }
+  }
+
+  document.getElementById('resetForm').addEventListener('submit', function(e) {
+    var p1 = document.getElementById('newPass').value;
+    var p2 = document.getElementById('confirmPass').value;
+    if (p1 !== p2) {
+      e.preventDefault();
+      var msg = document.getElementById('matchMsg');
+      msg.classList.remove('d-none');
+      msg.className = 'match-msg match-err';
+      msg.innerHTML = '<i class="bi bi-x-circle me-1"></i>Passwords do not match';
+      return;
+    }
+    var btn = document.getElementById('submitBtn');
+    var ring = document.getElementById('ring');
+    var txt = document.getElementById('btnTxt');
+    btn.disabled = true; ring.style.display = 'block'; txt.textContent = 'Resetting…';
+  });
+</script>
+    </body>
+</html>

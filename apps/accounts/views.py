@@ -44,15 +44,14 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            login(request, user)
             if user.role == "COMPANY":
                 if not user.is_approved:
                     logout(request)
                     messages.error(request, "Your company account is not approved yet.")
                     return redirect("login")
-                login(request, user)
                 return redirect("company_dashboard")
             else:
-                login(request, user)
                 return redirect("candidate_dashboard")
         else:
             messages.error(request, "Invalid username or password.")
