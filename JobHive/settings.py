@@ -57,9 +57,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # custom apps
-    "apps.accounts",
-    "apps.portal",
-    "apps.custom_admin",
+    "accounts",
+    "portal",
+    "custom_admin",
 ]
 
 MIDDLEWARE = [

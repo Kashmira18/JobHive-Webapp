@@ -14,9 +14,5 @@ urlpatterns = [
     # ── Dashboard ─────────────────────────────────────
     path("dashboard/", views.admin_dashboard, name="dashboard"),
 
-    # ─────────────────────────────────────────────────
-    # Aap yahan apne baqi views add karte jayen:
-    # path("users/",        views.user_list,             name="user_list"),
-    # path("jobs/",         views.job_list,              name="job_list"),
-    # ─────────────────────────────────────────────────
+
 ]

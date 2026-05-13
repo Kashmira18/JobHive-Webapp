@@ -44,7 +44,6 @@ def login_view(request):
 
         if "@" in username:
             try:
-                # Email ke zariye user ko dhoondein
                 # user_obj = CustomUser.objects.get(email=username)
                 user_obj = CustomUser.objects.filter(email=username).first()
                 # Agar mil jaye, toh uska asli 'username' nikaal lein

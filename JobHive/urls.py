@@ -32,7 +32,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
-    path("auth/", include("apps.accounts.urls")),
-    path("", include("apps.portal.urls")),
-    path("admin/", include("apps.custom_admin.urls")),
+    path("auth/", include("accounts.urls")),
+    path("", include("portal.urls")),
+    path("admin/", include("custom_admin.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
