@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 
-# Email backend (development ke liye console use karein):
+# Email backend 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Production ke liye Gmail:
+# Production Gmail:
 # EMAIL_BACKEND    = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST       = 'smtp.gmail.com'
 # EMAIL_PORT       = 587
@@ -48,7 +48,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 sys.path.append(os.path.join(BASE_DIR, "apps"))
-# Add the apps folder to the system path
+# Add the apps folder path
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -56,21 +56,65 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     # custom apps
     "accounts",
     "portal",
     "custom_admin",
+
+    #All-Auth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  #standard login
+    "allauth.account.auth_backends.AuthenticationBackend",  #Google login
+]
+
+#All Auth Settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # Google uses email
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Google already verified with email
+LOGIN_REDIRECT_URL = "candidate_dashboard"  # Redirect after login
+LOGOUT_REDIRECT_URL            = "signin"
+
+
+# SOCIALACCOUNT_PROVIDERS = {
+#     "google": {
+#         "APP": {
+#             # Google Cloud Console se copy karein
+#             # https://console.cloud.google.com/
+#             "client_id":     "YOUR_GOOGLE_CLIENT_ID",
+#             "secret":        "YOUR_GOOGLE_CLIENT_SECRET",
+#             "key":           "",
+#         },
+#         "SCOPE": [
+#             "profile",
+#             "email",
+#         ],
+#         "AUTH_PARAMS": {
+#             "access_type": "online",
+#         },
+#         "FETCH_USERINFO": True,
+#     }
+# }
+
 
 ROOT_URLCONF = "JobHive.urls"
 
@@ -154,3 +198,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
+
+

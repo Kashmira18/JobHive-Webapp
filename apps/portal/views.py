@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.decorators import method_decorator
-from functools import wraps
+from functools import wraps 
 # from .models import JobPost, CompanyProfile
 from accounts.models import CustomUser
 
