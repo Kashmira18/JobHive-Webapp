@@ -23,58 +23,183 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             if user.role == "COMPANY":
-                messages.success(
-                    request, "Registration successful! Please wait for admin approval."
-                )
-                return redirect("login")
+                # Company → pending
+                # user session mein store hoa sirf pending show karne ke liye
+
+                request.session["pending_user_id"] = user.pk
+                # messages.success(
+                #     request, "Registration successful! Please wait for admin approval."
+                # )
+                # return redirect("login")
+                return redirect("company_pending")
             else:
-                login(request, user)
+                # login(request, user)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                messages.success(request, f"Welcome to JobHive, {user.username}!")
                 return redirect("candidate_dashboard")
-        # agar form invalid ho, errors show hone dain
     else:
         form = CustomUserRegistrationForm()
     return render(request, "accounts/register.html", {"form": form})
 
 
 # ── LOGIN ──
+# ____________________________________________________________
+# def login_view(request):
+#     if request.method == "POST":
+#         username = request.POST.get("username")
+#         password = request.POST.get("password")
+
+#         if "@" in username:
+#             try:
+#                 user_obj = CustomUser.objects.filter(email=username).first()
+#                 target_username = user_obj.username
+#             except CustomUser.DoesNotExist:
+#                 target_username = None
+#         else:
+#             target_username = username
+
+
+#         user = authenticate(request, username=target_username, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             if user.role == "COMPANY":
+#                 if not user.is_approved:
+#                     logout(request)
+#                     messages.error(request, "Your company account is not approved yet.")
+#                     return redirect("login")
+#                 return redirect("company_dashboard")
+#             else:
+#                 return redirect("candidate_dashboard")
+#         else:
+#             messages.error(request, "Invalid username or password.")
+#     return render(request, "accounts/login.html")
+# _______________________________________________________________________________________
+
+
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        username_or_email = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
 
-        if "@" in username:
-            try:
-                # user_obj = CustomUser.objects.get(email=username)
-                user_obj = CustomUser.objects.filter(email=username).first()
-                # Agar mil jaye, toh uska asli 'username' nikaal lein
-                target_username = user_obj.username
-            except CustomUser.DoesNotExist:
-                target_username = None
+        # Email se username nikalna
+        if "@" in username_or_email:
+            user_obj = CustomUser.objects.filter(
+                email__iexact=username_or_email
+            ).first()
+            target_username = user_obj.username if user_obj else None
         else:
-            # Agar email nahi hai, toh input ko hi username samjhein
-            target_username = username
-
+            target_username = username_or_email
 
         user = authenticate(request, username=target_username, password=password)
 
         if user is not None:
-            login(request, user)
+
+            # ── COMPANY ──
             if user.role == "COMPANY":
-                if not user.is_approved:
-                    logout(request)
-                    messages.error(request, "Your company account is not approved yet.")
-                    return redirect("login")
-                return redirect("company_dashboard")
+
+                # APPROVED company → dashboard
+                if user.is_approved:
+                    login(request, user)
+                    return redirect("company_dashboard")
+
+                has_doc_issues = getattr(user, "has_document_issues", False)
+
+                if has_doc_issues:
+                    # Documents issue page
+                    request.session["pending_user_id"] = user.pk
+                    return redirect("company_documents_review")
+                else:
+                    # Still pending
+                    request.session["pending_user_id"] = user.pk
+                    return redirect("company_pending")
+
+            # ── CANDIDATE ──
             else:
+                login(request, user)
                 return redirect("candidate_dashboard")
+
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(
+                request, "Invalid email/username or password. Please try again."
+            )
+
     return render(request, "accounts/login.html")
 
 
 # ── LOGOUT ──
 def logout_view(request):
+    request.session.flush()  # session clear
     logout(request)
+    return redirect("login")
+
+
+#  ── COMPANY — PENDING PAGE ──
+#  (After registration , login with pending status)
+def company_pending(request):
+    user_id = request.session.get("pending_user_id")
+    if not user_id:
+        return redirect("login")
+
+    try:
+        user = CustomUser.objects.get(pk=user_id)
+    except CustomUser.DoesNotExist:
+        return redirect("login")
+
+    # when approved ->  show approved page
+    if user.is_approved:
+        return redirect("company_approved")
+
+    return render(request, "accounts/company_pending.html", {"user": user})
+
+
+# ── COMPANY — DOCUMENTS REVIEW PAGE ──
+def company_documents_review(request):
+    user_id = request.session.get("pending_user_id")
+    if not user_id:
+        return redirect("login")
+
+    try:
+        user = CustomUser.objects.get(pk=user_id)
+    except CustomUser.DoesNotExist:
+        return redirect("login")
+
+    if request.method == "POST":
+
+        messages.success(
+            request, "Documents uploaded successfully. We will review them shortly."
+        )
+        return redirect("company_pending")
+
+    approved_docs = [
+        # {'name': 'Business Registration Certificate', 'id': 1},
+    ]
+    rejected_docs = [
+        # {'name': 'NTN Certificate', 'id': 2, 'status': 'Rejected', 'reason': 'Document is blurry or unreadable.'},
+        # {'name': 'CNIC Copy', 'id': 3, 'status': 'Missing', 'reason': 'This document was not submitted.'},
+    ]
+
+    context = {
+        "user": user,
+        "approved_docs": approved_docs,
+        "rejected_docs": rejected_docs,
+    }
+    return render(request, "accounts/company_documents_review.html", context)
+
+
+#  COMPANY — APPROVED PAGE
+def company_approved(request):
+    user_id = request.session.get("pending_user_id")
+    if user_id:
+        try:
+            user = CustomUser.objects.get(pk=user_id)
+            if user.is_approved:
+                # Session clear 
+                del request.session["pending_user_id"]
+                return render(request, "accounts/company_approved.html", {"user": user})
+        except CustomUser.DoesNotExist:
+            pass
+
     return redirect("login")
 
 
@@ -139,7 +264,8 @@ def custom_password_reset_confirm(request, uidb64, token):
 
 
 def custom_password_reset_done(request):
-    return render(request, 'accounts/password_reset_done.html')
+    return render(request, "accounts/password_reset_done.html")
+
 
 def custom_password_reset_invalid(request):
-    return render(request, 'accounts/password_reset_invalid.html')
+    return render(request, "accounts/password_reset_invalid.html")

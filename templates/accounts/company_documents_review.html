@@ -1,0 +1,314 @@
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document Review – JobHive</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+            rel="stylesheet" />
+
+        <style>
+    :root {
+      --navy:    #0b1437;
+      --accent:  #1ac4f8;
+      --acc2:    #4fc3f7;
+      --white:   #ffffff;
+      --border:  rgba(255,255,255,0.10);
+      --muted:   rgba(255,255,255,0.52);
+      --red:     #e53935;
+      --red-bg:  rgba(229,57,53,0.10);
+      --red-bdr: rgba(229,57,53,0.28);
+      --green:   #43a047;
+      --grn-bg:  rgba(67,160,71,0.10);
+      --grn-bdr: rgba(67,160,71,0.28);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0b1437 0%, #112060 55%, #0d47a1 100%);
+      color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      padding: 28px 16px; position: relative; overflow: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 48px 48px; pointer-events: none; z-index: 0;
+    }
+    .g1, .g2 { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+    .g1 { width: 380px; height: 380px; background: rgba(229,57,53,.12); top: -80px; right: -60px; }
+    .g2 { width: 280px; height: 280px; background: rgba(13,71,161,.5);  bottom: -60px; left: -50px; }
+
+    /* ── CARD ── */
+    .pg-card {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 620px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 42px 44px 38px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.40);
+      backdrop-filter: blur(10px);
+    }
+    .pg-card::before {
+      content: ''; position: absolute; top: 0; left: 12%; right: 12%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* logo */
+    .logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+    .logo-row img { width: 32px; height: 32px; object-fit: contain; }
+    .logo-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: .92rem; }
+    .logo-dot { color: var(--accent); }
+
+    /* header */
+    .pg-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+    .alert-icon {
+      width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+      background: var(--red-bg); border: 1.5px solid var(--red-bdr);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .alert-icon i { font-size: 1.4rem; color: var(--red); }
+    .pg-header h2 { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.2rem; margin-bottom: 5px; }
+    .pg-header p  { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── DOCUMENT LIST ── */
+    .doc-section-title {
+      font-size: .70rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: rgba(255,255,255,.35);
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .doc-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .doc-item {
+      border-radius: 12px; padding: 14px 16px;
+      margin-bottom: 10px; display: flex;
+      align-items: flex-start; gap: 14px;
+      transition: background .2s;
+    }
+
+    /* Approved document */
+    .doc-item.ok {
+      background: var(--grn-bg);
+      border: 1px solid var(--grn-bdr);
+    }
+
+    /* Rejected / Missing document */
+    .doc-item.fail {
+      background: var(--red-bg);
+      border: 1px solid var(--red-bdr);
+    }
+
+    .doc-badge {
+      width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: .95rem;
+    }
+    .doc-item.ok   .doc-badge { background: rgba(67,160,71,.20);  color: #81c784; }
+    .doc-item.fail .doc-badge { background: rgba(229,57,53,.20);  color: #ef9a9a; }
+
+    .doc-name   { font-size: .86rem; font-weight: 600; margin-bottom: 2px; }
+    .doc-status {
+      font-size: .74rem; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 9px; border-radius: 100px;
+    }
+    .doc-item.ok   .doc-status { background: rgba(67,160,71,.2);  color: #81c784; }
+    .doc-item.fail .doc-status { background: rgba(229,57,53,.2);  color: #ef9a9a; }
+
+    .doc-note { font-size: .76rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+    /* upload area */
+    .upload-area {
+      margin-top: 10px;
+      border: 1.5px dashed rgba(26,196,248,.30);
+      border-radius: 10px; padding: 12px 14px;
+      background: rgba(26,196,248,.04);
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .upload-label {
+      font-size: .78rem; color: var(--acc2); flex: 1;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+    .upload-label:hover { color: var(--accent); }
+    .upload-label input[type="file"] { display: none; }
+    .file-chosen { font-size: .74rem; color: var(--muted); }
+
+    /* ── SAVE BUTTON ── */
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #0d6efd);
+      color: var(--white); border: none; border-radius: 10px;
+      padding: 12px; font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; margin-top: 24px;
+      transition: opacity .2s, transform .15s;
+      box-shadow: 0 6px 18px rgba(26,196,248,.25);
+    }
+    .btn-submit:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .spin {
+      width: 15px; height: 15px;
+      border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+      border-radius: 50%; animation: sp .6s linear infinite; display: none;
+    }
+    @keyframes sp { to { transform: rotate(360deg); } }
+
+    /* logout link */
+    .logout-link {
+      display: block; text-align: center; margin-top: 14px;
+      font-size: .78rem; color: var(--muted);
+      text-decoration: none; transition: color .2s;
+    }
+    .logout-link:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .pg-card { padding: 28px 18px 24px; border-radius: 16px; }
+      .pg-header { flex-direction: column; }
+    }
+  </style>
+    </head>
+    <body>
+        <div class="g1"></div>
+        <div class="g2"></div>
+
+        <div class="pg-card">
+
+            <!-- Logo -->
+            <div class="logo-row">
+                <img src="{% static 'images/jobhive logo final.png' %}"
+                    alt="JobHive" />
+                <span class="logo-name">Job<span
+                        class="logo-dot">Hive</span></span>
+            </div>
+
+            <!-- Header -->
+            <div class="pg-header">
+                <div class="alert-icon"><i
+                        class="bi bi-exclamation-triangle-fill"></i></div>
+                <div>
+                    <h2>Action Required — Document Issues Found</h2>
+                    <p>Some of your submitted documents need attention. Please
+                        review the issues below, make corrections, and re-upload
+                        the required files.</p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" id="docForm">
+                {% csrf_token %}
+
+                <!-- ── APPROVED DOCUMENTS ── -->
+                {% if approved_docs %}
+                <div class="doc-section-title"><i
+                        class="bi bi-check-circle"></i> Approved</div>
+
+                {% for doc in approved_docs %}
+                <div class="doc-item ok">
+                    <div class="doc-badge"><i
+                            class="bi bi-file-earmark-check"></i></div>
+                    <div style="flex:1;">
+                        <div class="doc-name">{{ doc.name }}</div>
+                        <span class="doc-status"><i
+                                class="bi bi-check-circle-fill"></i>
+                            Approved</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- ── REJECTED / MISSING DOCUMENTS ── -->
+                {% if rejected_docs %}
+                <div class="doc-section-title" style="margin-top:18px;"><i
+                        class="bi bi-x-circle" style="color:#ef9a9a;"></i> <span
+                        style="color:rgba(229,57,53,.7);">Needs
+                        Attention</span></div>
+
+                {% for doc in rejected_docs %}
+                <div class="doc-item fail">
+                    <div class="doc-badge"><i
+                            class="bi bi-file-earmark-x"></i></div>
+                    <div style="flex:1;">
+                        <div class="doc-name">{{ doc.name }}</div>
+                        <span class="doc-status"><i
+                                class="bi bi-x-circle-fill"></i> {{ doc.status
+                            }}</span>
+                        {% if doc.reason %}
+                        <div class="doc-note"><i
+                                class="bi bi-info-circle me-1"></i>{{ doc.reason
+                            }}</div>
+                        {% endif %}
+
+                        <!-- Upload area -->
+                        <div class="upload-area">
+                            <label class="upload-label" for="file_{{ doc.id }}">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                                Upload corrected document
+                                <input type="file" id="file_{{ doc.id }}"
+                                    name="doc_{{ doc.id }}"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onchange="showFileName(this, 'chosen_{{ doc.id }}')" />
+                            </label>
+                            <span class="file-chosen"
+                                id="chosen_{{ doc.id }}">No file chosen</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <!-- Submit -->
+                <button type="submit" class="btn-submit" id="subBtn">
+                    <span class="spin" id="spinEl"></span>
+                    <i class="bi bi-cloud-upload" id="subIco"></i>
+                    <span id="subTxt">Submit Updated Documents</span>
+                </button>
+
+            </form>
+
+            <a href="{% url 'logout' %}" class="logout-link">
+                <i class="bi bi-box-arrow-left me-1"></i>Logout and come back
+                later
+            </a>
+
+        </div>
+
+        <script>
+    function showFileName(input, spanId) {
+      var el = document.getElementById(spanId);
+      el.textContent = input.files[0] ? input.files[0].name : 'No file chosen';
+    }
+
+    document.getElementById('docForm').addEventListener('submit', function() {
+      var btn = document.getElementById('subBtn');
+      var sp  = document.getElementById('spinEl');
+      var ico = document.getElementById('subIco');
+      var txt = document.getElementById('subTxt');
+      btn.disabled = true;
+      sp.style.display  = 'block';
+      ico.style.display = 'none';
+      txt.textContent   = 'Uploading…';
+    });
+  </script>
+    </body>
+</html>
+{% endblock %}
