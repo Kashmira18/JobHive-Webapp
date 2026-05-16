@@ -7,7 +7,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .models import CustomUser
+from .models import CustomUser, CompanyProfile
 from .forms import (
     CustomUserRegistrationForm,
     LoginForm,
@@ -31,10 +31,12 @@ def register_view(request):
                 #     request, "Registration successful! Please wait for admin approval."
                 # )
                 # return redirect("login")
-                return redirect("company_pending")
+                return redirect("company_registration")
             else:
                 # login(request, user)
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                login(
+                    request, user, backend="django.contrib.auth.backends.ModelBackend"
+                )
                 messages.success(request, f"Welcome to JobHive, {user.username}!")
                 return redirect("candidate_dashboard")
     else:
@@ -194,7 +196,7 @@ def company_approved(request):
         try:
             user = CustomUser.objects.get(pk=user_id)
             if user.is_approved:
-                # Session clear 
+                # Session clear
                 del request.session["pending_user_id"]
                 return render(request, "accounts/company_approved.html", {"user": user})
         except CustomUser.DoesNotExist:
@@ -269,3 +271,97 @@ def custom_password_reset_done(request):
 
 def custom_password_reset_invalid(request):
     return render(request, "accounts/password_reset_invalid.html")
+
+# def company_registration(request):
+#     return render(request, "accounts/company_registration.html")
+def company_registration(request):
+    """
+    Company registration ke baad profile complete karne ka form.
+    User already registered hai (role=COMPANY), ab details fill karni hain.
+    """
+    # Session se user lo
+    user_id = request.session.get("pending_user_id")
+    if not user_id:
+        return redirect("login")
+
+    try:
+        user = CustomUser.objects.get(pk=user_id, role="COMPANY")
+    except CustomUser.DoesNotExist:
+        return redirect("login")
+
+    # Already approved hai to dashboard pe bhejo
+    if user.is_approved:
+        return redirect("company_dashboard")
+
+    # GET — form dikhao
+    if request.method == "GET":
+        return render(request, "accounts/company_registration.html", {"user": user})
+
+    # POST — form process karo
+    # ── User fields update ──
+    user.first_name = request.POST.get("first_name", "").strip()
+    user.last_name  = request.POST.get("last_name",  "").strip()
+    user.phone      = request.POST.get("owner_phone", "").strip()
+
+    # ── CompanyProfile get or create ──
+    profile, _ = CompanyProfile.objects.get_or_create(user=user)
+
+    profile.designation     = request.POST.get("designation",     "").strip()
+    profile.trade_name      = request.POST.get("trade_name",      "").strip()
+    profile.legal_name      = request.POST.get("legal_name",      "").strip()
+    profile.ntn_number      = request.POST.get("ntn_number",      "").strip()
+    profile.company_email   = request.POST.get("company_email",   "").strip()
+    profile.company_type    = request.POST.get("company_type",    "").strip()
+    profile.industry        = request.POST.get("industry",        "").strip()
+    profile.total_employees = request.POST.get("total_employees", "").strip()
+    profile.landline        = request.POST.get("landline",        "").strip()
+    profile.company_phone   = request.POST.get("company_phone",   "").strip()
+    profile.website         = request.POST.get("website",         "").strip()
+    profile.country         = request.POST.get("country",         "").strip()
+    profile.province        = request.POST.get("province",        "").strip()
+    profile.city            = request.POST.get("city",            "").strip()
+    profile.postal_code     = request.POST.get("postal_code",     "").strip()
+    profile.legal_address   = request.POST.get("legal_address",   "").strip()
+    profile.overview        = request.POST.get("overview",        "").strip()
+    profile.vision          = request.POST.get("vision",          "").strip()
+    profile.facebook        = request.POST.get("facebook",        "").strip()
+    profile.twitter         = request.POST.get("twitter",         "").strip()
+    profile.linkedin        = request.POST.get("linkedin",        "").strip()
+    profile.pinterest       = request.POST.get("pinterest",       "").strip()
+
+    # est_date — empty string se error aata hai
+    est_date = request.POST.get("est_date", "").strip()
+    profile.est_date = est_date if est_date else None
+
+    # Logo upload
+    if "logo" in request.FILES:
+        profile.logo = request.FILES["logo"]
+
+    # ── Validation ──
+    errors = []
+    if not profile.trade_name:
+        errors.append("Company Trade Name is required.")
+    if not profile.legal_name:
+        errors.append("Company Legal Name is required.")
+    if not profile.company_type:
+        errors.append("Company Type is required.")
+    if not profile.industry:
+        errors.append("Industry is required.")
+    if not profile.country:
+        errors.append("Country is required.")
+    if not profile.city:
+        errors.append("City is required.")
+    if not profile.legal_address:
+        errors.append("Legal Address is required.")
+
+    if errors:
+        for err in errors:
+            messages.error(request, err)
+        return render(request, "accounts/company_registration.html", {"user": user})
+
+    # ── Save ──
+    user.save()
+    profile.save()
+
+    messages.success(request, "Company profile submitted! Please wait for admin review.")
+    return redirect("company_pending")
