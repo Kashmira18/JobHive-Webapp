@@ -13,6 +13,12 @@ class CustomUser(AbstractUser):
     is_approved = models.BooleanField(default=False)   # sirf COMPANY ke liye
     phone       = models.CharField(max_length=20, blank=True, null=True)
 
+    def save(self, *args, **kwargs):
+        if self.is_superuser:
+            self.role = "ADMIN"
+            # self.is_staff = True
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} ({self.role})"
 
@@ -77,3 +83,5 @@ class CompanyProfile(models.Model):
     class Meta:
         verbose_name        = "Company Profile"
         verbose_name_plural = "Company Profiles"
+    
+
