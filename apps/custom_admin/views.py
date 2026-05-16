@@ -17,20 +17,36 @@ User = get_user_model()
 # ─────────────────────────────────────────
 #  LOGIN
 # ─────────────────────────────────────────
-def admin_login(request):
-    # Har baar login page aane par pehle logout
-    if request.user.is_authenticated:
-        logout(request)
 
+def admin_login(request):
     form = AdminLoginForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         user = form.cleaned_data["user"]
-        login(request, user)
-        messages.success(request, f"Welcome back, {user.email}!")
-        return redirect("custom_admin:dashboard")
+
+        # AUTO ADMIN CHECK
+        if user.is_superuser:
+            # login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect("custom_admin:dashboard")
+
+        form.add_error(None, "You are not authorized as admin")
 
     return render(request, "custom_admin/admin_login.html", {"form": form})
+# def admin_login(request):
+#     # Har baar login page aane par pehle logout
+#     if request.user.is_authenticated:
+#         logout(request)
+
+#     form = AdminLoginForm(request.POST or None)
+
+#     if request.method == "POST" and form.is_valid():
+#         user = form.cleaned_data["user"]
+#         login(request, user)
+#         messages.success(request, f"Welcome back, {user.email}!")
+#         return redirect("custom_admin:dashboard")
+
+#     return render(request, "custom_admin/admin_login.html", {"form": form})
 
 
 # ─────────────────────────────────────────

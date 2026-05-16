@@ -56,11 +56,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.sites',
 
     # custom apps
     "accounts",
     "portal",
     "custom_admin",
+    'candidate',
 
     #All-Auth
     "allauth",
@@ -202,3 +204,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
 
 
+SITE_ID = 1
