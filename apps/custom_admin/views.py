@@ -151,3 +151,7 @@ def admin_dashboard(request):
         "admin_user":       request.user,
     }
     return render(request, "custom_admin/admin_dashboard.html", context)
+
+def admin_layout(request):
+    return render(request, "custom_admin/admin_layout.html")
+

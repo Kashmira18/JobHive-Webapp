@@ -13,6 +13,6 @@ urlpatterns = [
 
     # ── Dashboard ─────────────────────────────────────
     path("dashboard/", views.admin_dashboard, name="dashboard"),
-
+    path("admin_layout/", views.admin_layout, name="layout"),
 
 ]

@@ -1,0 +1,234 @@
+{% extends 'custom_admin/admin_layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+
+
+.stat-card{
+    position:relative;
+    border-radius:16px;
+    padding:24px;
+    color:#fff;
+    min-height:130px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+
+.stat-card:hover{
+    transform:translateY(-4px);
+}
+
+.stat-card h3{
+    font-size:34px;
+    font-weight:700;
+    margin-top:12px;
+    margin-bottom:0;
+}
+
+.stat-card small{
+    font-size:15px;
+    opacity:.95;
+    font-weight:500;
+}
+
+/* right side circle effect like image */
+.stat-card::before{
+    content:"";
+    position:absolute;
+    right:-25px;
+    top:-25px;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+}
+
+.stat-card::after{
+    content:"";
+    position:absolute;
+    right:20px;
+    bottom:-30px;
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    background:rgba(255,255,255,.10);
+}
+
+/* CARD COLORS SAME IMAGE STYLE */
+.bg-blue{
+    background:linear-gradient(135deg,#4f7cff,#295dff);
+}
+
+.bg-orange{
+    background:linear-gradient(135deg,#ffb347,#ff8c00);
+}
+
+.bg-green{
+    background:linear-gradient(135deg,#27c76f,#0fa958);
+}
+
+.bg-red{
+    background:linear-gradient(135deg,#ff6b6b,#ee3d3d);
+}
+
+@media(max-width:768px){
+.stat-card{
+    text-align:center;
+}
+}
+
+/* TABLE */
+.table th{
+    font-size:13px;
+    font-weight:600;
+}
+.table td{
+    font-size:13px;
+}
+.badge{
+    font-size:11px;
+}
+
+/* CHART FIX */
+canvas{
+    max-height:260px;
+}
+
+/* MOBILE FIX */
+@media(max-width:768px){
+    .stat-card{
+        text-align:center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+window.onload = function() {
+    const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+    const companyCtx = document.getElementById('companyChart').getContext('2d');
+
+    new Chart(earningsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+            datasets: [{
+                label: 'Jobs',
+                data: [1200,1900,800,1500,2200,1800],
+                backgroundColor: '#5a6bff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    new Chart(companyCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+            datasets: [{
+                label: 'Companies',
+                data: [5,9,14,20,28,38],
+                borderColor: '#10b981',
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+};
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="stat-card bg-blue">
+            Total Jobs
+            <h3>34</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card bg-orange">
+            Total Companies
+            <h3>38</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card bg-green">
+            Total Job Seekers
+            <h3>40</h3>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="stat-card bg-red">
+            Active Jobs
+            <h3>20</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="box">
+            <h6>Job Posting</h6>
+            <canvas id="earningsChart" height="260"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="box">
+            <h6>Companies</h6>
+            <canvas id="companyChart" height="260"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="box mt-4">
+    <h6>Latest Subscriptions</h6>
+
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>ABC Tech</td>
+                <td>Premium</td>
+                <td>$120</td>
+                <td><span class="badge bg-success">Paid</span></td>
+            </tr>
+
+            <tr>
+                <td>XYZ Ltd</td>
+                <td>Basic</td>
+                <td>$60</td>
+                <td><span class="badge bg-warning">Pending</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
