@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "portal",
     "custom_admin",
     'candidate',
+    'company',
 
     #All-Auth
     "allauth",
