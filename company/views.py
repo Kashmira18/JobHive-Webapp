@@ -9,7 +9,7 @@ from django.shortcuts import render
 def dashboard(request):
     return render(request, 'company/company_dashboard.html')
 
+def base(request):
+    return render(request, 'company/company_base.html')
 
-# @candidate_login_required
-# def profile(request):
-#     return render(request, 'candidate/profile.html')
+

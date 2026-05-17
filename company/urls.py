@@ -5,6 +5,6 @@ app_name = 'company'
 
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
-    # path('profile/', views.profile, name='profile'),
+    path('base/', views.base, name='base'),
     # Aur URLs add karo
 ]

@@ -500,7 +500,7 @@
         <div class="header-right">
             <!-- <button class="btn-post-job" > -->
                 <!-- <a href="#"><i class="fas fa-plus me-1"></i> Post a Job</a> -->
-                <a href="{% url 'company_job_post' %}" class="btn-post"><i class="fa-solid fa-plus"></i> Post a Job</a>
+                <a href="#" class="btn-post"><i class="fa-solid fa-plus"></i> Post a Job</a>
             <!-- </button> -->
 
             <!-- Messages -->
@@ -604,10 +604,10 @@
                 <img src="https://ui-avatars.com/api/?name=TechSolutions&background=31C2EF&color=fff&bold=true" class="user-img" alt="Profile">
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                 <div class="profile-dropdown-box" id="profileDropdown">
-                    <a href="{% url 'setting' %}">
+                    <a href="#">
                         <i class="fas fa-building"></i> Company Profile
                     </a>
-                    <a href="{% url 'setting' %}">
+                    <a href="#">
                         <i class="fas fa-cog"></i> Settings
                     </a>
                     <a href="javascript:void(0)" style="color: #dc3545;">
@@ -623,55 +623,27 @@
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">MAIN</div>
         <ul class="sidebar-menu">
-            <li><a href="{% url 'first_page' %}" class="active"><i class="fas fa-home"></i> <span class="menu-text">Dashboard</span></a></li>
+            <li><a href="#" class="active"><i class="fas fa-home"></i> <span class="menu-text">Dashboard</span></a></li>
         </ul>
 
         <div class="sidebar-header">Jobs</div>
         <ul class="sidebar-menu">
-            <li><a href="{% url 'job_lists' %}"><i class="fas fa-list"></i> <span class="menu-text">Jobs List</span></a></li>
-            <li><a href="{% url 'active' %}"><i class="fas fa-briefcase"></i> <span class="menu-text">Active Jobs</span></a></li>
-            <li><a href="{% url 'drafts' %}"><i class="fas fa-file-alt"></i> <span class="menu-text">Drafts</span></a></li>
+            <li><a href="#"><i class="fas fa-list"></i> <span class="menu-text">Jobs List</span></a></li>
+            <li><a href="#"><i class="fas fa-briefcase"></i> <span class="menu-text">Active Jobs</span></a></li>
+            <li><a href="#"><i class="fas fa-file-alt"></i> <span class="menu-text">Drafts</span></a></li>
         </ul>
 
         <div class="sidebar-header">Profile</div>
         <ul class="sidebar-menu">
-            <!-- <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> <span class="menu-text">My Profile</span></a></li> -->
-            <li><a href="{% url 'setting' %}"><i class="fas fa-gear"></i> <span class="menu-text">Settings</span></a></li>
-            <li><a href="{% url 'company_job_post' %}"><i class="fa-solid fa-plus-square"></i> <span class="menu-text">Post a Job</span></a></li>
-            <li><a href="{% url 'messenger' %}"><i class="fas fa-paper-plane"></i> <span class="menu-text">Messenger</span></a></li>
+            <li><a href="#"><i class="fas fa-gear"></i> <span class="menu-text">Settings</span></a></li>
+            <li><a href="#"><i class="fa-solid fa-plus-square"></i> <span class="menu-text">Post a Job</span></a></li>
+            <li><a href="#"><i class="fas fa-paper-plane"></i> <span class="menu-text">Messenger</span></a></li>
             <li><a class="sidebar-link text-danger" href="#"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
 
         </ul>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <!-- <main id="main-content">
-        <div class="demo-card">
-            <h2>Dashboard Content</h2>
-            <p>Yeh content automatically adjust ho jayega jab sidebar collapse ya expand hoga.</p>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="demo-card">
-                    <h5>Card 1</h5>
-                    <p>Sample content here</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="demo-card">
-                    <h5>Card 2</h5>
-                    <p>Sample content here</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="demo-card">
-                    <h5>Card 3</h5>
-                    <p>Sample content here</p>
-                </div>
-            </div>
-        </div>
-    </main> -->
+    
 
     <main id="main-content">
         {% block content %}{% endblock %}

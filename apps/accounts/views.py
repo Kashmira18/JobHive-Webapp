@@ -94,10 +94,8 @@ def login_view(request):
             target_username = username_or_email
 
         user = authenticate(request, username=target_username, password=password)
-
-        if user is not None:
-
             # ── COMPANY ──
+        if user is not None:
             if user.role == "COMPANY":
 
                 # APPROVED company → dashboard
@@ -190,19 +188,43 @@ def company_documents_review(request):
 
 
 #  COMPANY — APPROVED PAGE
-def company_approved(request):
-    user_id = request.session.get("pending_user_id")
-    if user_id:
-        try:
-            user = CustomUser.objects.get(pk=user_id)
-            if user.is_approved:
-                # Session clear
-                del request.session["pending_user_id"]
-                return render(request, "accounts/company_approved.html", {"user": user})
-        except CustomUser.DoesNotExist:
-            pass
+# def company_approved(request):
+#     user_id = request.session.get("pending_user_id")
+#     if user_id:
+#         try:
+#             user = CustomUser.objects.get(pk=user_id)
+#             if user.is_approved:
+#                 # Session clear
+#                 del request.session["pending_user_id"]
+#                 return render(request, "accounts/company_approved.html", {"user": user})
+#         except CustomUser.DoesNotExist:
+#             pass
 
-    return redirect("login")
+#     return redirect("login")
+
+def company_approved(request):
+
+    # Session --> user 
+    user_id = request.session.get('pending_user_id')
+
+    if not user_id:
+        messages.error(request, "Session expired. Please login again.")
+        return redirect("login")
+
+    try:
+        user = CustomUser.objects.get(pk=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, "User not found. Please login again.")
+        return redirect("login")
+
+    # Agar approved nahi hai then
+    if not user.is_approved:
+        return redirect("company_pending")
+
+    # Session clear karo
+    del request.session['pending_user_id']
+
+    return render(request, "accounts/company_approved.html", {"user": user})
 
 
 # ── FORGOT PASSWORD ──

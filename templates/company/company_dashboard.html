@@ -1,5 +1,5 @@
-{% extends "portal/company/company_base_dashboard.html" %}
 
+{% extends 'company/company_base.html' %}
 
 {% block content %}
 
@@ -543,7 +543,7 @@
                 </div>
             </div>
             <button  class="btn-edit-profile" onclick="editProfile()" style="cursor: pointer;">
-                <a href="{% url 'profile' %}" style="text-decoration: none; color: inherit; display: inline-block;">
+                <a href="#" style="text-decoration: none; color: inherit; display: inline-block;">
                 <i class="fas fa-edit me-2"></i>Edit Profile
             </a></button>
         
