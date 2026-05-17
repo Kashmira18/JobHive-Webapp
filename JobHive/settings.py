@@ -98,26 +98,6 @@ LOGIN_REDIRECT_URL = "candidate_dashboard"  # Redirect after login
 LOGOUT_REDIRECT_URL            = "signin"
 
 
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APPS": {
-            # Google Cloud Console se copy karein
-            # https://console.cloud.google.com/
-            "client_id":     "YOUR_GOOGLE_CLIENT_ID",
-            "secret":        "YOUR_GOOGLE_CLIENT_SECRET",
-            "key":           "",
-        },
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-        "FETCH_USERINFO": True,
-    }
-}
-
 
 ROOT_URLCONF = "JobHive.urls"
 
