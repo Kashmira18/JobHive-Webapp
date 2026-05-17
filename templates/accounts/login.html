@@ -1,9 +1,10 @@
-
 {% block content %}
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,27 +12,38 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet" />
 
   <style>
     /* ── ROOT ── */
     :root {
-      --navy:       #0b1437;
-      --navy-mid:   #112060;
-      --blue:       #1565c0;
-      --accent:     #1ac4f8;
-      --accent-2:   #4fc3f7;
-      --white:      #ffffff;
-      --off-white:  #f0f4ff;
-      --border:     rgba(255,255,255,0.10);
-      --card-bg:    rgba(255,255,255,0.035);
-      --input-bg:   rgba(255,255,255,0.06);
-      --text-muted: rgba(255,255,255,0.55);
+      --navy: #0b1437;
+      --navy-mid: #112060;
+      --blue: #1565c0;
+      --accent: #1ac4f8;
+      --accent-2: #4fc3f7;
+      --white: #ffffff;
+      --off-white: #f0f4ff;
+      --border: rgba(255, 255, 255, 0.10);
+      --card-bg: rgba(255, 255, 255, 0.035);
+      --input-bg: rgba(255, 255, 255, 0.06);
+      --text-muted: rgba(255, 255, 255, 0.55);
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    html, body { height: 100%; }
+    html,
+    body {
+      height: 100%;
+    }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -69,22 +81,48 @@
       opacity: 0.18;
       pointer-events: none;
     }
-    .blob-1 { width: 420px; height: 420px; background: var(--accent);  top: -120px; right: -100px; }
-    .blob-2 { width: 300px; height: 300px; background: #1565c0;        bottom: -80px; left: -60px; }
-    .blob-3 { width: 180px; height: 180px; background: var(--accent-2); top: 50%; left: 30%; }
+
+    .blob-1 {
+      width: 420px;
+      height: 420px;
+      background: var(--accent);
+      top: -120px;
+      right: -100px;
+    }
+
+    .blob-2 {
+      width: 300px;
+      height: 300px;
+      background: #1565c0;
+      bottom: -80px;
+      left: -60px;
+    }
+
+    .blob-3 {
+      width: 180px;
+      height: 180px;
+      background: var(--accent-2);
+      top: 50%;
+      left: 30%;
+    }
 
     /* Grid texture */
     .left::before {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+        linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
       background-size: 48px 48px;
       pointer-events: none;
     }
 
-    .branding { position: relative; z-index: 2; max-width: 480px; }
+    .branding {
+      position: relative;
+      z-index: 2;
+      max-width: 480px;
+    }
 
     .logo-row {
       display: flex;
@@ -92,7 +130,13 @@
       gap: 12px;
       margin-bottom: 48px;
     }
-    .logo-row img { width: 42px; height: 42px; object-fit: contain; }
+
+    .logo-row img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
     .logo-name {
       font-family: 'Sora', sans-serif;
       font-weight: 800;
@@ -100,7 +144,12 @@
       color: var(--white);
       letter-spacing: -.02em;
     }
-    .logo-sub { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .logo-sub {
+      font-size: .72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
 
     .left h1 {
       font-family: 'Sora', sans-serif;
@@ -110,6 +159,7 @@
       letter-spacing: -.025em;
       margin-bottom: 18px;
     }
+
     .left h1 .highlight {
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
       -webkit-background-clip: text;
@@ -129,21 +179,29 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .stat-pill {
-      background: rgba(255,255,255,0.07);
+      background: rgba(255, 255, 255, 0.07);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 10px 16px;
       font-size: .8rem;
       backdrop-filter: blur(6px);
     }
-    .stat-pill strong { color: var(--accent); display: block; font-size: 1rem; }
+
+    .stat-pill strong {
+      color: var(--accent);
+      display: block;
+      font-size: 1rem;
+    }
 
     /* ── SVG deco ── */
     .left-illustration {
       position: absolute;
-      bottom: 40px; right: 40px;
-      width: 220px; opacity: 0.08;
+      bottom: 40px;
+      right: 40px;
+      width: 220px;
+      opacity: 0.08;
       pointer-events: none;
     }
 
@@ -153,7 +211,7 @@
     .right {
       width: 480px;
       flex-shrink: 0;
-      background: rgba(255,255,255,0.025);
+      background: rgba(255, 255, 255, 0.025);
       border-left: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -174,6 +232,7 @@
       letter-spacing: -.02em;
       margin-bottom: 6px;
     }
+
     .card-pro .subtitle {
       font-size: .83rem;
       color: var(--text-muted);
@@ -190,9 +249,24 @@
       align-items: flex-start;
       gap: 8px;
     }
-    .django-alert.error   { background: rgba(220,53,69,.15);  border: 1px solid rgba(220,53,69,.3);  color: #ff8a8a; }
-    .django-alert.success { background: rgba(26,196,248,.10); border: 1px solid rgba(26,196,248,.3); color: var(--accent-2); }
-    .django-alert.warning { background: rgba(255,193,7,.10);  border: 1px solid rgba(255,193,7,.3);  color: #ffd54f; }
+
+    .django-alert.error {
+      background: rgba(220, 53, 69, .15);
+      border: 1px solid rgba(220, 53, 69, .3);
+      color: #ff8a8a;
+    }
+
+    .django-alert.success {
+      background: rgba(26, 196, 248, .10);
+      border: 1px solid rgba(26, 196, 248, .3);
+      color: var(--accent-2);
+    }
+
+    .django-alert.warning {
+      background: rgba(255, 193, 7, .10);
+      border: 1px solid rgba(255, 193, 7, .3);
+      color: #ffd54f;
+    }
 
     /* ── GOOGLE BUTTON ── */
     .btn-google {
@@ -213,12 +287,18 @@
       text-decoration: none;
       margin-bottom: 20px;
     }
+
     .btn-google:hover {
       background: #f1f3f4;
-      box-shadow: 0 4px 14px rgba(0,0,0,.25);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
       color: #3c4043;
     }
-    .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .btn-google svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
 
     /* ── DIVIDER ── */
     .divider {
@@ -227,14 +307,23 @@
       gap: 10px;
       margin-bottom: 20px;
     }
-    .divider hr { flex: 1; border-color: var(--border); }
-    .divider span { font-size: .75rem; color: var(--text-muted); white-space: nowrap; }
+
+    .divider hr {
+      flex: 1;
+      border-color: var(--border);
+    }
+
+    .divider span {
+      font-size: .75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
 
     /* ── FORM ELEMENTS ── */
     .form-label {
       font-size: .78rem;
       font-weight: 600;
-      color: rgba(255,255,255,.7);
+      color: rgba(255, 255, 255, .7);
       margin-bottom: 6px;
       letter-spacing: .02em;
     }
@@ -248,34 +337,56 @@
       padding: 11px 14px;
       transition: border-color .2s, background .2s;
     }
-    .form-control::placeholder { color: rgba(255,255,255,.3); }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, .3);
+    }
+
     .form-control:focus {
-      background: rgba(255,255,255,.09);
+      background: rgba(255, 255, 255, .09);
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(26,196,248,.15);
+      box-shadow: 0 0 0 3px rgba(26, 196, 248, .15);
       color: var(--white);
       outline: none;
     }
+
     .form-control.is-invalid {
       border-color: #e53935;
-      box-shadow: 0 0 0 3px rgba(229,57,53,.15);
+      box-shadow: 0 0 0 3px rgba(229, 57, 53, .15);
     }
-    .invalid-feedback { font-size: .77rem; color: #ff8a8a; margin-top: 5px; }
+
+    .invalid-feedback {
+      font-size: .77rem;
+      color: #ff8a8a;
+      margin-top: 5px;
+    }
 
     /* ── PASSWORD FIELD ── */
-    .pass-wrap { position: relative; }
-    .pass-wrap .form-control { padding-right: 44px; }
+    .pass-wrap {
+      position: relative;
+    }
+
+    .pass-wrap .form-control {
+      padding-right: 44px;
+    }
+
     .toggle-eye {
       position: absolute;
-      right: 12px; top: 50%;
+      right: 12px;
+      top: 50%;
       transform: translateY(-50%);
-      background: none; border: none; cursor: pointer;
+      background: none;
+      border: none;
+      cursor: pointer;
       color: var(--text-muted);
       font-size: 1rem;
       padding: 4px;
       transition: color .2s;
     }
-    .toggle-eye:hover { color: var(--accent); }
+
+    .toggle-eye:hover {
+      color: var(--accent);
+    }
 
     /* ── REMEMBER / FORGOT ── */
     .small-row {
@@ -284,20 +395,34 @@
       align-items: center;
       margin: 14px 0 20px;
     }
+
     .form-check-input {
       background-color: var(--input-bg);
       border-color: var(--border);
       cursor: pointer;
     }
-    .form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
-    .remember { font-size: .8rem; color: var(--text-muted); cursor: pointer; }
+
+    .form-check-input:checked {
+      background-color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .remember {
+      font-size: .8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
     .forgot-link {
       font-size: .8rem;
       color: var(--accent-2);
       text-decoration: none;
       transition: color .2s;
     }
-    .forgot-link:hover { color: var(--accent); }
+
+    .forgot-link:hover {
+      color: var(--accent);
+    }
 
     /* ── SUBMIT BUTTON ── */
     .btn-login {
@@ -317,22 +442,41 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 6px 20px rgba(26,196,248,.3);
+      box-shadow: 0 6px 20px rgba(26, 196, 248, .3);
     }
-    .btn-login:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(26,196,248,.4); }
-    .btn-login:active { transform: translateY(0); }
-    .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .btn-login:hover {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(26, 196, 248, .4);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
 
     /* Spinner */
     .spinner-ring {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.3);
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, .3);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin .65s linear infinite;
       display: none;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     /* ── HELPER TEXT ── */
     .helper {
@@ -341,17 +485,24 @@
       font-size: .82rem;
       color: var(--text-muted);
     }
+
     .signup-link {
       color: var(--accent);
       text-decoration: none;
       font-weight: 600;
       transition: color .2s;
     }
-    .signup-link:hover { color: var(--accent-2); }
+
+    .signup-link:hover {
+      color: var(--accent-2);
+    }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      .left { display: none; }
+      .left {
+        display: none;
+      }
+
       .right {
         width: 100%;
         border-left: none;
@@ -360,196 +511,199 @@
         background: linear-gradient(160deg, #0b1437 0%, #112060 100%);
       }
     }
+
     @media (max-width: 480px) {
-      .right { padding: 32px 16px; }
-      .card-pro { max-width: 100%; }
+      .right {
+        padding: 32px 16px;
+      }
+
+      .card-pro {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-<div class="split">
+  <div class="split">
 
-  <!-- ══════════════════════════════
+    <!-- ══════════════════════════════
        LEFT PANEL — Branding
   ══════════════════════════════ -->
-  <section class="left">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
+    <section class="left">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
 
-    <div class="branding">
-      <div class="logo-row">
-        <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
-        <div>
-          <div class="logo-name"><img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /></div>
-                  <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
+      <div class="branding">
+        <div class="logo-row">
+          <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
+          <div>
+            <div class="logo-name"><img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /></div>
+            <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
 
-          <div class="logo-sub">Secure access · Enterprise-grade</div>
+            <div class="logo-sub">Secure access · Enterprise-grade</div>
+          </div>
+        </div>
+
+        <h1>Welcome back —<br><span class="highlight">your next hire awaits.</span></h1>
+        <p>Access your workspace with enterprise-level security and a refined, modern interface. Connect with thousands
+          of candidates across Pakistan and beyond.</p>
+
+        <div class="stat-pills">
+          <div class="stat-pill"><strong>200k+</strong>Active Users</div>
+          <div class="stat-pill"><strong>50k+</strong>Jobs Posted</div>
+          <div class="stat-pill"><strong>99.9%</strong>Uptime</div>
         </div>
       </div>
 
-      <h1>Welcome back —<br><span class="highlight">your next hire awaits.</span></h1>
-      <p>Access your workspace with enterprise-level security and a refined, modern interface. Connect with thousands of candidates across Pakistan and beyond.</p>
+      <!-- Deco SVG -->
+      <svg class="left-illustration" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="150" cy="150" r="140" fill="none" stroke="white" stroke-width="2" />
+        <circle cx="150" cy="150" r="100" fill="none" stroke="white" stroke-width="1.5" />
+        <circle cx="150" cy="150" r="60" fill="none" stroke="white" stroke-width="1" />
+        <circle cx="150" cy="150" r="20" fill="white" />
+        <line x1="150" y1="10" x2="150" y2="290" stroke="white" stroke-width="1" />
+        <line x1="10" y1="150" x2="290" y2="150" stroke="white" stroke-width="1" />
+      </svg>
+    </section>
 
-      <div class="stat-pills">
-        <div class="stat-pill"><strong>200k+</strong>Active Users</div>
-        <div class="stat-pill"><strong>50k+</strong>Jobs Posted</div>
-        <div class="stat-pill"><strong>99.9%</strong>Uptime</div>
-      </div>
-    </div>
-
-    <!-- Deco SVG -->
-    <svg class="left-illustration" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="150" cy="150" r="140" fill="none" stroke="white" stroke-width="2"/>
-      <circle cx="150" cy="150" r="100" fill="none" stroke="white" stroke-width="1.5"/>
-      <circle cx="150" cy="150" r="60"  fill="none" stroke="white" stroke-width="1"/>
-      <circle cx="150" cy="150" r="20"  fill="white"/>
-      <line x1="150" y1="10"  x2="150" y2="290" stroke="white" stroke-width="1"/>
-      <line x1="10"  y1="150" x2="290" y2="150" stroke="white" stroke-width="1"/>
-    </svg>
-  </section>
-
-  <!-- ══════════════════════════════
+    <!-- ══════════════════════════════
        RIGHT PANEL — Form
   ══════════════════════════════ -->
-  <section class="right">
-    <div class="card-pro">
-      <h3>Sign In</h3>
-      <p class="subtitle">Enter your credentials to access your account.</p>
+    <section class="right">
+      <div class="card-pro">
+        <h3>Sign In</h3>
+        <p class="subtitle">Enter your credentials to access your account.</p>
 
-      <!-- ── Django Messages ── -->
-      {% if messages %}
+        <!-- ── Django Messages ── -->
+        {% if messages %}
         {% for message in messages %}
-          <div class="django-alert {{ message.tags }}">
-            <i class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
-            <span>{{ message }}</span>
-          </div>
+        <div class="django-alert {{ message.tags }}">
+          <i
+            class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+          <span>{{ message }}</span>
+        </div>
         {% endfor %}
-      {% endif %}
+        {% endif %}
 
-      <!-- ── Django Form Non-field Errors ── -->
-      {% if form.non_field_errors %}
+        <!-- ── Django Form Non-field Errors ── -->
+        {% if form.non_field_errors %}
         <div class="django-alert error">
           <i class="bi bi-exclamation-circle"></i>
           <span>{{ form.non_field_errors.0 }}</span>
         </div>
-      {% endif %}
+        {% endif %}
 
-      <!-- ── GOOGLE SIGN-IN ── -->
-      <a href="#" class="btn-google">
-        <!-- Google "G" SVG -->
-        <!-- <svg viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg">
+        <!-- ── GOOGLE SIGN-IN ── -->
+
+
+        <form action="{% provider_login_url 'google' %}" method="post">
+          {% csrf_token %}
+          <button class="btn-google">
+            <!-- Google "G" SVG -->
+            <!-- <svg viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg">
           <path d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z" fill="#4285f4"/>
           <path d="M272.1 544.3c73.4 0 135.3-24.1 180.4-65.7l-87.7-68c-24.4 16.6-55.9 26-92.6 26-71 0-131.2-47.9-152.8-112.3H28.9v70.1c46.2 91.9 140.3 149.9 243.2 149.9z" fill="#34a853"/>
           <path d="M119.3 324.3c-11.4-33.8-11.4-70.4 0-104.2V150H28.9c-38.6 76.9-38.6 167.5 0 244。4l90。4-70。１z" fill="#fbbc0４"/>
           <path d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 58 28.9 150l90.4 70.1c21.5-64.5 81.8-112.4 152.8-112.4z" fill="#ea4335"/>
         </svg> -->
-        Sign in with Google
-      </a>
+            Sign in with Google
+          </button>
+        </form>
 
-      <!-- ── DIVIDER ── -->
-      <div class="divider">
-        <hr><span>or use your email</span><hr>
-      </div>
+        <!-- ── DIVIDER ── -->
+        <div class="divider">
+          <hr><span>or use your email</span>
+          <hr>
+        </div>
 
-      <!-- ── LOGIN FORM ── -->
-      <form method="POST" id="loginForm" novalidate>
-        {% csrf_token %}
+        <!-- ── LOGIN FORM ── -->
+        <form method="POST" id="loginForm" novalidate>
+          {% csrf_token %}
 
-        <!-- Email / Username -->
-        <div class="mb-3">
-          <label class="form-label" for="id_username">Email or Username</label>
-          <input
-            id="id_username"
-            name="username"
-            type="text"
-            class="form-control {% if form.username.errors %}is-invalid{% endif %}"
-            placeholder="you@company.com or username"
-            value="{{ form.username.value|default:'' }}"
-            autocomplete="username"
-            required
-          />
-          {% if form.username.errors %}
+          <!-- Email / Username -->
+          <div class="mb-3">
+            <label class="form-label" for="id_username">Email or Username</label>
+            <input id="id_username" name="username" type="text"
+              class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+              placeholder="you@company.com or username" value="{{ form.username.value|default:'' }}"
+              autocomplete="username" required />
+            {% if form.username.errors %}
             <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
-          {% endif %}
-        </div>
-
-        <!-- Password -->
-        <div class="mb-1">
-          <label class="form-label" for="id_password">Password</label>
-          <div class="pass-wrap">
-            <input
-              id="id_password"
-              name="password"
-              type="password"
-              class="form-control {% if form.password.errors %}is-invalid{% endif %}"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-              required
-            />
-            <button type="button" class="toggle-eye" id="togglePassword" aria-label="Toggle password visibility">
-              <i class="bi bi-eye-slash" id="eyeIcon"></i>
-            </button>
+            {% endif %}
           </div>
-          {% if form.password.errors %}
+
+          <!-- Password -->
+          <div class="mb-1">
+            <label class="form-label" for="id_password">Password</label>
+            <div class="pass-wrap">
+              <input id="id_password" name="password" type="password"
+                class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                placeholder="Enter your password" autocomplete="current-password" required />
+              <button type="button" class="toggle-eye" id="togglePassword" aria-label="Toggle password visibility">
+                <i class="bi bi-eye-slash" id="eyeIcon"></i>
+              </button>
+            </div>
+            {% if form.password.errors %}
             <div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>
-          {% endif %}
-        </div>
-
-        <!-- Remember + Forgot -->
-        <div class="small-row">
-          <div class="d-flex align-items-center gap-2">
-            <input class="form-check-input" type="checkbox" id="remember" name="remember">
-            <label class="remember" for="remember">Remember me</label>
+            {% endif %}
           </div>
-          <a href="{% url 'forget_password' %}" class="forgot-link">Forgot password?</a>
-        </div>
 
-        <!-- Submit -->
-        <button type="submit" class="btn-login" id="submitBtn">
-          <span class="spinner-ring" id="spinnerRing"></span>
-          <span id="btnText">Sign In</span>
-        </button>
+          <!-- Remember + Forgot -->
+          <div class="small-row">
+            <div class="d-flex align-items-center gap-2">
+              <input class="form-check-input" type="checkbox" id="remember" name="remember">
+              <label class="remember" for="remember">Remember me</label>
+            </div>
+            <a href="{% url 'forget_password' %}" class="forgot-link">Forgot password?</a>
+          </div>
 
-        <!-- Register link -->
-        <div class="helper">
-          New here? <a href="{% url 'register' %}" class="signup-link">Create an account</a>
-        </div>
+          <!-- Submit -->
+          <button type="submit" class="btn-login" id="submitBtn">
+            <span class="spinner-ring" id="spinnerRing"></span>
+            <span id="btnText">Sign In</span>
+          </button>
 
-      </form>
-    </div>
-  </section>
+          <!-- Register link -->
+          <div class="helper">
+            New here? <a href="{% url 'register' %}" class="signup-link">Create an account</a>
+          </div>
 
-</div>
+        </form>
+      </div>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </div>
 
-<script>
-  /* ── Toggle Password Visibility ── */
-  document.getElementById('togglePassword').addEventListener('click', function () {
-    var inp  = document.getElementById('id_password');
-    var icon = document.getElementById('eyeIcon');
-    if (inp.type === 'password') {
-      inp.type = 'text';
-      icon.className = 'bi bi-eye';
-    } else {
-      inp.type = 'password';
-      icon.className = 'bi bi-eye-slash';
-    }
-  });
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  /* ── Spinner on Submit ── */
-  document.getElementById('loginForm').addEventListener('submit', function () {
-    var btn     = document.getElementById('submitBtn');
-    var spinner = document.getElementById('spinnerRing');
-    var txt     = document.getElementById('btnText');
-    btn.disabled   = true;
-    spinner.style.display = 'block';
-    txt.textContent = 'Signing in…';
-  });
-</script>
+  <script>
+    /* ── Toggle Password Visibility ── */
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      var inp = document.getElementById('id_password');
+      var icon = document.getElementById('eyeIcon');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.className = 'bi bi-eye';
+      } else {
+        inp.type = 'password';
+        icon.className = 'bi bi-eye-slash';
+      }
+    });
+
+    /* ── Spinner on Submit ── */
+    document.getElementById('loginForm').addEventListener('submit', function () {
+      var btn = document.getElementById('submitBtn');
+      var spinner = document.getElementById('spinnerRing');
+      var txt = document.getElementById('btnText');
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      txt.textContent = 'Signing in…';
+    });
+  </script>
 
 </body>
+
 </html>
 {% endblock %}
