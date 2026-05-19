@@ -4,7 +4,7 @@ from . import views
 app_name = 'candidate'
 
 urlpatterns = [
-    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/', views.candidate_dashboard, name='candidate_dashboard'),
     # path('profile/', views.profile, name='profile'),
     # Aur URLs add karo
 ]

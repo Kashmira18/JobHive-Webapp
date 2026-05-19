@@ -10,34 +10,38 @@ class CustomUser(AbstractUser):
         ("CANDIDATE", "Candidate"),
     )
     role        = models.CharField(max_length=20, choices=ROLE_CHOICES, default="CANDIDATE")
-    is_approved = models.BooleanField(default=False)   # sirf COMPANY ke liye
+    is_approved = models.BooleanField(default=False)
     phone       = models.CharField(max_length=20, blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        if self.is_superuser:
-            self.role = "ADMIN"
-            # self.is_staff = True
-        super().save(*args, **kwargs)
+    STATUS_CHOICES = (
+        ("PENDING",   "Pending Review"),
+        ("APPROVED",  "Approved"),
+        ("REJECTED",  "Rejected"),
+        ("ROLLBACK",  "Rollback — Needs Correction"),
+    )
+    company_status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="PENDING",
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f"{self.username} ({self.role})"
 
 
 class CompanyProfile(models.Model):
-    """
-    Company ka extra profile — CustomUser se alag table.
-    Ek company ka ek hi profile hoga (OneToOne).
-    """
     user = models.OneToOneField(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="company_profile"
     )
 
-    # ── Owner Info ──
+    # Owner Info
     designation     = models.CharField(max_length=100, blank=True)
 
-    # ── Company Info ──
+    # Company Info
     trade_name      = models.CharField(max_length=200, blank=True)
     legal_name      = models.CharField(max_length=200, blank=True)
     ntn_number      = models.CharField(max_length=50,  blank=True)
@@ -50,32 +54,39 @@ class CompanyProfile(models.Model):
     est_date        = models.DateField(null=True, blank=True)
     website         = models.URLField(blank=True)
 
-    # ── Location ──
+    # Location
     country         = models.CharField(max_length=5,   blank=True)
     province        = models.CharField(max_length=100, blank=True)
     city            = models.CharField(max_length=100, blank=True)
     postal_code     = models.CharField(max_length=12,  blank=True)
     legal_address   = models.TextField(blank=True)
 
-    # ── Overview ──
+    # Overview
     overview        = models.TextField(blank=True)
     vision          = models.TextField(blank=True)
 
-    # ── Logo ──
-    logo            = models.ImageField(
-        upload_to="company_logos/",
-        null=True, blank=True
-    )
+    # Logo
+    logo            = models.ImageField(upload_to="company_logos/", null=True, blank=True)
 
-    # ── Social Media ──
+    # Social Media
     facebook        = models.URLField(blank=True)
     twitter         = models.URLField(blank=True)
     linkedin        = models.URLField(blank=True)
     pinterest       = models.URLField(blank=True)
 
-    # ── Timestamps ──
-    created_at      = models.DateTimeField(auto_now_add=True)
-    updated_at      = models.DateTimeField(auto_now=True)
+    # Admin feedback — REJECT + ROLLBACK 
+    rejection_reason = models.TextField(blank=True)
+    admin_message    = models.TextField(blank=True)   # rollback ya reject ka message
+    rejected_fields  = models.JSONField(default=dict, blank=True)
+    # Format: {
+    #   "trade_name": "Name is incorrect",
+    #   "logo":       "Logo is blurry",
+    #   "ntn_number": "Invalid NTN"
+    # }
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.trade_name or self.user.username} — Profile"
@@ -83,5 +94,3 @@ class CompanyProfile(models.Model):
     class Meta:
         verbose_name        = "Company Profile"
         verbose_name_plural = "Company Profiles"
-    
-

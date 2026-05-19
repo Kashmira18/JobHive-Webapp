@@ -237,7 +237,7 @@
             <!-- Auto redirect countdown -->
             <div class="redirect-wrap">
                 <p class="redirect-txt">
-                    Redirecting to login in <strong id="countNum">8</strong>
+                    Redirecting to dashboard in <strong id="countNum">8</strong>
                     seconds…
                 </p>
                 <div class="rd-bar-bg">
@@ -245,8 +245,8 @@
                 </div>
             </div>
 
-            <a href="{% url 'login' %}" class="btn-login" id="loginBtn">
-                <i class="bi bi-box-arrow-in-right"></i> Go to Sign In
+            <a href="{% url 'company:company_dashboard' %}" class="btn-login" id="loginBtn">
+                <i class="bi bi-box-arrow-in-right"></i> Go to Dashboard
             </a>
 
         </div>
@@ -279,7 +279,7 @@
       barEl.style.width = (left / total * 100) + '%';
       if (left <= 0) {
         clearInterval(timer);
-        window.location.href = "{% url 'login' %}";
+        window.location.href = "{% url 'company:company_dashboard' %}";
       }
     }, 1000);
   </script>

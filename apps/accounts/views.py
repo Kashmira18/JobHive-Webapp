@@ -94,30 +94,25 @@ def login_view(request):
             target_username = username_or_email
 
         user = authenticate(request, username=target_username, password=password)
-            # ── COMPANY ──
+
         if user is not None:
+
+            # ── COMPANY ──
             if user.role == "COMPANY":
 
-                # APPROVED company → dashboard
                 if user.is_approved:
-                    login(request, user)
-                    return redirect("company_dashboard")
-
-                has_doc_issues = getattr(user, "has_document_issues", False)
-
-                if has_doc_issues:
-                    # Documents issue page
+                    # Approved → pehle congrats page, login wahan hoga
                     request.session["pending_user_id"] = user.pk
-                    return redirect("company_documents_review")
+                    return redirect("company_approved")  # ← CHANGE
                 else:
-                    # Still pending
+                    # Not approved → pending page
                     request.session["pending_user_id"] = user.pk
                     return redirect("company_pending")
 
             # ── CANDIDATE ──
             else:
                 login(request, user)
-                return redirect("candidate_dashboard")
+                return redirect("candidate:candidate_dashboard")
 
         else:
             messages.error(
@@ -187,42 +182,51 @@ def company_documents_review(request):
     return render(request, "accounts/company_documents_review.html", context)
 
 
-#  COMPANY — APPROVED PAGE
+# __________________________________________
 # def company_approved(request):
-#     user_id = request.session.get("pending_user_id")
-#     if user_id:
-#         try:
-#             user = CustomUser.objects.get(pk=user_id)
-#             if user.is_approved:
-#                 # Session clear
-#                 del request.session["pending_user_id"]
-#                 return render(request, "accounts/company_approved.html", {"user": user})
-#         except CustomUser.DoesNotExist:
-#             pass
 
-#     return redirect("login")
+#     # Session --> user
+#     user_id = request.session.get('pending_user_id')
+
+#     if not user_id:
+#         messages.error(request, "Session expired. Please login again.")
+#         return redirect("login")
+
+#     try:
+#         user = CustomUser.objects.get(pk=user_id)
+#     except CustomUser.DoesNotExist:
+#         messages.error(request, "User not found. Please login again.")
+#         return redirect("login")
+
+#     # Agar approved nahi hai then
+#     if not user.is_approved:
+#         return redirect("company_pending")
+
+#     # Session clear karo
+#     del request.session['pending_user_id']
+
+#     return render(request, "accounts/company_approved.html", {"user": user})
+# __________________________________________
+
 
 def company_approved(request):
-
-    # Session --> user 
-    user_id = request.session.get('pending_user_id')
-
+    user_id = request.session.get("pending_user_id")
     if not user_id:
-        messages.error(request, "Session expired. Please login again.")
         return redirect("login")
-
     try:
         user = CustomUser.objects.get(pk=user_id)
     except CustomUser.DoesNotExist:
-        messages.error(request, "User not found. Please login again.")
         return redirect("login")
-
-    # Agar approved nahi hai then
     if not user.is_approved:
         return redirect("company_pending")
 
     # Session clear karo
-    del request.session['pending_user_id']
+    del request.session["pending_user_id"]
+
+    # Ab login karo
+    # login(request, user)
+    login(request, user, backend='apps.accounts.backends.EmailOrUsernameBackend')
+
 
     return render(request, "accounts/company_approved.html", {"user": user})
 
@@ -294,6 +298,7 @@ def custom_password_reset_done(request):
 def custom_password_reset_invalid(request):
     return render(request, "accounts/password_reset_invalid.html")
 
+
 # def company_registration(request):
 #     return render(request, "accounts/company_registration.html")
 def company_registration(request):
@@ -322,34 +327,34 @@ def company_registration(request):
     # POST — form process karo
     # ── User fields update ──
     user.first_name = request.POST.get("first_name", "").strip()
-    user.last_name  = request.POST.get("last_name",  "").strip()
-    user.phone      = request.POST.get("owner_phone", "").strip()
+    user.last_name = request.POST.get("last_name", "").strip()
+    user.phone = request.POST.get("owner_phone", "").strip()
 
     # ── CompanyProfile get or create ──
     profile, _ = CompanyProfile.objects.get_or_create(user=user)
 
-    profile.designation     = request.POST.get("designation",     "").strip()
-    profile.trade_name      = request.POST.get("trade_name",      "").strip()
-    profile.legal_name      = request.POST.get("legal_name",      "").strip()
-    profile.ntn_number      = request.POST.get("ntn_number",      "").strip()
-    profile.company_email   = request.POST.get("company_email",   "").strip()
-    profile.company_type    = request.POST.get("company_type",    "").strip()
-    profile.industry        = request.POST.get("industry",        "").strip()
+    profile.designation = request.POST.get("designation", "").strip()
+    profile.trade_name = request.POST.get("trade_name", "").strip()
+    profile.legal_name = request.POST.get("legal_name", "").strip()
+    profile.ntn_number = request.POST.get("ntn_number", "").strip()
+    profile.company_email = request.POST.get("company_email", "").strip()
+    profile.company_type = request.POST.get("company_type", "").strip()
+    profile.industry = request.POST.get("industry", "").strip()
     profile.total_employees = request.POST.get("total_employees", "").strip()
-    profile.landline        = request.POST.get("landline",        "").strip()
-    profile.company_phone   = request.POST.get("company_phone",   "").strip()
-    profile.website         = request.POST.get("website",         "").strip()
-    profile.country         = request.POST.get("country",         "").strip()
-    profile.province        = request.POST.get("province",        "").strip()
-    profile.city            = request.POST.get("city",            "").strip()
-    profile.postal_code     = request.POST.get("postal_code",     "").strip()
-    profile.legal_address   = request.POST.get("legal_address",   "").strip()
-    profile.overview        = request.POST.get("overview",        "").strip()
-    profile.vision          = request.POST.get("vision",          "").strip()
-    profile.facebook        = request.POST.get("facebook",        "").strip()
-    profile.twitter         = request.POST.get("twitter",         "").strip()
-    profile.linkedin        = request.POST.get("linkedin",        "").strip()
-    profile.pinterest       = request.POST.get("pinterest",       "").strip()
+    profile.landline = request.POST.get("landline", "").strip()
+    profile.company_phone = request.POST.get("company_phone", "").strip()
+    profile.website = request.POST.get("website", "").strip()
+    profile.country = request.POST.get("country", "").strip()
+    profile.province = request.POST.get("province", "").strip()
+    profile.city = request.POST.get("city", "").strip()
+    profile.postal_code = request.POST.get("postal_code", "").strip()
+    profile.legal_address = request.POST.get("legal_address", "").strip()
+    profile.overview = request.POST.get("overview", "").strip()
+    profile.vision = request.POST.get("vision", "").strip()
+    profile.facebook = request.POST.get("facebook", "").strip()
+    profile.twitter = request.POST.get("twitter", "").strip()
+    profile.linkedin = request.POST.get("linkedin", "").strip()
+    profile.pinterest = request.POST.get("pinterest", "").strip()
 
     # est_date — empty string se error aata hai
     est_date = request.POST.get("est_date", "").strip()
@@ -385,5 +390,7 @@ def company_registration(request):
     user.save()
     profile.save()
 
-    messages.success(request, "Company profile submitted! Please wait for admin review.")
+    messages.success(
+        request, "Company profile submitted! Please wait for admin review."
+    )
     return redirect("company_pending")

@@ -1,0 +1,184 @@
+{% extends 'custom_admin/admin_layout.html' %} {% block content %}
+<div class="container-fluid mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1 text-dark">Company Details</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0" style="font-size: 0.9rem;">
+                    <li class="breadcrumb-item"><a
+                            href="{% url 'custom_admin:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a
+                            href="{% url 'custom_admin:company_details' company_user.id %}">Companies</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{
+                        company_user.username }}</li>
+                </ol>
+            </nav>
+        </div>
+        <div>
+            <a href="{% url 'custom_admin:dashboard' %}"
+                class="btn btn-sm btn-outline-secondary px-3">
+                <i class="bi bi-arrow-left me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 text-center rounded-3">
+                <div
+                    class="mx-auto mb-3 d-flex align-items-center justify-content-center bg-light text-primary rounded-circle"
+                    style="width: 100px; height: 100px; font-size: 2.5rem;">
+                    {% if profile.logo %}
+                    <img src="{{ profile.logo.url }}" alt="Logo"
+                        class="w-100 h-100 rounded-circle"
+                        style="object-fit: cover;">
+                    {% else %}
+                    <i class="bi bi-building"></i>
+                    {% endif %}
+                </div>
+
+                <h5 class="fw-bold text-dark mb-1">
+                    {% if profile.company_name %}{{ profile.company_name }}{%
+                    else %}{{ company_user.username }}{% endif %}
+                </h5>
+                <p class="text-muted small mb-3"><i
+                        class="bi bi-envelope me-1"></i>{{ company_user.email
+                    }}</p>
+
+                <hr class="text-muted opacity-25">
+
+                <div class="text-start mt-3">
+                    <p class="small text-muted mb-2"><strong>Account
+                            Status:</strong></p>
+                    <div class="d-flex gap-2">
+                        {% if company_user.is_active %}
+                        <span
+                            class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1.5 rounded">Active
+                            Account</span>
+                        {% else %}
+                        <span
+                            class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1.5 rounded">Suspended</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 rounded-3">
+                <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom"><i
+                        class="bi bi-info-circle me-2 text-primary"></i>Profile
+                    Details</h5>
+
+                {% if profile %}
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">Company
+                            Registered Name</label>
+                        <p class="fs-6 text-dark fw-medium mb-0">{% if
+                            profile.company_name %}{{ profile.company_name }}{%
+                            else %}-{% endif %}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">Contact
+                            Number</label>
+                        <p class="fs-6 text-dark fw-medium mb-0">{% if
+                            profile.contact_number %}{{ profile.contact_number
+                            }}{% else %}-{% endif %}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">Website
+                            URL</label>
+                        <p class="fs-6 mb-0">
+                            {% if profile.website %}
+                            <a href="{{ profile.website }}" target="_blank"
+                                class="text-primary text-decoration-none"><i
+                                    class="bi bi-link-45deg me-1"></i>Visit
+                                Website</a>
+                            {% else %}
+                            <span class="text-dark fw-medium">-</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">Location
+                            / Address</label>
+                        <p class="fs-6 text-dark fw-medium mb-0">{% if
+                            profile.location %}{{ profile.location }}{% else
+                            %}-{% endif %}</p>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">Business
+                            Industry Type</label>
+                        <p class="fs-6 text-dark fw-medium mb-0">
+                            {% if profile.company_type %}{{
+                            profile.company_type.name }}{% else %}<span
+                                class="text-muted small italic">Not
+                                Specified</span>{% endif %}
+                        </p>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label
+                            class="form-label text-muted small fw-bold text-uppercase mb-1">About
+                            / Description</label>
+                        <div class="p-3 bg-light rounded-3 text-dark mb-0"
+                            style="white-space: pre-line; line-height: 1.6; font-size: 0.95rem;">
+                            {% if profile.description %}{{ profile.description
+                            }}{% else %}No description provided by the company
+                            yet.{% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div
+                    class="alert alert-warning border-0 shadow-sm d-flex align-items-center rounded-3 p-3 mb-0"
+                    role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                    <div>
+                        <h6 class="alert-heading fw-bold mb-1">Profile Not
+                            Found</h6>
+                        <p class="small mb-0">Is company user ne abhi tak apna
+                            onboarding form ya setup profile complete nahi kiya
+                            hai.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Aapki existing dashboard UI ke design values ke mutabik standard styling */
+    .card {
+        background-color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-label {
+        letter-spacing: 0.5px;
+        font-size: 0.75rem !important;
+    }
+    .badge {
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    /* Subtle custom borders matching modern Bootstrap 5 utilities */
+    .bg-success-subtle { background-color: rgba(25, 135, 84, 0.1) !important; }
+    .text-success { color: #198754 !important; }
+    .border-success-subtle { border-color: rgba(25, 135, 84, 0.2) !important; }
+    .bg-danger-subtle { background-color: rgba(220, 53, 69, 0.1) !important; }
+    .text-danger { color: #dc3545 !important; }
+    .border-danger-subtle { border-color: rgba(220, 53, 69, 0.2) !important; }
+</style>
+{% endblock %}

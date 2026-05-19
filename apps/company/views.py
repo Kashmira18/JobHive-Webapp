@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 
 # @candidate_login_required
-def dashboard(request):
+def company_dashboard(request):
     return render(request, 'company/company_dashboard.html')
 
 def base(request):

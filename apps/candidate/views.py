@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 
 # @candidate_login_required
-def dashboard(request):
-    return render(request, 'candidate/dashboard.html')
+def candidate_dashboard(request):
+    return render(request, 'candidate/candidate_dashboard.html')
 
 
 # @candidate_login_required
