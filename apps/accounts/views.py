@@ -394,3 +394,9 @@ def company_registration(request):
         request, "Company profile submitted! Please wait for admin review."
     )
     return redirect("company_pending")
+
+
+
+def logout_view(request):
+    logout(request) 
+    return redirect('accounts:login')

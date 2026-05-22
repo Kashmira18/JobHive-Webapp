@@ -1,0 +1,1442 @@
+{% extends 'company/company_base.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JobHive – Account Settings</title>
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet" />
+
+        <style>
+        body {
+            background: #F0F4F8;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1A1D2E;
+        }
+
+        .text-brand { color: #31C2EF; }
+        .bg-brand { background: #31C2EF; }
+        a.text-brand { text-decoration: none; }
+
+        /* ── CARDS ── */
+        .settings-card {
+            background: #fff;
+            border: 1px solid #E4E6F0;
+            border-radius: 16px;
+            padding: 28px 30px;
+            margin-bottom: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+            transition: box-shadow .2s;
+        }
+        .settings-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1A1D2E;
+        }
+        .card-title i { color: #31C2EF; }
+
+        /* ── SECTION HEADER BANNER ── */
+        .section-banner {
+            background: linear-gradient(135deg, #1A1D2E 0%, #2a3050 60%, #1e3a5f 100%);
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-banner::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(49,194,239,.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .section-banner h5 { font-weight: 800; font-size: 1.1rem; margin: 0; }
+        .section-banner p { font-size: .83rem; opacity: .75; margin: 4px 0 0; }
+
+        /* ── INPUTS ── */
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #E4E6F0;
+            font-size: .875rem;
+            padding: 10px 14px;
+            transition: all .2s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #31C2EF !important;
+            box-shadow: 0 0 0 3px rgba(49,194,239,.15) !important;
+        }
+        .form-control[readonly] {
+            background: #F8FAFC;
+            color: #64748b;
+            cursor: default;
+        }
+        .input-group-text {
+            background: #F8FAFC;
+            border: 1.5px solid #E4E6F0;
+            border-radius: 10px 0 0 10px;
+            color: #64748b;
+        }
+        .input-group .form-control { border-radius: 0 10px 10px 0; }
+
+        /* ── AVATAR ── */
+        .avatar-wrap { position: relative; display: inline-block; }
+        .avatar-img {
+            width: 96px; height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #31C2EF;
+            box-shadow: 0 4px 12px rgba(49,194,239,.25);
+        }
+        .avatar-btn {
+            position: absolute; bottom: 2px; right: 2px;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: #31C2EF;
+            border: 2px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #fff; font-size: .7rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,.15);
+            transition: background .2s;
+        }
+        .avatar-btn:hover { background: #1da8d3; }
+
+        /* ── TOGGLE ── */
+        .form-check-input:checked { background-color: #31C2EF; border-color: #31C2EF; }
+
+        /* ── BADGES ── */
+        .verify-badge {
+            font-size: .72rem; padding: 3px 10px;
+            border-radius: 100px; font-weight: 700;
+        }
+        .verified { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+        .unverified { background: #FFF7ED; color: #EA580C; border: 1px solid #FED7AA; }
+        .pending { background: #E3F3FA; color: #31C2EF; border: 1px solid #BAE6FD; }
+
+        /* ── DANGER ── */
+        .danger-card {
+            background: #FFF5F5; border: 1px solid #FED7D7;
+            border-left: 4px solid #DC2626; border-radius: 16px;
+            padding: 24px 28px; margin-bottom: 22px;
+        }
+
+        /* ── TAB NAV ── */
+        .settings-tabs-wrap {
+            background: #fff;
+            border-radius: 14px;
+            padding: 6px;
+            display: flex; flex-wrap: wrap; gap: 4px;
+            margin-bottom: 24px;
+            border: 1px solid #E4E6F0;
+            box-shadow: 0 2px 8px rgba(0,0,0,.04);
+        }
+        .settings-tab {
+            padding: 9px 18px; border-radius: 10px;
+            cursor: pointer; font-weight: 600;
+            font-size: .84rem; color: #6B7094;
+            border: none; background: transparent;
+            transition: all .18s; display: flex; align-items: center; gap: 6px;
+        }
+        .settings-tab.active { background: #E3F3FA; color: #31C2EF; }
+        .settings-tab:hover:not(.active) { background: #F5F6FA; }
+
+        /* ── TAB PANELS ── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── BUTTONS ── */
+        .btn-brand {
+            background: linear-gradient(135deg, #31C2EF, #1da8d3);
+            color: #fff; border: none; border-radius: 10px;
+            padding: 10px 24px; font-weight: 700; font-size: .875rem;
+            transition: all .2s; box-shadow: 0 4px 12px rgba(49,194,239,.3);
+        }
+        .btn-brand:hover { background: linear-gradient(135deg, #28afd9, #1795bb); color: #fff; transform: translateY(-1px); }
+
+        .btn-outline-brand {
+            background: #fff; color: #31C2EF;
+            border: 2px solid #31C2EF; border-radius: 10px;
+            padding: 8px 20px; font-weight: 700; font-size: .875rem;
+            transition: all .18s;
+        }
+        .btn-outline-brand:hover { background: #E3F3FA; }
+
+        /* ── TOAST ── */
+        #toast {
+            position: fixed; bottom: 28px; right: 28px;
+            background: #1A1D2E; color: #fff;
+            padding: 14px 22px; border-radius: 12px;
+            font-size: .875rem; font-weight: 600;
+            display: none; z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,.2);
+        }
+        #toast.show { display: flex; align-items: center; gap: 8px; }
+
+        /* ── STRENGTH BAR ── */
+        .strength-bar { height: 5px; border-radius: 10px; transition: background .3s; }
+
+        /* ── FIELD LABEL ── */
+        .form-label {
+            font-weight: 600; font-size: .82rem;
+            color: #374151; margin-bottom: 6px;
+        }
+
+        /* ── READ-ONLY SECTION (Company Profile view) ── */
+        .read-field {
+            background: #F8FAFC;
+            border: 1.5px solid #E4E6F0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: .875rem;
+            color: #374151;
+            min-height: 42px;
+        }
+        .read-field.textarea-field { min-height: 90px; }
+
+        /* ── DIVIDER LABEL ── */
+        .divider-label {
+            font-size: .75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .08em;
+            color: #9CA3AF; margin: 8px 0 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .divider-label::after {
+            content: ''; flex: 1; height: 1px; background: #E4E6F0;
+        }
+
+        /* ── PROFILE COMPLETE BANNER ── */
+        .profile-complete-bar {
+            background: #fff; border-radius: 12px;
+            padding: 16px 20px; margin-bottom: 20px;
+            border: 1px solid #E4E6F0;
+            display: flex; align-items: center; gap: 16px;
+            flex-wrap: wrap;
+        }
+        .profile-complete-bar .progress {
+            height: 8px; flex: 1; min-width: 120px; border-radius: 10px;
+        }
+        .progress-bar { background: #31C2EF !important; border-radius: 10px; }
+
+        /* ── WORKING AREA CARD ── */
+        .working-area-item {
+            background: #F8FAFC; border: 1.5px solid #E4E6F0;
+            border-radius: 12px; padding: 16px 18px;
+            margin-bottom: 12px; position: relative;
+        }
+        .working-area-item .remove-btn {
+            position: absolute; top: 12px; right: 12px;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: #FEE2E2; color: #DC2626;
+            border: none; display: flex; align-items: center; justify-content: center;
+            font-size: .7rem; cursor: pointer; transition: background .2s;
+        }
+        .working-area-item .remove-btn:hover { background: #FECACA; }
+
+        /* ── SOCIAL ICON PILL ── */
+        .social-icon-pill {
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .95rem; flex-shrink: 0;
+        }
+
+        @media(max-width: 576px) {
+            .settings-card { padding: 20px 16px; }
+            .section-banner { padding: 20px; }
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <!-- ── SETTINGS TABS ── -->
+        <div class="settings-tabs-wrap">
+            <button class="settings-tab active"
+                onclick="showTab('myprofile', this)">
+                <i class="fas fa-user"></i> My Profile
+            </button>
+            <!-- <button class="settings-tab" onclick="showTab('profile', this)">
+            <i class="fas fa-building"></i> Edit Profile
+        </button> -->
+            <button class="settings-tab" onclick="showTab('security', this)">
+                <i class="fas fa-lock"></i> Security
+            </button>
+            <button class="settings-tab"
+                onclick="showTab('notifications', this)">
+                <i class="fas fa-bell"></i> Notifications
+            </button>
+            <button class="settings-tab" onclick="showTab('billing', this)">
+                <i class="fas fa-credit-card"></i> Billing
+            </button>
+            <button class="settings-tab" onclick="showTab('danger', this)">
+                <i class="fas fa-triangle-exclamation"></i> Danger Zone
+            </button>
+        </div>
+
+        <!-- ════════════════════════════════
+         TAB 0 — MY PROFILE (User fills this)
+    ════════════════════════════════ -->
+        <div class="tab-panel active" id="tab-myprofile">
+
+            <div class="section-banner">
+                <h5><i class="fas fa-user-circle me-2"></i>My Profile</h5>
+                <p>Fill in your personal and company details. This information
+                    will be used across the platform.</p>
+            </div>
+
+            <!-- ── OWNER INFORMATION ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-user"></i> Owner
+                    Information</div>
+                <p class="text-muted small mb-4">Your personal details as the
+                    account owner.</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control"
+                            id="ownerFirstName"
+                            placeholder="Enter first name" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control"
+                            id="ownerLastName" placeholder="Enter last name" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Username <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-at"></i></span>
+                            <input type="text" class="form-control"
+                                id="ownerUsername"
+                                placeholder="Enter username" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Phone Number <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">+92</span>
+                            <input type="tel" class="form-control"
+                                id="ownerPhone" placeholder="300 1234567" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Email Address <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control"
+                                id="ownerEmail"
+                                placeholder="owner@example.com" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COMPANY INFORMATION ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-building"></i> Company
+                    Information</div>
+                <p class="text-muted small mb-4">Details about your registered
+                    company.</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Company Trade Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="tradeName"
+                            placeholder="Enter trade name" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Company Legal Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="legalName"
+                            placeholder="Enter legal name" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">NTN / CUIN Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-hashtag"></i></span>
+                            <input type="text" class="form-control"
+                                id="ntnNumber" placeholder="Enter NTN/CUIN" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Company Email <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control"
+                                id="companyEmail"
+                                placeholder="info@company.com" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Total Employees</label>
+                        <input type="number" class="form-control"
+                            id="totalEmployees" placeholder="e.g. 50" min="1" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Company Landline</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control" id="landline"
+                                placeholder="+92 21 12345678" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Company Phone</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+92</span>
+                            <input type="tel" class="form-control"
+                                id="companyPhone" placeholder="300 1234567" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Website</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i
+                                    class="fas fa-globe"></i></span>
+                            <input type="url" class="form-control"
+                                id="websiteUrl"
+                                placeholder="https://www.company.com" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Company Type <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select" id="companyType">
+                            <option value disabled selected>Select company
+                                type</option>
+                            <option>Private Limited</option>
+                            <option>Public Limited</option>
+                            <option>Sole Proprietorship</option>
+                            <option>Partnership</option>
+                            <option>NGO / Non-Profit</option>
+                            <option>Government</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Industry <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select" id="industryType">
+                            <option value disabled selected>Select
+                                industry</option>
+                            <option>Information Technology</option>
+                            <option>Finance & Banking</option>
+                            <option>Healthcare</option>
+                            <option>Education</option>
+                            <option>Manufacturing</option>
+                            <option>Retail & E-Commerce</option>
+                            <option>Media & Entertainment</option>
+                            <option>Construction</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Establishment Date</label>
+                        <input type="date" class="form-control" id="estDate" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── LOCATION INFORMATION ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-location-dot"></i>
+                    Location Information</div>
+                <p class="text-muted small mb-4">Your company's registered
+                    location.</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Country <span
+                                class="text-danger">*</span></label>
+                        <select class="form-select" id="locCountry">
+                            <option value disabled selected>Select
+                                country</option>
+                            <option value="PK">Pakistan</option>
+                            <option value="US">United States</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="AE">UAE</option>
+                            <option value="SA">Saudi Arabia</option>
+                            <option value="CA">Canada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">State / Province <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="locProvince"
+                            placeholder="Enter state or province" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City <span
+                                class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="locCity"
+                            placeholder="Enter city" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Postal Code</label>
+                        <input type="text" class="form-control" id="locPostal"
+                            placeholder="Enter postal code" maxlength="12" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Legal Address <span
+                                class="text-danger">*</span></label>
+                        <textarea class="form-control" id="legalAddress"
+                            rows="3"
+                            placeholder="Enter complete address including street, area, and landmarks"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COMPANY OVERVIEW ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-align-left"></i>
+                    Company Overview</div>
+                <p class="text-muted small mb-4">Tell job seekers about your
+                    company.</p>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Company Overview</label>
+                        <textarea class="form-control" id="companyOverview"
+                            rows="4"
+                            placeholder="Describe your company, its services, and what makes it unique"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Vision Statement</label>
+                        <textarea class="form-control" id="visionStatement"
+                            rows="3"
+                            placeholder="Share your company's vision and future goals"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COMPANY LOGO ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-image"></i> Company
+                    Logo</div>
+                <p class="text-muted small mb-4">Upload your company logo (PNG,
+                    JPG or JPEG · Max 5MB)</p>
+
+                <div id="logoDropZone"
+                    onclick="document.getElementById('logoUpload').click()"
+                    style="border: 2px dashed #31C2EF; border-radius: 14px; padding: 40px 20px; text-align: center; cursor: pointer; background: #F8FAFC; transition: background .2s;">
+                    <div id="logoPreviewWrap">
+                        <i
+                            class="fas fa-cloud-arrow-up fa-2x text-brand mb-3 d-block"></i>
+                        <p class="fw-600 mb-1" style="font-weight:600;">Choose
+                            an image file or drag it here</p>
+                        <p class="text-muted small mb-0">PNG, JPG or JPEG (Max
+                            5MB)</p>
+                    </div>
+                    <img id="logoPreviewImg" src alt
+                        style="max-height:100px; max-width:200px; border-radius:10px; display:none; margin:0 auto;" />
+                    <input type="file" id="logoUpload" accept="image/*"
+                        class="d-none" onchange="previewMyLogo(this)" />
+                </div>
+            </div>
+
+            <!-- ── SOCIAL MEDIA ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-share-nodes"></i>
+                    Social Media Links</div>
+                <p class="text-muted small mb-4">Optional — helps build trust
+                    with job seekers.</p>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Facebook</label>
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                style="background:#1877F2; border-color:#1877F2; color:#fff; border-radius:10px 0 0 10px;"><i
+                                    class="fab fa-facebook-f"></i></span>
+                            <input type="url" class="form-control" id="fbLink"
+                                placeholder="https://facebook.com/yourcompany" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Twitter / X</label>
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                style="background:#000; border-color:#000; color:#fff; border-radius:10px 0 0 10px;"><i
+                                    class="fab fa-x-twitter"></i></span>
+                            <input type="url" class="form-control" id="twLink"
+                                placeholder="https://twitter.com/yourcompany" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">LinkedIn</label>
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                style="background:#0A66C2; border-color:#0A66C2; color:#fff; border-radius:10px 0 0 10px;"><i
+                                    class="fab fa-linkedin-in"></i></span>
+                            <input type="url" class="form-control" id="liLink"
+                                placeholder="https://linkedin.com/company/yourcompany" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Pinterest</label>
+                        <div class="input-group">
+                            <span class="input-group-text"
+                                style="background:#E60023; border-color:#E60023; color:#fff; border-radius:10px 0 0 10px;"><i
+                                    class="fab fa-pinterest-p"></i></span>
+                            <input type="url" class="form-control" id="piLink"
+                                placeholder="https://pinterest.com/yourcompany" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── WORKING AREAS ── -->
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-briefcase"></i> Working
+                    Areas</div>
+                <p class="text-muted small mb-4">Add the fields your company
+                    operates in.</p>
+
+                <div id="workingAreasList">
+                    <div class="working-area-item" id="wa-1">
+                        <!-- <button class="remove-btn" onclick="removeWorkingArea('wa-1')"><i class="fas fa-times"></i></button> -->
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label">Working Field</label>
+                                <input type="text"
+                                    class="form-control form-control-sm"
+                                    placeholder="e.g., Software Development, Digital Marketing" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Short
+                                    Description</label>
+                                <textarea class="form-control form-control-sm"
+                                    rows="2"
+                                    placeholder="Briefly describe your expertise in this field"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <button class="btn btn-outline-brand w-100 mt-2" onclick="addWorkingArea()">
+                <i class="fas fa-plus me-1"></i> Add Working Area
+            </button> -->
+            </div>
+
+            <!-- ── SAVE / CANCEL ── -->
+            <div class="d-flex justify-content-end gap-3 mb-4">
+                <button class="btn btn-outline-secondary px-4"
+                    onclick="cancelMyProfile()">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </button>
+                <button class="btn btn-brand px-4" onclick="saveMyProfile()">
+                    <i class="fas fa-floppy-disk me-1"></i> Save Profile
+                </button>
+            </div>
+
+        </div><!-- /tab-myprofile -->
+
+        <!-- ════════════════════════════════
+         TAB 2 — SECURITY
+    ════════════════════════════════ -->
+        <div class="tab-panel" id="tab-security">
+
+            <div class="section-banner">
+                <h5><i class="fas fa-shield-halved me-2"></i>Security
+                    Settings</h5>
+                <p>Manage your password, two-factor auth, and active
+                    sessions.</p>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-key"></i> Change
+                    Password</div>
+                <p class="text-muted small mb-4">Use a strong password with at
+                    least 8 characters.</p>
+
+                <div class="row g-3" style="max-width:520px">
+                    <div class="col-12">
+                        <label class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control"
+                                id="currentPass"
+                                placeholder="Enter current password" />
+                            <button class="btn btn-outline-secondary"
+                                onclick="togglePass('currentPass', this)"
+                                type="button">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control"
+                                id="newPass" placeholder="Enter new password"
+                                oninput="checkStrength(this.value)" />
+                            <button class="btn btn-outline-secondary"
+                                onclick="togglePass('newPass', this)"
+                                type="button">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <div class="d-flex gap-1">
+                                <div class="flex-fill strength-bar" id="s1"
+                                    style="height:5px; background:#E4E6F0; border-radius:10px;"></div>
+                                <div class="flex-fill strength-bar" id="s2"
+                                    style="height:5px; background:#E4E6F0; border-radius:10px;"></div>
+                                <div class="flex-fill strength-bar" id="s3"
+                                    style="height:5px; background:#E4E6F0; border-radius:10px;"></div>
+                                <div class="flex-fill strength-bar" id="s4"
+                                    style="height:5px; background:#E4E6F0; border-radius:10px;"></div>
+                            </div>
+                            <small class="text-muted" id="strengthLabel">Enter a
+                                password</small>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Confirm New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control"
+                                id="confirmPass"
+                                placeholder="Confirm new password" />
+                            <button class="btn btn-outline-secondary"
+                                onclick="togglePass('confirmPass', this)"
+                                type="button">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button class="btn btn-brand" onclick="changePassword()">
+                        <i class="fas fa-key me-1"></i> Update Password
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div
+                    class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div>
+                        <div class="card-title"><i
+                                class="fas fa-shield-halved"></i> Two-Factor
+                            Authentication</div>
+                        <p class="text-muted small mb-0">Add an extra layer of
+                            security to your account.</p>
+                    </div>
+                    <div class="form-check form-switch mt-1">
+                        <input class="form-check-input" type="checkbox"
+                            id="twoFactor"
+                            style="width:44px; height:22px; cursor:pointer;"
+                            onchange="toggle2FA(this)" />
+                        <label class="form-check-label fw-semibold ms-2"
+                            for="twoFactor">Enable 2FA</label>
+                    </div>
+                </div>
+                <div class="mt-4 d-none p-3 rounded" id="twoFASetup"
+                    style="background:#F9FAFB; border:1px solid #E4E6F0;">
+                    <p class="fw-semibold small mb-2"><i
+                            class="fas fa-mobile-alt text-brand me-1"></i>Enter
+                        your phone number to receive OTP codes</p>
+                    <div class="d-flex gap-2 flex-wrap" style="max-width:420px">
+                        <div class="input-group" style="max-width:260px">
+                            <span class="input-group-text">+92</span>
+                            <input type="tel" class="form-control"
+                                placeholder="3XX-XXXXXXX" />
+                        </div>
+                        <button class="btn btn-brand">Send Code</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-desktop"></i> Active
+                    Sessions</div>
+                <p class="text-muted small mb-4">Devices currently logged into
+                    your account.</p>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div
+                            class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:42px;height:42px;background:#F0FDF4;">
+                            <i class="fas fa-laptop text-success"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-semibold small">Chrome on Windows
+                                <span class="badge bg-success ms-1"
+                                    style="font-size:.65rem;">Current</span></p>
+                            <p class="mb-0 text-muted"
+                                style="font-size:.78rem;">Lahore, Pakistan ·
+                                Active now</p>
+                        </div>
+                    </div>
+                    <span class="text-muted small">–</span>
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div
+                            class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:42px;height:42px;background:#E3F3FA;">
+                            <i class="fas fa-mobile-alt text-brand"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-semibold small">Safari on
+                                iPhone</p>
+                            <p class="mb-0 text-muted"
+                                style="font-size:.78rem;">Karachi, Pakistan · 2
+                                hours ago</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger"
+                        onclick="revokeSession(this)">Revoke</button>
+                </div>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-2">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div
+                            class="rounded-circle d-flex align-items-center justify-content-center"
+                            style="width:42px;height:42px;background:#F5F6FA;">
+                            <i class="fas fa-tablet-alt text-secondary"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-semibold small">Firefox on
+                                Android</p>
+                            <p class="mb-0 text-muted"
+                                style="font-size:.78rem;">Islamabad, Pakistan ·
+                                1 day ago</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger"
+                        onclick="revokeSession(this)">Revoke</button>
+                </div>
+
+                <div class="mt-3 pt-2">
+                    <button class="btn btn-outline-danger btn-sm"
+                        onclick="revokeAll()">
+                        <i class="fas fa-ban me-1"></i>Revoke All Other Sessions
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /tab-security -->
+
+        <!-- ════════════════════════════════
+         TAB 3 — NOTIFICATIONS
+    ════════════════════════════════ -->
+        <div class="tab-panel" id="tab-notifications">
+
+            <div class="section-banner">
+                <h5><i class="fas fa-bell me-2"></i>Notification
+                    Preferences</h5>
+                <p>Control how and when you receive alerts and emails.</p>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-envelope"></i> Email
+                    Notifications</div>
+                <p class="text-muted small mb-4">Choose which emails you want to
+                    receive.</p>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">New Job
+                            Application</p>
+                        <p class="mb-0 text-muted" style="font-size:.78rem;">Get
+                            notified when someone applies to your job post</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Application Status
+                            Update</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">When a candidate accepts
+                            or declines an offer</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">New Message from
+                            Candidate</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">Receive email when a job
+                            seeker messages you</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Job Post Expiry
+                            Reminder</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">Alert 3 days before your
+                            job listing expires</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox"
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 border-bottom flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Admin Verification
+                            Updates</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">When admin approves or
+                            rejects your documents</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-3 flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Monthly Analytics
+                            Report</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">Summary of your job views,
+                            clicks, and applicants</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox"
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+
+                <div class="text-end mt-3">
+                    <button class="btn btn-brand"
+                        onclick="saveSection('Notification preferences')">
+                        <i class="fas fa-save me-1"></i>Save Preferences
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-mobile-alt"></i> Push
+                    Notifications</div>
+                <p class="text-muted small mb-4">Browser and mobile push
+                    notifications.</p>
+
+                <div
+                    class="d-flex justify-content-between align-items-center py-2 flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Browser
+                            Notifications</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">Show notifications in your
+                            browser</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-between align-items-center py-2 flex-wrap gap-2">
+                    <div>
+                        <p class="mb-0 fw-semibold small">Mobile Push
+                            Notifications</p>
+                        <p class="mb-0 text-muted"
+                            style="font-size:.78rem;">Send alerts to the JobHive
+                            mobile app</p>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox"
+                            style="width:40px;height:20px;cursor:pointer;" />
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /tab-notifications -->
+
+        <!-- ════════════════════════════════
+         TAB 4 — BILLING
+    ════════════════════════════════ -->
+        <div class="tab-panel" id="tab-billing">
+
+            <div class="section-banner">
+                <h5><i class="fas fa-credit-card me-2"></i>Billing & Plans</h5>
+                <p>Manage your subscription and payment methods.</p>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-star"></i> Current
+                    Plan</div>
+                <div
+                    class="d-flex align-items-center justify-content-between flex-wrap gap-3 mt-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="px-4 py-3 rounded-3 text-center"
+                            style="background:#E3F3FA; border:2px solid #31C2EF; min-width:110px;">
+                            <p class="text-brand fw-bold fs-5 mb-0">FREE</p>
+                            <p class="text-muted small mb-0">Plan</p>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-1">Free Tier</p>
+                            <p class="text-muted small mb-1">3 active job posts
+                                · Basic analytics</p>
+                            <p class="text-muted small mb-0">Renews: Never (Free
+                                Forever)</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-brand"><i
+                            class="fas fa-arrow-up me-1"></i>Upgrade to
+                        Pro</button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-table-columns"></i>
+                    Plan Comparison</div>
+                <p class="text-muted small mb-4">See what each plan offers.</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle"
+                        style="font-size:.875rem;">
+                        <thead style="background:#F5F6FA;">
+                            <tr>
+                                <th class="text-start">Feature</th>
+                                <th>Free</th>
+                                <th
+                                    style="background:#E3F3FA; color:#31C2EF;">Pro</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-start fw-semibold">Active Job
+                                    Posts</td>
+                                <td>3</td>
+                                <td style="background:#FFFDF8;">Unlimited</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-semibold">Featured
+                                    Listings</td>
+                                <td><i
+                                        class="fas fa-times text-danger"></i></td>
+                                <td style="background:#FFFDF8;"><i
+                                        class="fas fa-check text-success"></i></td>
+                                <td><i
+                                        class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-semibold">Analytics
+                                    Dashboard</td>
+                                <td>Basic</td>
+                                <td style="background:#FFFDF8;">Advanced</td>
+                                <td>Full</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-semibold">Candidate
+                                    Messaging</td>
+                                <td><i
+                                        class="fas fa-check text-success"></i></td>
+                                <td style="background:#FFFDF8;"><i
+                                        class="fas fa-check text-success"></i></td>
+                                <td><i
+                                        class="fas fa-check text-success"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-semibold">Price /
+                                    Month</td>
+                                <td class="fw-bold">PKR 0</td>
+                                <td class="fw-bold text-brand"
+                                    style="background:#FFFDF8;">PKR 2,999</td>
+                                <td class="fw-bold">PKR 7,999</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <div class="card-title"><i class="fas fa-credit-card"></i>
+                    Payment Method</div>
+                <p class="text-muted small mb-4">No payment method added. Add
+                    one to upgrade your plan.</p>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-brand"><i
+                            class="fas fa-plus me-1"></i>Add Card</button>
+                    <button class="btn btn-outline-secondary"><i
+                            class="fas fa-mobile-alt me-1"></i>JazzCash /
+                        EasyPaisa</button>
+                </div>
+            </div>
+
+        </div><!-- /tab-billing -->
+
+        <!-- ════════════════════════════════
+         TAB 5 — DANGER ZONE
+    ════════════════════════════════ -->
+        <div class="tab-panel" id="tab-danger">
+
+            <div class="section-banner"
+                style="background: linear-gradient(135deg, #7f1d1d, #991b1b);">
+                <h5><i class="fas fa-triangle-exclamation me-2"></i>Danger
+                    Zone</h5>
+                <p>Irreversible actions — please read carefully before
+                    proceeding.</p>
+            </div>
+
+            <div class="danger-card">
+                <div
+                    class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div>
+                        <h6 class="fw-bold text-warning mb-1"><i
+                                class="fas fa-pause-circle me-2"></i>Deactivate
+                            Account</h6>
+                        <p class="text-muted small mb-0">Your account will be
+                            hidden temporarily. All job posts will be paused.
+                            You can reactivate anytime by logging back in.</p>
+                    </div>
+                    <button class="btn btn-warning btn-sm text-white"
+                        onclick="confirmDeactivate()">Deactivate</button>
+                </div>
+            </div>
+
+            <!-- <div class="settings-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                    <div class="card-title"><i class="fas fa-file-export"></i> Export Your Data</div>
+                    <p class="text-muted small mb-0">Download all your company data, job posts, and applicant records as a CSV/ZIP file.</p>
+                </div>
+                <button class="btn btn-outline-brand btn-sm" onclick="exportData()">
+                    <i class="fas fa-download me-1"></i>Export Data
+                </button>
+            </div>
+        </div> -->
+
+            <div class="danger-card">
+                <div
+                    class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div>
+                        <h6 class="fw-bold text-danger mb-1"><i
+                                class="fas fa-trash-alt me-2"></i>Delete
+                            Account</h6>
+                        <p class="text-muted small mb-2"><strong
+                                class="text-danger">This action is permanent and
+                                cannot be undone.</strong> All your job posts,
+                            applicant data, and company profile will be deleted
+                            forever.</p>
+                        <p class="text-muted small mb-0">To delete, type
+                            <strong>DELETE</strong> in the box below and click
+                            the button.</p>
+                        <div class="d-flex gap-2 mt-3 flex-wrap">
+                            <input type="text"
+                                class="form-control form-control-sm"
+                                id="deleteConfirm"
+                                placeholder="Type DELETE to confirm"
+                                style="max-width:220px; border-radius:8px;" />
+                            <button class="btn btn-danger btn-sm"
+                                onclick="deleteAccount()">
+                                <i class="fas fa-trash-alt me-1"></i>Delete My
+                                Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /tab-danger -->
+
+        <!-- TOAST -->
+        <div id="toast">
+            <i class="fas fa-circle-check text-success"></i>
+            <span id="toastMsg">Saved!</span>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+        var waCount = 1;
+
+        /* ── SHOW TAB ── */
+        function showTab(name, btn) {
+            document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.settings-tab').forEach(function(b) { b.classList.remove('active'); });
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+
+            // Sync data to company profile tab when switching to it
+            if (name === 'profile') { syncToCompanyProfile(); }
+        }
+
+        /* ── TOAST ── */
+        function showToast(msg, isError) {
+            var toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.style.background = isError ? '#DC2626' : '#1A1D2E';
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3200);
+        }
+
+        /* ── SAVE MY PROFILE → sync to Company Profile ── */
+        function saveMyProfile() {
+            var firstName = document.getElementById('ownerFirstName').value.trim();
+            if (!firstName) { showToast('Please enter your first name.', true); return; }
+            var compEmail = document.getElementById('companyEmail').value.trim();
+            if (!compEmail) { showToast('Please enter company email.', true); return; }
+
+            syncToCompanyProfile();
+            showToast('Profile saved successfully!');
+        }
+
+        /* ── SYNC: read My Profile fields → populate Company Profile read-only ── */
+        function syncToCompanyProfile() {
+            var fields = [
+                'ownerFirstName','ownerLastName','ownerUsername','ownerPhone','ownerEmail',
+                'tradeName','legalName','ntnNumber','companyEmail','totalEmployees',
+                'landline','companyPhone','websiteUrl','companyType','industryType','estDate',
+                'locCountry','locProvince','locCity','locPostal','legalAddress',
+                'companyOverview','visionStatement',
+                'fbLink','twLink','liLink','piLink'
+            ];
+
+            fields.forEach(function(id) {
+                var el = document.getElementById(id);
+                var cpEl = document.getElementById('cp-' + id);
+                if (el && cpEl) {
+                    var val = '';
+                    if (el.tagName === 'SELECT') {
+                        val = el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+                        if (el.options[el.selectedIndex] && el.options[el.selectedIndex].disabled) val = '';
+                    } else {
+                        val = el.value.trim();
+                    }
+                    cpEl.textContent = val || '—';
+                }
+            });
+
+            // Update company header display
+            var tradeName = document.getElementById('tradeName').value.trim();
+            var industry = document.getElementById('industryType');
+            var industryVal = industry.options[industry.selectedIndex] ? industry.options[industry.selectedIndex].text : '';
+            if (industry.options[industry.selectedIndex] && industry.options[industry.selectedIndex].disabled) industryVal = '';
+
+            document.getElementById('cpCompanyNameDisplay').textContent = tradeName || '—';
+            document.getElementById('cpIndustryDisplay').textContent = industryVal || '—';
+
+            // Logo
+            var previewImg = document.getElementById('logoPreviewImg');
+            if (previewImg && previewImg.src && previewImg.style.display !== 'none') {
+                document.getElementById('cpLogoDisplay').src = previewImg.src;
+            } else if (tradeName) {
+                document.getElementById('cpLogoDisplay').src =
+                    'https://ui-avatars.com/api/?name=' + encodeURIComponent(tradeName) + '&background=31C2EF&color=fff&size=90';
+            }
+
+            // Working Areas
+            syncWorkingAreas();
+        }
+
+        function syncWorkingAreas() {
+            var items = document.querySelectorAll('#workingAreasList .working-area-item');
+            var cpWA = document.getElementById('cp-workingAreas');
+            cpWA.innerHTML = '';
+            var hasContent = false;
+
+            items.forEach(function(item) {
+                var field = item.querySelector('input[type="text"]');
+                var desc = item.querySelector('textarea');
+                var fieldVal = field ? field.value.trim() : '';
+                var descVal = desc ? desc.value.trim() : '';
+
+                if (fieldVal) {
+                    hasContent = true;
+                    var div = document.createElement('div');
+                    div.className = 'working-area-item mb-2';
+                    div.style.background = '#F8FAFC';
+                    div.innerHTML = '<p class="fw-semibold mb-1 small" style="color:#31C2EF;"><i class="fas fa-briefcase me-1"></i>' + fieldVal + '</p>'
+                        + (descVal ? '<p class="text-muted small mb-0">' + descVal + '</p>' : '');
+                    cpWA.appendChild(div);
+                }
+            });
+
+            if (!hasContent) {
+                cpWA.innerHTML = '<p class="text-muted small">No working areas added yet.</p>';
+            }
+        }
+
+        /* ── CANCEL MY PROFILE ── */
+        function cancelMyProfile() {
+            showToast('Changes discarded.');
+        }
+
+        /* ── GO EDIT (from Company Profile tab) ── */
+        function goEditProfile() {
+            var myProfileBtn = document.querySelector('.settings-tab');
+            showTab('myprofile', myProfileBtn);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ── LOGO PREVIEW ── */
+        function previewMyLogo(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById('logoPreviewImg');
+                    var wrap = document.getElementById('logoPreviewWrap');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    wrap.style.display = 'none';
+                    showToast('Logo updated! Click Save Profile to confirm.');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        /* ── WORKING AREAS ── */
+        /*function addWorkingArea() {
+            waCount++;
+            var id = 'wa-' + waCount;
+            var div = document.createElement('div');
+            div.className = 'working-area-item';
+            div.id = id;
+            div.innerHTML = '<button class="remove-btn" onclick="removeWorkingArea(\'' + id + '\')"><i class="fas fa-times"></i></button>'
+                + '<div class="row g-2">'
+                + '<div class="col-12"><label class="form-label">Working Field</label>'
+                + '<input type="text" class="form-control form-control-sm" placeholder="e.g., Software Development, Digital Marketing" /></div>'
+                + '<div class="col-12"><label class="form-label">Short Description</label>'
+                + '<textarea class="form-control form-control-sm" rows="2" placeholder="Briefly describe your expertise in this field"></textarea></div>'
+                + '</div>';
+            document.getElementById('workingAreasList').appendChild(div);
+        }
+
+        function removeWorkingArea(id) {
+            var el = document.getElementById(id);
+            if (el) { el.remove(); }
+        }*/
+
+        /* ── SECTION SAVE ── */
+        function saveSection(section) { showToast(section + ' saved successfully!'); }
+
+        /* ── TOGGLE PASSWORD ── */
+        function togglePass(inputId, btn) {
+            var input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        /* ── PASSWORD STRENGTH ── */
+        function checkStrength(val) {
+            var bars = ['s1','s2','s3','s4'];
+            var colors = ['#DC2626','#EA580C','#EAB308','#16A34A'];
+            var labels = ['Too weak','Weak','Good','Strong'];
+            var score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            bars.forEach(function(b, i) {
+                document.getElementById(b).style.background = i < score ? colors[score - 1] : '#E4E6F0';
+            });
+            document.getElementById('strengthLabel').textContent = val.length === 0 ? 'Enter a password' : labels[score - 1] || 'Too weak';
+        }
+
+        /* ── CHANGE PASSWORD ── */
+        function changePassword() {
+            var cur = document.getElementById('currentPass').value;
+            var nw = document.getElementById('newPass').value;
+            var conf = document.getElementById('confirmPass').value;
+            if (!cur) { showToast('Please enter your current password.', true); return; }
+            if (nw.length < 8) { showToast('New password must be at least 8 characters.', true); return; }
+            if (nw !== conf) { showToast('Passwords do not match!', true); return; }
+            showToast('Password changed successfully!');
+            ['currentPass','newPass','confirmPass'].forEach(function(id) { document.getElementById(id).value = ''; });
+            checkStrength('');
+        }
+
+        /* ── 2FA ── */
+        function toggle2FA(checkbox) {
+            var setup = document.getElementById('twoFASetup');
+            if (checkbox.checked) { setup.classList.remove('d-none'); showToast('2FA enabled. Verify your phone number.'); }
+            else { setup.classList.add('d-none'); showToast('2FA disabled.'); }
+        }
+
+        /* ── SESSION ── */
+        function revokeSession(btn) {
+            btn.closest('.d-flex').style.opacity = '.4';
+            btn.disabled = true;
+            showToast('Session revoked.');
+        }
+
+        function revokeAll() { showToast('All other sessions have been revoked.'); }
+
+        /* ── DANGER ── */
+        function confirmDeactivate() {
+            if (confirm('Are you sure you want to deactivate your account?')) { showToast('Account deactivated. Log in to reactivate.'); }
+        }
+
+        function exportData() { showToast('Your data export has been queued. You will receive an email shortly.'); }
+
+        function deleteAccount() {
+            var val = document.getElementById('deleteConfirm').value;
+            if (val !== 'DELETE') { showToast('Please type DELETE exactly to confirm.', true); return; }
+            showToast('Account deletion initiated. This cannot be undone.', true);
+        }
+    </script>
+
+    </body>
+</html>
+
+{% endblock %}

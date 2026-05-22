@@ -1,0 +1,576 @@
+{% extends 'company/company_base.html' %}
+
+{% block content %}
+
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+<style>
+
+  * { box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: transparent;
+    }
+
+    .page {
+        display: none;
+    }
+    .page.active {
+        display: block;
+    }
+
+  /* ── JOBS PAGE ── */
+    .page-wrap {
+    padding: 1.5rem 0.5rem;
+    }
+    .page-title {
+        font-size: 20px; 
+        font-weight: 700;
+        color: #2d3436;
+    }
+    .btn-post {
+        background: #00b894;
+        border: none;
+        color: #fff;
+        font-size: 13px;
+        border-radius: 8px;
+        padding: 7px 16px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+    }
+    .btn-post:hover {
+        background: #00997e;
+        color: #fff;
+    }
+    .list-header {
+        font-size: 12px;
+        font-weight: 600;
+        color: #b2bec3;
+        padding: 4px 16px;
+        margin-bottom: 6px;
+    }
+    .job-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 13px 16px;
+        margin-bottom: 10px;
+    }
+    .job-icon {
+        width: 44px;
+        height: 44px;
+        background: #e6f4f1;
+        color: #00b894;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .job-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2d3436;
+        margin: 0 0 2px;
+    }
+    .job-meta {
+        font-size: 11px;
+        color: #636e72;
+        margin: 0;
+    }
+    .stat-badge {
+        background: #f1f2f6;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #2d3436;
+    }
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 4px;
+    }
+    .dot-active {
+        background: #00b894;
+    }
+    .dot-pending {
+        background: #fdcb6e;
+    }
+    .action-btn {
+        background: none;
+        border: none;
+        color: #636e72;
+        padding: 5px 7px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .action-btn:hover {
+        background: #f1f2f6;
+        color: #0984e3;
+    }
+    .dropdown-menu {
+        border: 1px solid #f1f2f6;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-size: 12px;
+        min-width: 160px;
+    }
+    .dropdown-item {
+        padding: 7px 14px;
+        color: #2d3436;
+        cursor: pointer;
+    }
+    .dropdown-item:hover {
+        background: #f8f9fa;
+    }
+
+  /* ── APPLICANTS PAGE ── */
+    .back-btn {
+        background: none;
+        border: none;
+        color: #00b894;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0;
+        margin-bottom: 1.2rem;
+    }
+    .back-btn:hover {
+        color: #00997e;
+    }
+    .app-page-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2d3436;
+        margin: 0 0 2px;
+    }
+    .app-page-sub {
+        font-size: 12px;
+        color: #636e72;
+        margin: 0 0 1.2rem;
+    }
+
+    .app-summary-bar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 1.2rem;
+    }
+    .summary-pill {
+        background: #f1f2f6;
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #2d3436;
+    }
+    .summary-pill.active-pill {
+        background: #e6f4f1;
+        color: #00b894;
+    }
+
+    .app-table-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+    .app-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .app-table thead th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #b2bec3;
+        padding: 10px 16px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #f1f2f6;
+        white-space: nowrap;
+    }
+    .app-table tbody tr {
+        border-bottom: 1px solid #f8f9fa;
+    }
+    .app-table tbody tr:last-child {
+        border-bottom: none; }
+    .app-table tbody tr:hover {
+        background: #f8f9fa; }
+    .app-table tbody td {
+        padding: 10px 16px;
+        font-size: 12px;
+        color: #2d3436;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .av-blue   { background: #dff0fb; color: #1a6fa8; }
+    .av-teal   { background: #e6f4f1; color: #0F6E56; }
+    .av-purple { background: #EEEDFE; color: #3C3489; }
+    .av-amber  { background: #FAEEDA; color: #633806; }
+    .av-coral  { background: #FAECE7; color: #712B13; }
+    .av-pink   { background: #FBEAF0; color: #72243E; }
+    .av-green  { background: #EAF3DE; color: #27500A; }
+
+    .status-pill { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+    .pill-review      { background: #dff0fb; color: #185FA5; }
+    .pill-shortlisted { background: #e6f4f1; color: #0F6E56; }
+    .pill-rejected    { background: #fceaea; color: #A32D2D; }
+    .pill-hired       { background: #EAF3DE; color: #3B6D11; }
+
+    .btn-cv { font-size: 11px; background: #fff; border: 1px solid #dfe6e9; border-radius: 6px; padding: 3px 9px; color: #636e72; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+    .btn-cv:hover { border-color: #00b894; color: #00b894; }
+
+    .sno { font-size: 11px; color: #b2bec3; font-weight: 600; }
+</style>
+
+<!-- ════════════════ PAGE 1 : JOBS ════════════════ -->
+<div class="page active" id="page-jobs">
+    <div class="page-wrap container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="page-title mb-0">Active Job Posts</h3>
+            <a href="{% url 'company:company_job_post' %}" class="btn-post"><i
+                    class="bi bi-plus-lg"></i> Post New Job</a>
+        </div>
+
+        <div class="row list-header d-none d-md-flex">
+            <div class="col-md-5">Job Details</div>
+            <div class="col-md-2 text-center">Applications</div>
+            <div class="col-md-2 text-center">Status</div>
+            <div class="col-md-2 text-center">Posted Date</div>
+            <div class="col-md-1 text-end">Action</div>
+        </div>
+
+        <!-- Job 1 -->
+        <div class="job-card">
+            <div class="row align-items-center g-0">
+                <div class="col-md-5 col-12 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="job-icon"><i
+                                class="bi bi-briefcase"></i></div>
+                        <div><p class="job-title">Senior UI/UX Designer</p><p
+                                class="job-meta">Creative Studio &bull; Full
+                                Time</p></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="stat-badge">45 Applicants</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="dot dot-active"></span><span
+                        style="font-size:12px;font-weight:600;">Active</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        style="font-size:11px;color:#636e72;">24 Dec
+                        2025</span></div>
+                <div class="col-md-1 text-end">
+                    <div class="dropdown">
+                        <button class="action-btn" data-bs-toggle="dropdown"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item"
+                                    onclick="goToApplicants('job1')"><i
+                                        class="bi bi-eye me-2"></i>View
+                                    Apps</a></li>
+                            <li><a class="dropdown-item" href="#"><i
+                                        class="bi bi-pencil me-2"></i>Edit
+                                    Job</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i
+                                        class="bi bi-trash me-2"></i>Close
+                                    Job</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job 2 -->
+        <div class="job-card">
+            <div class="row align-items-center g-0">
+                <div class="col-md-5 col-12 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="job-icon"><i
+                                class="bi bi-briefcase"></i></div>
+                        <div><p class="job-title">Full Stack Developer
+                                (Node.js)</p><p class="job-meta">Tech Solutions
+                                &bull; Remote</p></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="stat-badge">128 Applicants</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="dot dot-active"></span><span
+                        style="font-size:12px;font-weight:600;">Active</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        style="font-size:11px;color:#636e72;">20 Dec
+                        2025</span></div>
+                <div class="col-md-1 text-end">
+                    <div class="dropdown">
+                        <button class="action-btn" data-bs-toggle="dropdown"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item"
+                                    onclick="goToApplicants('job2')"><i
+                                        class="bi bi-eye me-2"></i>View
+                                    Apps</a></li>
+                            <li><a class="dropdown-item" href="#"><i
+                                        class="bi bi-pencil me-2"></i>Edit
+                                    Job</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i
+                                        class="bi bi-trash me-2"></i>Close
+                                    Job</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job 3 -->
+        <div class="job-card">
+            <div class="row align-items-center g-0">
+                <div class="col-md-5 col-12 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="job-icon"><i
+                                class="bi bi-briefcase"></i></div>
+                        <div><p class="job-title">Marketing Manager</p><p
+                                class="job-meta">Global Brands &bull;
+                                Contract</p></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="stat-badge">12 Applicants</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="dot dot-pending"></span><span
+                        style="font-size:12px;font-weight:600;">Pending</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        style="font-size:11px;color:#636e72;">28 Dec
+                        2025</span></div>
+                <div class="col-md-1 text-end">
+                    <div class="dropdown">
+                        <button class="action-btn" data-bs-toggle="dropdown"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item"
+                                    onclick="goToApplicants('job3')"><i
+                                        class="bi bi-eye me-2"></i>View
+                                    Apps</a></li>
+                            <li><a class="dropdown-item" href="#"><i
+                                        class="bi bi-pencil me-2"></i>Edit
+                                    Job</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i
+                                        class="bi bi-trash me-2"></i>Close
+                                    Job</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job 4 -->
+        <div class="job-card">
+            <div class="row align-items-center g-0">
+                <div class="col-md-5 col-12 mb-2 mb-md-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="job-icon"><i
+                                class="bi bi-briefcase"></i></div>
+                        <div><p class="job-title">Backend Engineer
+                                (Python)</p><p class="job-meta">Data Systems
+                                &bull; Full Time</p></div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="stat-badge">67 Applicants</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        class="dot dot-active"></span><span
+                        style="font-size:12px;font-weight:600;">Active</span></div>
+                <div class="col-md-2 col-4 text-center"><span
+                        style="font-size:11px;color:#636e72;">15 Dec
+                        2025</span></div>
+                <div class="col-md-1 text-end">
+                    <div class="dropdown">
+                        <button class="action-btn" data-bs-toggle="dropdown"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item"
+                                    onclick="goToApplicants('job4')"><i
+                                        class="bi bi-eye me-2"></i>View
+                                    Apps</a></li>
+                            <li><a class="dropdown-item" href="#"><i
+                                        class="bi bi-pencil me-2"></i>Edit
+                                    Job</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i
+                                        class="bi bi-trash me-2"></i>Close
+                                    Job</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ════════════════ PAGE 2 : APPLICANTS ════════════════ -->
+<div class="page" id="page-applicants">
+    <div class="page-wrap container-fluid">
+
+        <button class="back-btn" onclick="goBack()"><i
+                class="bi bi-arrow-left"></i> Back to Jobs</button>
+
+        <p class="app-page-title" id="app-job-title">—</p>
+        <p class="app-page-sub" id="app-job-meta">—</p>
+
+        <div class="app-summary-bar" id="app-summary-bar"></div>
+
+        <div class="app-table-card">
+            <table class="app-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Candidate</th>
+                        <th>Applied On</th>
+                        <th>Status</th>
+                        <th>Resume</th>
+                    </tr>
+                </thead>
+                <tbody id="app-tbody"></tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const avColors = ['av-teal','av-blue','av-purple','av-amber','av-coral','av-pink','av-green'];
+const pillMap = { 'Under Review':'pill-review', 'Shortlisted':'pill-shortlisted', 'Rejected':'pill-rejected', 'Hired':'pill-hired' };
+
+const jobData = {
+  job1: {
+    title: 'Senior UI/UX Designer',
+    meta: 'Creative Studio &bull; Full Time &bull; Posted: 24 Dec 2025',
+    applicants: [
+      {name:'Ayesha Tariq',   role:'UI Designer',       applied:'26 Dec 2025', status:'Shortlisted'},
+      {name:'Bilal Raza',     role:'UX Researcher',     applied:'25 Dec 2025', status:'Under Review'},
+      {name:'Sana Mirza',     role:'Product Designer',  applied:'27 Dec 2025', status:'Hired'},
+      {name:'Kamran Ali',     role:'Visual Designer',   applied:'24 Dec 2025', status:'Rejected'},
+      {name:'Hina Baig',      role:'Interaction Designer',applied:'26 Dec 2025',status:'Under Review'},
+    ]
+  },
+  job2: {
+    title: 'Full Stack Developer (Node.js)',
+    meta: 'Tech Solutions &bull; Remote &bull; Posted: 20 Dec 2025',
+    applicants: [
+      {name:'Usman Ahmed',    role:'MERN Developer',    applied:'21 Dec 2025', status:'Shortlisted'},
+      {name:'Hamza Malik',    role:'Node.js Engineer',  applied:'22 Dec 2025', status:'Under Review'},
+      {name:'Zara Khan',      role:'Frontend Developer',applied:'23 Dec 2025', status:'Rejected'},
+      {name:'Ali Hassan',     role:'Backend Developer', applied:'21 Dec 2025', status:'Under Review'},
+      {name:'Noman Farooq',   role:'Full Stack Dev',    applied:'20 Dec 2025', status:'Shortlisted'},
+      {name:'Sara Javed',     role:'React Developer',   applied:'22 Dec 2025', status:'Hired'},
+      {name:'Imran Shah',     role:'DevOps Engineer',   applied:'23 Dec 2025', status:'Under Review'},
+    ]
+  },
+  job3: {
+    title: 'Marketing Manager',
+    meta: 'Global Brands &bull; Contract &bull; Posted: 28 Dec 2025',
+    applicants: [
+      {name:'Nadia Qureshi',  role:'Digital Marketer',  applied:'29 Dec 2025', status:'Under Review'},
+      {name:'Asad Mehmood',   role:'Brand Manager',     applied:'30 Dec 2025', status:'Shortlisted'},
+    ]
+  },
+  job4: {
+    title: 'Backend Engineer (Python)',
+    meta: 'Data Systems &bull; Full Time &bull; Posted: 15 Dec 2025',
+    applicants: [
+      {name:'Saad Iqbal',     role:'Python Developer',  applied:'16 Dec 2025', status:'Shortlisted'},
+      {name:'Maryam Farooq',  role:'Django Engineer',   applied:'17 Dec 2025', status:'Hired'},
+      {name:'Tariq Hussain',  role:'Data Engineer',     applied:'16 Dec 2025', status:'Under Review'},
+      {name:'Rabia Noor',     role:'Flask Developer',   applied:'18 Dec 2025', status:'Rejected'},
+    ]
+  }
+};
+
+function initials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+
+function goToApplicants(jobId) {
+  const job = jobData[jobId];
+  document.getElementById('app-job-title').textContent = job.title;
+  document.getElementById('app-job-meta').innerHTML = job.meta;
+
+  const counts = {total:job.applicants.length, shortlisted:0, hired:0, rejected:0, review:0};
+  job.applicants.forEach(a => {
+    if(a.status==='Shortlisted') counts.shortlisted++;
+    else if(a.status==='Hired') counts.hired++;
+    else if(a.status==='Rejected') counts.rejected++;
+    else counts.review++;
+  });
+
+  document.getElementById('app-summary-bar').innerHTML = `
+    <span class="summary-pill active-pill">${counts.total} Total</span>
+    <span class="summary-pill">${counts.review} Under Review</span>
+    <span class="summary-pill">${counts.shortlisted} Shortlisted</span>
+    <span class="summary-pill">${counts.hired} Hired</span>
+    <span class="summary-pill">${counts.rejected} Rejected</span>
+  `;
+
+  const tbody = document.getElementById('app-tbody');
+  tbody.innerHTML = '';
+  job.applicants.forEach((a, i) => {
+    const av = avColors[i % avColors.length];
+    const pill = pillMap[a.status] || 'pill-review';
+    tbody.innerHTML += `
+      <tr>
+        <td class="sno">${String(i+1).padStart(2,'0')}</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <div class="avatar-sm ${av}">${initials(a.name)}</div>
+            <div>
+              <div style="font-weight:600;">${a.name}</div>
+              <div style="font-size:11px;color:#636e72;">${a.role}</div>
+            </div>
+          </div>
+        </td>
+        <td>${a.applied}</td>
+        <td><span class="status-pill ${pill}">${a.status}</span></td>
+        <td><a href="#" class="btn-cv"><i class="bi bi-download" style="font-size:11px;"></i> Download CV</a></td>
+      </tr>`;
+  });
+
+  document.getElementById('page-jobs').classList.remove('active');
+  document.getElementById('page-applicants').classList.add('active');
+}
+
+function goBack() {
+  document.getElementById('page-applicants').classList.remove('active');
+  document.getElementById('page-jobs').classList.add('active');
+}
+</script>
+
+{% endblock %}

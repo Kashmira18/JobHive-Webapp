@@ -1,0 +1,1168 @@
+{% extends 'company/company_base.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JobHive – Post a Job</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" />
+
+    <style>
+    body { background: #F0F4F8; color: #1A1D2E; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .text-brand { color: #31C2EF; }
+
+    /* ── STEP BAR ── */
+    .step-wrap { background: #fff; border-radius: 16px; padding: 20px 28px; margin-bottom: 28px; border: 1px solid #E4E6F0; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+    .step-circle {
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 2px solid #E4E6F0; background: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: #9CA3AF;
+      transition: all .3s;
+    }
+    .step-circle.active { background: #31C2EF; border-color: #31C2EF; color: #fff; box-shadow: 0 4px 12px rgba(49,194,239,.35); }
+    .step-circle.done   { background: #16A34A; border-color: #16A34A; color: #fff; }
+    .step-line { flex: 1; height: 2px; background: #E4E6F0; transition: background .3s; margin: 0 4px; }
+    .step-line.done { background: #31C2EF; }
+    .step-label { font-size: .78rem; font-weight: 600; margin-top: 6px; color: #9CA3AF; transition: color .3s; }
+    .step-label.active { color: #31C2EF; }
+    .step-label.done { color: #16A34A; }
+
+    /* ── CARDS ── */
+    .form-card {
+      background: #fff; border: 1px solid #E4E6F0;
+      border-radius: 16px; padding: 36px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    @media(max-width:576px) { .form-card { padding: 22px 16px; } }
+
+    /* ── CARD HEADER ── */
+    .card-header-band {
+      background: linear-gradient(135deg, #1A1D2E, #2a3560);
+      border-radius: 12px; padding: 20px 24px;
+      margin-bottom: 28px; color: #fff; position: relative; overflow: hidden;
+    }
+    .card-header-band::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(49,194,239,.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .card-header-band h5 { font-weight: 800; margin: 0; font-size: 1rem; }
+    .card-header-band p { font-size: .8rem; opacity: .7; margin: 4px 0 0; }
+
+    /* ── INPUTS ── */
+    .form-control, .form-select {
+      border-radius: 10px; border: 1.5px solid #E4E6F0;
+      font-size: .875rem; padding: 10px 14px; transition: all .2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #31C2EF !important;
+      box-shadow: 0 0 0 3px rgba(49,194,239,.15) !important;
+    }
+    .form-control.is-invalid, .form-select.is-invalid { border-color: #DC2626 !important; }
+    .input-group-text {
+      background: #F8FAFC; border: 1.5px solid #E4E6F0;
+      border-radius: 10px 0 0 10px; color: #64748b;
+    }
+    .input-group .form-control { border-radius: 0 10px 10px 0; }
+    .form-label { font-weight: 600; font-size: .82rem; color: #374151; margin-bottom: 6px; }
+
+    /* ── JOB TYPE CARDS ── */
+    .type-card {
+      border: 2px solid #E4E6F0; border-radius: 12px;
+      padding: 16px 8px; cursor: pointer; text-align: center;
+      background: #F9FAFB; transition: all .2s;
+    }
+    .type-card:hover, .type-card.active { border-color: #31C2EF; background: #E3F3FA; }
+    .type-card i { font-size: 1.5rem; color: #9CA3AF; transition: color .2s; }
+    .type-card.active i { color: #31C2EF; }
+    .type-card span { display: block; font-size: .73rem; font-weight: 700; color: #6B7094; margin-top: 6px; }
+    .type-card.active span { color: #31C2EF; }
+
+    /* ── PERK ITEMS ── */
+    .perk-item {
+      border: 1.5px solid #E4E6F0; border-radius: 10px;
+      padding: 12px 13px; cursor: pointer; display: flex;
+      align-items: center; gap: 10px; background: #F9FAFB; transition: all .2s;
+    }
+    .perk-item:hover, .perk-item.active { border-color: #31C2EF; background: #E3F3FA; }
+    .perk-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: #ECEEF6; display: flex; align-items: center;
+      justify-content: center; color: #6B7094; font-size: .9rem; transition: all .2s; flex-shrink: 0;
+    }
+    .perk-item.active .perk-icon { background: #31C2EF; color: #fff; }
+
+    /* ── TAGS ── */
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #E3F3FA; border: 1px solid #BAE6FD;
+      color: #0369a1; border-radius: 100px;
+      padding: 4px 12px; font-size: .78rem; font-weight: 600;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-brand {
+      background: linear-gradient(135deg, #31C2EF, #1da8d3);
+      color: #fff; border: none; border-radius: 10px;
+      padding: 10px 26px; font-weight: 700; font-size: .875rem;
+      transition: all .2s; box-shadow: 0 4px 12px rgba(49,194,239,.3);
+    }
+    .btn-brand:hover { background: linear-gradient(135deg, #1da8d3, #1795bb); color: #fff; transform: translateY(-1px); }
+    .btn-outline-brand {
+      background: #fff; color: #31C2EF;
+      border: 2px solid #31C2EF; border-radius: 10px;
+      padding: 8px 22px; font-weight: 700; font-size: .875rem; transition: all .2s;
+    }
+    .btn-outline-brand:hover { background: #E3F3FA; color: #31C2EF; }
+
+    /* ── STEP PANELS ── */
+    .step-panel { display: none; animation: fadeIn .25s ease; }
+    .step-panel.show { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ── PREVIEW SECTION CARD ── */
+    .preview-section {
+      background: #F8FAFC; border: 1px solid #E4E6F0;
+      border-radius: 12px; padding: 20px 22px; margin-bottom: 16px;
+    }
+    .preview-section-title {
+      font-size: .72rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .08em; color: #31C2EF; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .preview-section-title::after { content: ''; flex: 1; height: 1px; background: #E4E6F0; }
+    .preview-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .preview-label { font-size: .75rem; font-weight: 700; color: #9CA3AF; min-width: 110px; }
+    .preview-value { font-size: .85rem; color: #1A1D2E; font-weight: 500; }
+
+    /* ── JOB PREVIEW CARD ── */
+    .job-preview-card {
+      background: #fff; border-radius: 14px; overflow: hidden;
+      border: 1px solid #E4E6F0; box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    }
+    .job-preview-header {
+      background: linear-gradient(135deg, #1A1D2E 0%, #2a3560 100%);
+      padding: 28px 28px 24px; color: #fff;
+    }
+    .job-preview-body { padding: 24px 28px; }
+
+    /* ── SUCCESS OVERLAY ── */
+    #successBox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(240,244,248,.97); z-index: 9999;
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px; text-align: center;
+    }
+    #successBox.show { display: flex; }
+    .success-icon {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #16A34A, #15803d);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(22,163,74,.35);
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ── RICH TEXT EDITOR ── */
+    #jobDesc {
+      min-height: 140px; overflow-y: auto; border-radius: 0 0 10px 10px;
+      border: 1.5px solid #E4E6F0; border-top: none; padding: 12px 14px;
+      font-size: .875rem; outline: none; transition: border-color .2s;
+    }
+    #jobDesc:focus { border-color: #31C2EF; }
+    .editor-toolbar {
+      border: 1.5px solid #E4E6F0; border-bottom: none;
+      border-radius: 10px 10px 0 0; padding: 8px 10px;
+      background: #F8FAFC; display: flex; gap: 4px;
+    }
+    .editor-toolbar button { border-radius: 6px; font-size: .8rem; }
+  </style>
+  </head>
+  <body>
+
+    <!-- ── PAGE HEADER ── -->
+    <div class="text-center py-4">
+      <span class="badge rounded-pill px-3 py-2 mb-3"
+        style="background:#E3F3FA; color:#31C2EF; border:1px solid #BAE6FD; font-size:.75rem;">
+        <i class="fas fa-building me-1"></i> COMPANY PORTAL
+      </span>
+      <h1 class="fw-bold fs-2">Post a <span class="text-brand">New
+          Job</span></h1>
+      <p class="text-secondary mt-1 small">Fill in all steps below to publish
+        your job opening on JobHive.</p>
+    </div>
+
+    <!-- ── STEP PROGRESS BAR ── -->
+    <div class="container mb-4" style="max-width:820px">
+      <div class="step-wrap">
+        <div class="d-flex align-items-center">
+
+          <div class="text-center" style="min-width:72px">
+            <div class="step-circle active mx-auto" id="dot1"><i
+                class="fas fa-check d-none"></i><span>1</span></div>
+            <div class="step-label active" id="lbl1">Job Details</div>
+          </div>
+          <div class="step-line" id="line1"></div>
+
+          <div class="text-center" style="min-width:72px">
+            <div class="step-circle mx-auto" id="dot2"><i
+                class="fas fa-check d-none"></i><span>2</span></div>
+            <div class="step-label" id="lbl2">Requirements</div>
+          </div>
+          <div class="step-line" id="line2"></div>
+
+          <div class="text-center" style="min-width:72px">
+            <div class="step-circle mx-auto" id="dot3"><i
+                class="fas fa-check d-none"></i><span>3</span></div>
+            <div class="step-label" id="lbl3">Compensation</div>
+          </div>
+          <div class="step-line" id="line3"></div>
+
+          <div class="text-center" style="min-width:72px">
+            <div class="step-circle mx-auto" id="dot4"><i
+                class="fas fa-check d-none"></i><span>4</span></div>
+            <div class="step-label" id="lbl4">Preview</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FORM PANELS ── -->
+    <div class="container pb-5" style="max-width:820px">
+
+      <!-- ════════════════════════════════
+       STEP 1 — JOB DETAILS
+  ════════════════════════════════ -->
+      <div class="form-card step-panel show" id="panel1">
+
+        <div class="card-header-band">
+          <h5><i class="fas fa-briefcase me-2"></i>Basic Job Information</h5>
+          <p>Provide the core details about the position you're hiring for.</p>
+        </div>
+
+        <div class="row g-3">
+
+          <!-- Job Title -->
+          <div class="col-12">
+            <label class="form-label">Job Title <span
+                class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i
+                  class="fas fa-briefcase"></i></span>
+              <input type="text" class="form-control" id="jobTitle"
+                placeholder="e.g. Senior Frontend Developer" />
+            </div>
+            <div class="text-danger small mt-1 d-none" id="errJobTitle">Please
+              enter a job title.</div>
+          </div>
+
+          <!-- Category -->
+          <div class="col-md-6">
+            <label class="form-label">Category <span
+                class="text-danger">*</span></label>
+            <select class="form-select" id="jobCategory">
+              <option value disabled selected>Select category</option>
+              <option>Information Technology</option>
+              <option>Design & Creative</option>
+              <option>Marketing & Sales</option>
+              <option>Finance & Accounting</option>
+              <option>Engineering</option>
+              <option>Human Resources</option>
+              <option>Healthcare</option>
+              <option>Education & Training</option>
+              <option>Legal</option>
+              <option>Customer Support</option>
+            </select>
+            <div class="text-danger small mt-1 d-none" id="errCategory">Please
+              select a category.</div>
+          </div>
+
+          <!-- Experience Level -->
+          <div class="col-md-6">
+            <label class="form-label">Experience Level <span
+                class="text-danger">*</span></label>
+            <select class="form-select" id="expLevel">
+              <option value disabled selected>Select level</option>
+              <option>Internship</option>
+              <option>Entry Level (0–2 yrs)</option>
+              <option>Mid Level (2–5 yrs)</option>
+              <option>Senior Level (5–10 yrs)</option>
+              <option>Lead / Manager</option>
+              <option>Executive / Director</option>
+            </select>
+            <div class="text-danger small mt-1 d-none" id="errExpLevel">Please
+              select experience level.</div>
+          </div>
+
+          <!-- Employment Type -->
+          <div class="col-12">
+            <label class="form-label">Employment Type <span
+                class="text-danger">*</span></label>
+            <div class="row g-2" id="typeGrid">
+              <div class="col-6 col-md-3">
+                <div class="type-card" onclick="pickType(this,'Full-Time')">
+                  <i class="fas fa-clock"></i><span>Full-Time</span>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="type-card" onclick="pickType(this,'Part-Time')">
+                  <i class="fas fa-hourglass-half"></i><span>Part-Time</span>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="type-card" onclick="pickType(this,'Contract')">
+                  <i class="fas fa-file-signature"></i><span>Contract</span>
+                </div>
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="type-card" onclick="pickType(this,'Internship')">
+                  <i class="fas fa-graduation-cap"></i><span>Internship</span>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="jobType" />
+            <div class="text-danger small mt-1 d-none" id="typeErr">Please
+              select an employment type.</div>
+          </div>
+
+          <!-- Location -->
+          <div class="col-md-6">
+            <label class="form-label">City / Location <span
+                class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i
+                  class="fas fa-location-dot"></i></span>
+              <input type="text" class="form-control" id="jobLocation"
+                placeholder="e.g. Lahore, Pakistan" />
+            </div>
+            <div class="text-danger small mt-1 d-none" id="errLocation">Please
+              enter a location.</div>
+          </div>
+
+          <!-- Work Mode -->
+          <div class="col-md-6">
+            <label class="form-label">Work Mode <span
+                class="text-danger">*</span></label>
+            <select class="form-select" id="workMode">
+              <option value disabled selected>Select mode</option>
+              <option>On-site</option>
+              <option>Remote</option>
+              <option>Hybrid</option>
+            </select>
+            <div class="text-danger small mt-1 d-none" id="errWorkMode">Please
+              select work mode.</div>
+          </div>
+
+          <!-- Deadline -->
+          <div class="col-md-6">
+            <label class="form-label">Application Deadline <span
+                class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i
+                  class="fas fa-calendar-days"></i></span>
+              <input type="date" class="form-control" id="deadline" />
+            </div>
+            <div class="text-danger small mt-1 d-none" id="errDeadline">Please
+              set a deadline.</div>
+          </div>
+
+          <!-- Vacancies -->
+          <div class="col-md-6">
+            <label class="form-label">Number of Vacancies</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-users"></i></span>
+              <input type="number" class="form-control" id="vacancies" value="1"
+                min="1" />
+            </div>
+          </div>
+
+        </div>
+
+        <div class="text-end mt-4">
+          <button class="btn btn-brand" onclick="goStep(2)">
+            Next: Requirements <i class="fas fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+
+      </div><!-- /panel1 -->
+
+      <!-- ════════════════════════════════
+        STEP 2 — REQUIREMENTS
+      ════════════════════════════════ -->
+      <div class="form-card step-panel" id="panel2">
+
+        <div class="card-header-band">
+          <h5><i class="fas fa-list-check me-2"></i>Job Requirements</h5>
+          <p>Describe what you're looking for in a candidate.</p>
+        </div>
+
+        <div class="row g-3">
+
+          <!-- Job Description -->
+          <div class="col-12">
+            <label class="form-label">Job Description <span
+                class="text-danger">*</span></label>
+            <div class="editor-toolbar">
+              <button type="button" class="btn btn-sm btn-light"
+                onclick="fmt('bold')" title="Bold"><i
+                  class="fas fa-bold"></i></button>
+              <button type="button" class="btn btn-sm btn-light"
+                onclick="fmt('italic')"><i class="fas fa-italic"></i></button>
+              <button type="button" class="btn btn-sm btn-light"
+                onclick="fmt('underline')"><i
+                  class="fas fa-underline"></i></button>
+              <button type="button" class="btn btn-sm btn-light"
+                onclick="fmt('insertUnorderedList')"><i
+                  class="fas fa-list-ul"></i></button>
+              <button type="button" class="btn btn-sm btn-light"
+                onclick="fmt('insertOrderedList')"><i
+                  class="fas fa-list-ol"></i></button>
+            </div>
+            <div id="jobDesc" contenteditable="true"
+              placeholder="Describe the role, responsibilities, and day-to-day tasks..."></div>
+            <div class="text-danger small mt-1 d-none" id="descErr">Please add a
+              job description (min 20 characters).</div>
+          </div>
+
+          <!-- Qualifications -->
+          <div class="col-12">
+            <label class="form-label">Qualifications <span
+                class="text-danger">*</span></label>
+            <textarea class="form-control" id="qualifications" rows="3"
+              placeholder="e.g. Bachelor's degree in Computer Science, 3+ years in React..."></textarea>
+            <div class="text-danger small mt-1 d-none" id="errQual">Please list
+              required qualifications.</div>
+          </div>
+
+          <!-- Education -->
+          <div class="col-md-6">
+            <label class="form-label">Minimum Education</label>
+            <select class="form-select" id="education">
+              <option value disabled selected>Select education</option>
+              <option>High School / Matric</option>
+              <option>Intermediate (FA/FSc)</option>
+              <option>Bachelor's Degree</option>
+              <option>Master's Degree</option>
+              <option>PhD / Doctorate</option>
+              <option>No Requirement</option>
+            </select>
+          </div>
+
+          <!-- Years Experience -->
+          <div class="col-md-6">
+            <label class="form-label">Years of Experience</label>
+            <select class="form-select" id="yearsExp">
+              <option value disabled selected>Select years</option>
+              <option>No experience needed</option>
+              <option>Less than 1 year</option>
+              <option>1–2 years</option>
+              <option>2–4 years</option>
+              <option>4–6 years</option>
+              <option>6–10 years</option>
+              <option>10+ years</option>
+            </select>
+          </div>
+
+          <!-- Skills Tags -->
+          <div class="col-12">
+            <label class="form-label">Required Skills</label>
+            <div class="form-control d-flex flex-wrap gap-1 align-items-center"
+              id="tagsWrap"
+              style="min-height:48px; cursor:text; border-radius:10px;"
+              onclick="document.getElementById('tagInput').focus()">
+              <input id="tagInput" class="border-0 p-0"
+                style="outline:none; min-width:140px; font-size:.875rem;"
+                placeholder="Type skill + Enter…"
+                onkeydown="addTag(event)" />
+            </div>
+            <small class="text-muted">Suggested: Python, React, Django, SQL,
+              AWS, Figma</small>
+          </div>
+
+          <!-- Key Responsibilities -->
+          <div class="col-12">
+            <label class="form-label">Key Responsibilities</label>
+            <textarea class="form-control" id="responsibilities" rows="3"
+              placeholder="List main duties and day-to-day tasks..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button class="btn btn-outline-secondary" onclick="goStep(1)"><i
+              class="fas fa-arrow-left me-1"></i>Back</button>
+          <button class="btn btn-brand" onclick="goStep(3)">Next: Compensation
+            <i class="fas fa-arrow-right ms-1"></i></button>
+        </div>
+
+      </div><!-- /panel2 -->
+
+      <!-- ════════════════════════════════
+       STEP 3 — COMPENSATION
+  ════════════════════════════════ -->
+      <div class="form-card step-panel" id="panel3">
+
+        <div class="card-header-band">
+          <h5><i class="fas fa-sack-dollar me-2"></i>Compensation & Perks</h5>
+          <p>Define the salary structure and benefits for this role.</p>
+        </div>
+
+        <div class="row g-3">
+
+          <!-- Salary Type -->
+          <div class="col-md-6">
+            <label class="form-label">Salary Type</label>
+            <select class="form-select" id="salaryType"
+              onchange="toggleSalary()">
+              <option value="range">Salary Range</option>
+              <option value="fixed">Fixed Amount</option>
+              <option value="negotiable">Negotiable</option>
+              <option value="unpaid">Unpaid (Internship)</option>
+            </select>
+          </div>
+
+          <!-- Currency -->
+          <div class="col-md-6" id="currencyWrap">
+            <label class="form-label">Currency</label>
+            <select class="form-select" id="currency">
+              <option value="PKR">PKR – Pakistani Rupee</option>
+              <option value="USD">USD – US Dollar</option>
+              <option value="EUR">EUR – Euro</option>
+              <option value="GBP">GBP – British Pound</option>
+              <option value="AED">AED – UAE Dirham</option>
+              <option value="SAR">SAR – Saudi Riyal</option>
+            </select>
+          </div>
+
+          <!-- Range inputs -->
+          <div class="col-12" id="rangeWrap">
+            <label class="form-label">Salary Range (per month)</label>
+            <div class="d-flex gap-2 align-items-center">
+              <div class="input-group">
+                <span class="input-group-text"><i
+                    class="fas fa-arrow-down-1-9"></i></span>
+                <input type="number" class="form-control" id="salMin"
+                  placeholder="Min e.g. 50,000" />
+              </div>
+              <span class="text-muted fw-bold px-2">—</span>
+              <div class="input-group">
+                <span class="input-group-text"><i
+                    class="fas fa-arrow-up-1-9"></i></span>
+                <input type="number" class="form-control" id="salMax"
+                  placeholder="Max e.g. 120,000" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Fixed input -->
+          <div class="col-12 d-none" id="fixedWrap">
+            <label class="form-label">Fixed Salary (per month)</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-coins"></i></span>
+              <input type="number" class="form-control" id="salFixed"
+                placeholder="e.g. 80,000" />
+            </div>
+          </div>
+
+          <!-- Perks -->
+          <div class="col-12">
+            <label class="form-label mb-3">Perks & Benefits</label>
+            <div class="row g-2">
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Health Insurance')"><div
+                    class="perk-icon"><i
+                      class="fas fa-heart-pulse"></i></div><span
+                    class="small fw-semibold">Health
+                    Insurance</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Annual Bonus')"><div
+                    class="perk-icon"><i class="fas fa-gift"></i></div><span
+                    class="small fw-semibold">Annual Bonus</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Remote Work')"><div
+                    class="perk-icon"><i
+                      class="fas fa-house-laptop"></i></div><span
+                    class="small fw-semibold">Remote Work</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Flexible Hours')"><div
+                    class="perk-icon"><i
+                      class="fas fa-calendar-check"></i></div><span
+                    class="small fw-semibold">Flexible Hours</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Training Budget')"><div
+                    class="perk-icon"><i
+                      class="fas fa-book-open"></i></div><span
+                    class="small fw-semibold">Training Budget</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Transport Allowance')"><div
+                    class="perk-icon"><i class="fas fa-car"></i></div><span
+                    class="small fw-semibold">Transport
+                    Allowance</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Stock / ESOP')"><div
+                    class="perk-icon"><i
+                      class="fas fa-chart-line"></i></div><span
+                    class="small fw-semibold">Stock / ESOP</span></div></div>
+              <div class="col-6 col-md-3"><div class="perk-item"
+                  onclick="togglePerk(this,'Provident Fund')"><div
+                    class="perk-icon"><i
+                      class="fas fa-piggy-bank"></i></div><span
+                    class="small fw-semibold">Provident Fund</span></div></div>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="col-12">
+            <label class="form-label">Additional Notes for Candidates</label>
+            <textarea class="form-control" id="notes" rows="3"
+              placeholder="Any extra info or instructions for applicants..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <button class="btn btn-outline-secondary" onclick="goStep(2)"><i
+              class="fas fa-arrow-left me-1"></i>Back</button>
+          <button class="btn btn-brand" onclick="goStep(4)"><i
+              class="fas fa-eye me-1"></i>Preview Listing</button>
+        </div>
+
+      </div><!-- /panel3 -->
+
+      <!-- ════════════════════════════════
+       STEP 4 — FULL PREVIEW
+  ════════════════════════════════ -->
+      <div class="form-card step-panel" id="panel4">
+
+        <div class="card-header-band">
+          <h5><i class="fas fa-eye me-2"></i>Preview Your Job Listing</h5>
+          <p>Review all the information before publishing. This is exactly how
+            it will appear to candidates.</p>
+        </div>
+
+        <!-- ── JOB PREVIEW CARD ── -->
+        <div class="job-preview-card mb-4">
+          <div class="job-preview-header">
+            <div class="d-flex gap-3 align-items-start">
+              <div
+                class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                style="width:52px;height:52px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);">
+                <i class="fas fa-briefcase text-white fs-4"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-1 text-white" id="pvTitle">—</h4>
+                <p class="mb-2 small" style="color:rgba(255,255,255,.7)"><i
+                    class="fas fa-building me-1"></i>Your Company &nbsp;·&nbsp;
+                  <i class="fas fa-calendar me-1"></i>Deadline: <span
+                    id="pvDeadline">—</span></p>
+                <div class="d-flex flex-wrap gap-2" id="pvMeta"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="job-preview-body">
+
+            <!-- ── SECTION: Basic Information ── -->
+            <div class="preview-section">
+              <div class="preview-section-title"><i
+                  class="fas fa-circle-info"></i> Basic Information</div>
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-tag me-1 text-brand"></i>Category</span>
+                    <span class="preview-value" id="pv-category">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-layer-group me-1 text-brand"></i>Level</span>
+                    <span class="preview-value" id="pv-explevel">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-clock me-1 text-brand"></i>Type</span>
+                    <span class="preview-value" id="pv-type">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-location-dot me-1 text-brand"></i>Location</span>
+                    <span class="preview-value" id="pv-location">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-laptop-house me-1 text-brand"></i>Work
+                      Mode</span>
+                    <span class="preview-value" id="pv-workmode">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-users me-1 text-brand"></i>Vacancies</span>
+                    <span class="preview-value" id="pv-vacancies">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── SECTION: Requirements ── -->
+            <div class="preview-section">
+              <div class="preview-section-title"><i
+                  class="fas fa-list-check"></i> Requirements</div>
+              <div class="mb-3">
+                <p class="preview-label mb-1"><i
+                    class="fas fa-align-left me-1 text-brand"></i>Job
+                  Description</p>
+                <div id="pv-desc" class="text-secondary small"
+                  style="line-height:1.8">—</div>
+              </div>
+              <div class="mb-3">
+                <p class="preview-label mb-1"><i
+                    class="fas fa-graduation-cap me-1 text-brand"></i>Qualifications</p>
+                <div id="pv-qual" class="text-secondary small"
+                  style="line-height:1.8; white-space:pre-wrap">—</div>
+              </div>
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-school me-1 text-brand"></i>Education</span>
+                    <span class="preview-value" id="pv-education">—</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="preview-row">
+                    <span class="preview-label"><i
+                        class="fas fa-briefcase me-1 text-brand"></i>Experience</span>
+                    <span class="preview-value" id="pv-yearsexp">—</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2" id="pv-skills-wrap">
+                <p class="preview-label mb-2"><i
+                    class="fas fa-code me-1 text-brand"></i>Required Skills</p>
+                <div id="pv-skills"></div>
+              </div>
+              <div class="mt-3" id="pv-resp-wrap" style="display:none">
+                <p class="preview-label mb-1"><i
+                    class="fas fa-tasks me-1 text-brand"></i>Key
+                  Responsibilities</p>
+                <div id="pv-resp" class="text-secondary small"
+                  style="line-height:1.8; white-space:pre-wrap">—</div>
+              </div>
+            </div>
+
+            <!-- ── SECTION: Compensation ── -->
+            <div class="preview-section">
+              <div class="preview-section-title"><i
+                  class="fas fa-sack-dollar"></i> Compensation & Perks</div>
+              <div class="preview-row mb-3">
+                <span class="preview-label"><i
+                    class="fas fa-money-bill me-1 text-brand"></i>Salary</span>
+                <span class="preview-value fw-bold text-brand"
+                  id="pv-salary">—</span>
+              </div>
+              <div id="pv-perks-wrap">
+                <p class="preview-label mb-2"><i
+                    class="fas fa-star me-1 text-brand"></i>Perks & Benefits</p>
+                <div id="pv-perks"></div>
+              </div>
+              <div class="mt-3" id="pv-notes-wrap" style="display:none">
+                <p class="preview-label mb-1"><i
+                    class="fas fa-note-sticky me-1 text-brand"></i>Additional
+                  Notes</p>
+                <div id="pv-notes" class="text-secondary small"
+                  style="white-space:pre-wrap">—</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Visibility -->
+        <div class="mb-4">
+          <label class="form-label">Listing Visibility</label>
+          <div class="d-flex gap-3 flex-wrap">
+            <label class="form-check border rounded-3 p-3 flex-fill"
+              style="cursor:pointer; border-color:#E4E6F0 !important;">
+              <input class="form-check-input me-2" type="radio"
+                name="visibility" value="public" checked />
+              <strong>Public</strong><br>
+              <small class="text-muted">Visible to all job seekers</small>
+            </label>
+            <label class="form-check border rounded-3 p-3 flex-fill"
+              style="cursor:pointer; border-color:#E4E6F0 !important;">
+              <input class="form-check-input me-2" type="radio"
+                name="visibility" value="private" />
+              <strong>Private</strong><br>
+              <small class="text-muted">Share via direct link only</small>
+            </label>
+          </div>
+        </div>
+
+        <div
+          class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <button class="btn btn-outline-secondary" onclick="goStep(3)"><i
+              class="fas fa-arrow-left me-1"></i>Back</button>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-brand" onclick="saveDraft(this)"><i
+                class="fas fa-floppy-disk me-1"></i>Save as Draft</button>
+            <button class="btn btn-brand" onclick="publishJob()"><i
+                class="fas fa-rocket me-1"></i>Publish Job</button>
+          </div>
+        </div>
+
+      </div><!-- /panel4 -->
+
+    </div><!-- /container -->
+
+    <!-- ════════════════════════════════
+     SUCCESS OVERLAY
+════════════════════════════════ -->
+    <div id="successBox">
+      <div class="success-icon mb-2">
+        <i class="fas fa-check text-white fs-2"></i>
+      </div>
+      <h2 class="fw-bold">Job Published!</h2>
+      <p class="text-secondary mb-4">Your listing is now live on JobHive and
+        visible to thousands of job seekers.</p>
+
+      <div class="d-flex gap-3 flex-wrap justify-content-center">
+        <button class="btn btn-brand px-4" onclick="location.reload()">
+          <i class="fas fa-plus me-1"></i> Post Another Job
+        </button>
+        <a href="{% url 'company_dashboard' %}"
+          class="btn btn-outline-brand px-4">
+          <i class="fas fa-th-large me-1"></i> Go to Dashboard
+        </a>
+      </div>
+
+      <div class="mt-4 p-3 rounded"
+        style="background:#F0FDF4; border:1px solid #BBF7D0; max-width:400px;">
+        <p class="small text-success mb-0 fw-semibold">
+          <i class="fas fa-circle-check me-1"></i>
+          Your job has been submitted for admin review. It will go live within
+          24 hours.
+        </p>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+  var currentStep = 1;
+  var pickedType  = '';
+  var tags        = [];
+  var perks       = [];
+
+  /* ── SET MIN DATE ── */
+  document.getElementById('deadline').min = new Date().toISOString().split('T')[0];
+
+  /* ══════════════════════════
+     STEP NAVIGATION
+  ══════════════════════════ */
+  function goStep(n) {
+    if (n > currentStep && !validate(currentStep)) return;
+
+    for (var i = 1; i <= 4; i++) {
+      var dot = document.getElementById('dot' + i);
+      var lbl = document.getElementById('lbl' + i);
+      dot.className = 'step-circle mx-auto';
+      dot.innerHTML = '<span>' + i + '</span>';
+      lbl.className = 'step-label';
+
+      if (i < n) {
+        dot.className += ' done';
+        dot.innerHTML = '<i class="fas fa-check"></i>';
+        lbl.className = 'step-label done';
+        if (i <= 3) document.getElementById('line' + i).className = 'step-line done';
+      }
+    }
+
+    document.getElementById('dot' + n).className = 'step-circle active mx-auto';
+    document.getElementById('lbl' + n).className  = 'step-label active';
+
+    for (var j = 1; j <= 4; j++) {
+      document.getElementById('panel' + j).classList.remove('show');
+    }
+    document.getElementById('panel' + n).classList.add('show');
+
+    if (n === 4) buildPreview();
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══════════════════════════
+     VALIDATION
+  ══════════════════════════ */
+  function showErr(id, show) {
+    var el = document.getElementById(id);
+    if (el) { show ? el.classList.remove('d-none') : el.classList.add('d-none'); }
+  }
+
+  function validate(step) {
+    var ok = true;
+
+    if (step === 1) {
+      var title = document.getElementById('jobTitle').value.trim();
+      showErr('errJobTitle', !title); if (!title) ok = false;
+
+      var cat = document.getElementById('jobCategory').value;
+      showErr('errCategory', !cat || cat === ''); if (!cat) ok = false;
+
+      var exp = document.getElementById('expLevel').value;
+      showErr('errExpLevel', !exp || exp === ''); if (!exp) ok = false;
+
+      var loc = document.getElementById('jobLocation').value.trim();
+      showErr('errLocation', !loc); if (!loc) ok = false;
+
+      var wm = document.getElementById('workMode').value;
+      showErr('errWorkMode', !wm || wm === ''); if (!wm) ok = false;
+
+      var dl = document.getElementById('deadline').value;
+      showErr('errDeadline', !dl); if (!dl) ok = false;
+
+      if (!pickedType) { showErr('typeErr', true); ok = false; }
+      else showErr('typeErr', false);
+    }
+
+    if (step === 2) {
+      var desc = document.getElementById('jobDesc').innerText.trim();
+      var descOk = desc.length >= 20;
+      showErr('descErr', !descOk);
+      document.getElementById('jobDesc').style.borderColor = descOk ? '' : '#DC2626';
+      if (!descOk) ok = false;
+
+      var qual = document.getElementById('qualifications').value.trim();
+      showErr('errQual', !qual); if (!qual) ok = false;
+    }
+
+    return ok;
+  }
+
+  /* ══════════════════════════
+     EMPLOYMENT TYPE PICKER
+  ══════════════════════════ */
+  function pickType(el, type) {
+    document.querySelectorAll('.type-card').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    pickedType = type;
+    showErr('typeErr', false);
+  }
+
+  /* ══════════════════════════
+     RICH TEXT EDITOR
+  ══════════════════════════ */
+  function fmt(cmd) {
+    document.getElementById('jobDesc').focus();
+    document.execCommand(cmd, false, null);
+  }
+
+  /* ══════════════════════════
+     SKILLS TAGS
+  ══════════════════════════ */
+  function addTag(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      var input = document.getElementById('tagInput');
+      var val = input.value.replace(',','').trim();
+      if (val && !tags.includes(val)) { tags.push(val); renderTags(); }
+      input.value = '';
+    }
+    if (e.key === 'Backspace' && document.getElementById('tagInput').value === '' && tags.length) {
+      tags.pop(); renderTags();
+    }
+  }
+
+  function renderTags() {
+    var wrap = document.getElementById('tagsWrap');
+    var input = document.getElementById('tagInput');
+    wrap.querySelectorAll('.tag-chip').forEach(function(c) { c.remove(); });
+    tags.forEach(function(t, i) {
+      var chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = t + ' <span style="cursor:pointer;opacity:.6;" onclick="removeTag(' + i + ')"><i class="fas fa-xmark"></i></span>';
+      wrap.insertBefore(chip, input);
+    });
+  }
+
+  function removeTag(i) { tags.splice(i, 1); renderTags(); }
+
+  /* ══════════════════════════
+     SALARY TOGGLE
+  ══════════════════════════ */
+  function toggleSalary() {
+    var t = document.getElementById('salaryType').value;
+    document.getElementById('rangeWrap').classList.toggle('d-none', t !== 'range');
+    document.getElementById('fixedWrap').classList.toggle('d-none', t !== 'fixed');
+    var hide = (t === 'negotiable' || t === 'unpaid');
+    document.getElementById('currencyWrap').classList.toggle('d-none', hide);
+  }
+
+  /* ══════════════════════════
+     PERKS TOGGLE
+  ══════════════════════════ */
+  function togglePerk(el, name) {
+    el.classList.toggle('active');
+    var idx = perks.indexOf(name);
+    if (idx === -1) perks.push(name); else perks.splice(idx, 1);
+  }
+
+  /* ══════════════════════════
+     BUILD FULL PREVIEW
+  ══════════════════════════ */
+  function buildPreview() {
+    var get = function(id) { return document.getElementById(id); };
+    var val = function(id) {
+      var el = get(id);
+      if (!el) return '—';
+      if (el.tagName === 'SELECT') {
+        return el.value && el.selectedIndex > 0 ? el.options[el.selectedIndex].text : '—';
+      }
+      return el.value ? el.value.trim() : '—';
+    };
+
+    // Header
+    get('pvTitle').textContent = val('jobTitle');
+    get('pvDeadline').textContent = val('deadline') || '—';
+
+    // Meta badges (header)
+    var meta = get('pvMeta');
+    meta.innerHTML = '';
+    var badges = [
+      { icon: 'fa-location-dot', v: val('jobLocation') },
+      { icon: 'fa-clock',        v: pickedType || '—' },
+      { icon: 'fa-laptop-house', v: val('workMode') }
+    ];
+    badges.forEach(function(b) {
+      if (b.v === '—' || !b.v) return;
+      var s = document.createElement('span');
+      s.className = 'badge rounded-pill px-3 py-1';
+      s.style = 'background:rgba(255,255,255,.15); color:#fff; font-size:.74rem; border:1px solid rgba(255,255,255,.2);';
+      s.innerHTML = '<i class="fas ' + b.icon + ' me-1"></i>' + b.v;
+      meta.appendChild(s);
+    });
+
+    // Basic Info
+    get('pv-category').textContent   = val('jobCategory');
+    get('pv-explevel').textContent   = val('expLevel');
+    get('pv-type').textContent       = pickedType || '—';
+    get('pv-location').textContent   = val('jobLocation');
+    get('pv-workmode').textContent   = val('workMode');
+    get('pv-vacancies').textContent  = val('vacancies');
+
+    // Requirements
+    get('pv-desc').innerHTML = get('jobDesc').innerHTML || '<em class="text-muted">No description provided.</em>';
+    get('pv-qual').textContent = val('qualifications');
+    get('pv-education').textContent = val('education');
+    get('pv-yearsexp').textContent  = val('yearsExp');
+
+    // Skills
+    var pvSkills = get('pv-skills');
+    pvSkills.innerHTML = '';
+    if (tags.length) {
+      tags.forEach(function(t) {
+        pvSkills.innerHTML += '<span class="tag-chip me-1 mb-1">' + t + '</span>';
+      });
+    } else {
+      pvSkills.innerHTML = '<span class="text-muted small">No skills specified</span>';
+    }
+
+    // Responsibilities
+    var resp = val('responsibilities');
+    if (resp && resp !== '—') {
+      get('pv-resp-wrap').style.display = '';
+      get('pv-resp').textContent = resp;
+    } else {
+      get('pv-resp-wrap').style.display = 'none';
+    }
+
+    // Compensation
+    var salType = get('salaryType').value;
+    var cur = get('currency').value;
+    var salText = '—';
+    if (salType === 'range') {
+      var mn = get('salMin').value, mx = get('salMax').value;
+      if (mn && mx) salText = cur + ' ' + Number(mn).toLocaleString() + ' – ' + Number(mx).toLocaleString() + ' / month';
+      else if (mn) salText = cur + ' ' + Number(mn).toLocaleString() + '+ / month';
+    } else if (salType === 'fixed') {
+      var fx = get('salFixed').value;
+      if (fx) salText = cur + ' ' + Number(fx).toLocaleString() + ' / month';
+    } else if (salType === 'negotiable') {
+      salText = 'Salary Negotiable';
+    } else if (salType === 'unpaid') {
+      salText = 'Unpaid Internship';
+    }
+    get('pv-salary').textContent = salText;
+
+    // Perks
+    var pvPerks = get('pv-perks');
+    pvPerks.innerHTML = '';
+    if (perks.length) {
+      perks.forEach(function(p) {
+        pvPerks.innerHTML += '<span class="badge rounded-pill px-3 py-2 me-1 mb-1" style="background:#F0FDF4;color:#16A34A;border:1px solid #BBF7D0;font-size:.75rem;"><i class="fas fa-circle-check me-1"></i>' + p + '</span>';
+      });
+    } else {
+      pvPerks.innerHTML = '<span class="text-muted small">No perks specified</span>';
+    }
+
+    // Notes
+    var notes = val('notes');
+    if (notes && notes !== '—') {
+      get('pv-notes-wrap').style.display = '';
+      get('pv-notes').textContent = notes;
+    } else {
+      get('pv-notes-wrap').style.display = 'none';
+    }
+  }
+
+  /* ══════════════════════════
+     PUBLISH / DRAFT
+  ══════════════════════════ */
+  function publishJob() {
+    document.getElementById('successBox').classList.add('show');
+  }
+
+  function saveDraft(btn) {
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving…';
+    btn.disabled = true;
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-check me-1"></i>Saved!';
+      btn.style.color = '#16A34A';
+      setTimeout(function() {
+        btn.innerHTML = '<i class="fas fa-floppy-disk me-1"></i>Save as Draft';
+        btn.style.color = '';
+        btn.disabled = false;
+      }, 2000);
+    }, 1000);
+  }
+</script>
+
+  </body>
+</html>
+
+{% endblock %}
