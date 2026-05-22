@@ -1,0 +1,572 @@
+{% extends 'custom_admin/admin_layout.html' %}
+{% block title %}Reject Company{% endblock %}
+{% block page_title %}Reject Company{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-wrap {
+        max-width: 860px;
+    }
+
+    /* Back button */
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        color: #475569;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        margin-bottom: 20px;
+        transition: all .2s;
+    }
+
+    .back-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    /* Company info banner */
+    .company-banner {
+        background: linear-gradient(135deg, #1a0f0f, #3d1515);
+        border-radius: 14px;
+        padding: 20px 24px;
+        color: #fff;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .company-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, .2);
+        border: 1.5px solid rgba(239, 68, 68, .4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #f87171;
+        flex-shrink: 0;
+    }
+
+    .company-banner h5 {
+        margin: 0 0 3px;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .company-banner p {
+        margin: 0;
+        font-size: .82rem;
+        opacity: .7;
+    }
+
+    /* Warning box */
+    .warn-box {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: .82rem;
+        color: #9a3412;
+    }
+
+    .warn-box i {
+        color: #f97316;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    /* Section card */
+    .form-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 22px 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+        margin-bottom: 18px;
+    }
+
+    .form-card-title {
+        font-size: .78rem;
+        font-weight: 700;
+        color: #94a3b8;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-card-title i {
+        color: #ef4444;
+        font-size: 1rem;
+    }
+
+    /* Overall reason textarea */
+    .form-label {
+        font-size: .8rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 5px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #e2e8f0;
+        font-size: .875rem;
+        padding: 10px 13px;
+        transition: border-color .2s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, .12);
+        outline: none;
+    }
+
+    /* Field reject row */
+    .field-row {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .field-row:last-child {
+        border-bottom: none;
+    }
+
+    .field-name {
+        font-size: .82rem;
+        font-weight: 600;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .field-name .curr-val {
+        font-size: .74rem;
+        color: #94a3b8;
+        font-weight: 400;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .field-reason {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .field-reason input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        flex-shrink: 0;
+        accent-color: #ef4444;
+    }
+
+    .field-reason input[type="text"] {
+        flex: 1;
+        padding: 7px 11px;
+        font-size: .8rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 7px;
+        transition: border-color .2s;
+        color: #1e293b;
+    }
+
+    .field-reason input[type="text"]:disabled {
+        background: #f8fafc;
+        color: #cbd5e1;
+    }
+
+    .field-reason input[type="text"]:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, .1);
+        outline: none;
+    }
+
+    .field-reason input[type="text"].active {
+        border-color: #fca5a5;
+        background: #fff5f5;
+    }
+
+    /* Submit buttons */
+    .btn-reject-submit {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 28px;
+        font-weight: 700;
+        font-size: .9rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: opacity .2s, transform .15s;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, .30);
+    }
+
+    .btn-reject-submit:hover {
+        opacity: .9;
+        transform: translateY(-1px);
+    }
+
+    .btn-reject-submit:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .btn-cancel {
+        background: #fff;
+        border: 1.5px solid #e2e8f0;
+        color: #475569;
+        border-radius: 9px;
+        padding: 10px 24px;
+        font-weight: 600;
+        font-size: .9rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all .2s;
+    }
+
+    .btn-cancel:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .spin {
+        width: 15px;
+        height: 15px;
+        border: 2px solid rgba(255, 255, 255, .3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: sp .65s linear infinite;
+        display: none;
+    }
+
+    @keyframes sp {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+    <a href="{% url 'custom_admin:admin_dashboard' %}" class="back-btn">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <!-- Company Banner -->
+    <div class="company-banner">
+        <div class="company-avatar">
+            {% if profile and profile.trade_name %}
+            {{ profile.trade_name|slice:":2"|upper }}
+            {% else %}
+            {{ company_user.username|slice:":2"|upper }}
+            {% endif %}
+        </div>
+        <div>
+            <h5>
+                {% if profile and profile.trade_name %}{{ profile.trade_name }}
+                {% else %}{{ company_user.username }}{% endif %}
+            </h5>
+            <p>{{ company_user.email }}
+                {% if profile and profile.industry %} · {{ profile.industry }}{% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Warning -->
+    <div class="warn-box">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>
+            <strong>Reject karne ke baad</strong> company login nahi kar sakegi aur unhe notification milega.
+            Har rejected field ke liye reason likhein taake company samjhe kya fix karna hai.
+        </span>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} mb-3"
+        style="border-radius:10px;font-size:.85rem;">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" id="rejectForm">
+        {% csrf_token %}
+
+        <!-- Overall Reason -->
+        <div class="form-card">
+            <div class="form-card-title"><i class="bi bi-chat-text"></i> Overall Rejection Reason</div>
+            <label class="form-label">Admin Message <span style="color:#ef4444;">*</span></label>
+            <textarea name="admin_message" class="form-control" rows="3" required
+                placeholder="e.g. Your company information is incomplete. Please correct the highlighted fields and resubmit."></textarea>
+            <small style="font-size:.76rem;color:#94a3b8;margin-top:5px;display:block;">
+                Yeh message company ko login karne par dikhega.
+            </small>
+        </div>
+
+        <!-- Field-wise Rejection -->
+        {% if profile %}
+        <div class="form-card">
+            <div class="form-card-title"><i class="bi bi-list-check"></i> Fields to Reject</div>
+            <small style="font-size:.76rem;color:#94a3b8;margin-bottom:14px;display:block;">
+                Checkbox tick karein aur reason likhein — sirf wahi fields company ko fix karni hongi.
+            </small>
+
+            <!-- Trade Name -->
+            {% if profile.trade_name %}
+            <div class="field-row">
+                <div class="field-name">
+                    Trade Name
+                    <span class="curr-val">{{ profile.trade_name }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_trade_name" onchange="toggleField(this,'field_trade_name')">
+                    <input type="text" name="field_trade_name" id="field_trade_name"
+                        placeholder="e.g. Name is incorrect or misleading" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Legal Name -->
+            {% if profile.legal_name %}
+            <div class="field-row">
+                <div class="field-name">
+                    Legal Name
+                    <span class="curr-val">{{ profile.legal_name }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_legal_name" onchange="toggleField(this,'field_legal_name')">
+                    <input type="text" name="field_legal_name" id="field_legal_name"
+                        placeholder="e.g. Legal name does not match registration" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- NTN Number -->
+            {% if profile.ntn_number %}
+            <div class="field-row">
+                <div class="field-name">
+                    NTN / CUIN
+                    <span class="curr-val">{{ profile.ntn_number }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_ntn_number" onchange="toggleField(this,'field_ntn_number')">
+                    <input type="text" name="field_ntn_number" id="field_ntn_number"
+                        placeholder="e.g. Invalid NTN number format" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Company Email -->
+            {% if profile.company_email %}
+            <div class="field-row">
+                <div class="field-name">
+                    Company Email
+                    <span class="curr-val">{{ profile.company_email }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_company_email" onchange="toggleField(this,'field_company_email')">
+                    <input type="text" name="field_company_email" id="field_company_email"
+                        placeholder="e.g. Email is not a valid company domain" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Company Type -->
+            {% if profile.company_type %}
+            <div class="field-row">
+                <div class="field-name">
+                    Company Type
+                    <span class="curr-val">{{ profile.company_type }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_company_type" onchange="toggleField(this,'field_company_type')">
+                    <input type="text" name="field_company_type" id="field_company_type"
+                        placeholder="e.g. Selected type does not match" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Industry -->
+            {% if profile.industry %}
+            <div class="field-row">
+                <div class="field-name">
+                    Industry
+                    <span class="curr-val">{{ profile.industry }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_industry" onchange="toggleField(this,'field_industry')">
+                    <input type="text" name="field_industry" id="field_industry"
+                        placeholder="e.g. Industry selection is incorrect" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Logo -->
+            <div class="field-row">
+                <div class="field-name">
+                    Logo
+                    <span class="curr-val">
+                        {% if profile.logo %}Uploaded{% else %}Not uploaded{% endif %}
+                    </span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_logo" onchange="toggleField(this,'field_logo')">
+                    <input type="text" name="field_logo" id="field_logo"
+                        placeholder="e.g. Logo is blurry or not visible" disabled />
+                </div>
+            </div>
+
+            <!-- City -->
+            {% if profile.city %}
+            <div class="field-row">
+                <div class="field-name">
+                    City
+                    <span class="curr-val">{{ profile.city }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_city" onchange="toggleField(this,'field_city')">
+                    <input type="text" name="field_city" id="field_city" placeholder="e.g. City name is incorrect"
+                        disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Legal Address -->
+            {% if profile.legal_address %}
+            <div class="field-row">
+                <div class="field-name">
+                    Legal Address
+                    <span class="curr-val">{{ profile.legal_address|truncatechars:30 }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_legal_address" onchange="toggleField(this,'field_legal_address')">
+                    <input type="text" name="field_legal_address" id="field_legal_address"
+                        placeholder="e.g. Address is incomplete" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Country -->
+            {% if profile.country %}
+            <div class="field-row">
+                <div class="field-name">
+                    Country
+                    <span class="curr-val">{{ profile.country }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_country" onchange="toggleField(this,'field_country')">
+                    <input type="text" name="field_country" id="field_country"
+                        placeholder="e.g. Country selection is incorrect" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Website -->
+            {% if profile.website %}
+            <div class="field-row">
+                <div class="field-name">
+                    Website
+                    <span class="curr-val">{{ profile.website|truncatechars:25 }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_website" onchange="toggleField(this,'field_website')">
+                    <input type="text" name="field_website" id="field_website" placeholder="e.g. Website URL is invalid"
+                        disabled />
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Overview -->
+            {% if profile.overview %}
+            <div class="field-row">
+                <div class="field-name">
+                    Overview
+                    <span class="curr-val">{{ profile.overview|truncatechars:30 }}</span>
+                </div>
+                <div class="field-reason">
+                    <input type="checkbox" id="chk_overview" onchange="toggleField(this,'field_overview')">
+                    <input type="text" name="field_overview" id="field_overview"
+                        placeholder="e.g. Overview is too vague" disabled />
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+
+        <!-- Submit -->
+        <div class="d-flex gap-3 align-items-center">
+            <a href="{% url 'custom_admin:admin_dashboard' %}" class="btn-cancel">
+                <i class="bi bi-x"></i> Cancel
+            </a>
+            <button type="submit" class="btn-reject-submit" id="submitBtn">
+                <span class="spin" id="spinEl"></span>
+                <i class="bi bi-x-circle" id="submitIco"></i>
+                <span id="submitTxt">Reject Company</span>
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    function toggleField(checkbox, fieldId) {
+        var inp = document.getElementById(fieldId);
+        inp.disabled = !checkbox.checked;
+        if (checkbox.checked) {
+            inp.classList.add('active');
+            inp.focus();
+        } else {
+            inp.classList.remove('active');
+            inp.value = '';
+        }
+    }
+
+    document.getElementById('rejectForm').addEventListener('submit', function (e) {
+        var msg = document.querySelector('[name="admin_message"]').value.trim();
+        if (!msg) {
+            e.preventDefault();
+            document.querySelector('[name="admin_message"]').focus();
+            return;
+        }
+        var btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        document.getElementById('spinEl').style.display = 'block';
+        document.getElementById('submitIco').style.display = 'none';
+        document.getElementById('submitTxt').textContent = 'Rejecting…';
+    });
+</script>
+{% endblock %}

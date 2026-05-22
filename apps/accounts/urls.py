@@ -20,7 +20,7 @@ urlpatterns = [
     # path('company/documents/', views.company_documents, name='company_documents'),
     path('company/pending/',           views.company_pending,            name='company_pending'),
     path('company/documents-review/',  views.company_documents_review,   name='company_documents_review'),
-    path('company/approved/',          views.company_approved,           name='company_approved'),
+    # path('company/approved/',          views.company_approved,           name='company_approved'),
     path('company/registration/',        views.company_registration,       name='company_registration'),
 
 ]
