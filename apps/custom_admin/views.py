@@ -33,10 +33,11 @@ def admin_login(request):
         if user.is_superuser:
             # login(request, user)
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-            return redirect("custom_admin:dashboard")
-
-        form.add_error(None, "You are not authorized as admin")
-
+            return redirect("custom_admin:admin_dashboard")
+        else:
+            form.add_error(None, "You are not authorized as admin")
+    # else:
+    #     form.add_error(None, "Invalid Admin credentials.")
     return render(request, "custom_admin/admin_login.html", {"form": form})
 
 
@@ -131,34 +132,6 @@ def admin_reset_password(request, uidb64, token):
         },
     )
 
-
-# ─────────────────────────────────────────
-#  DASHBOARD
-# ─────────────────────────────────────────
-# @admin_login_required
-# def admin_dashboard(request):
-#     total_users = User.objects.count()
-#     total_candidates = (
-#         User.objects.filter(role="CANDIDATE").count() if hasattr(User, "role") else 0
-#     )
-#     total_companies = (
-#         User.objects.filter(role="COMPANY").count() if hasattr(User, "role") else 0
-#     )
-#     total_admins = User.objects.filter(is_staff=True).count()
-
-#     recent_users = User.objects.order_by("-date_joined")[:10]
-
-#     context = {
-#         "total_users": total_users,
-#         "total_candidates": total_candidates,
-#         "total_companies": total_companies,
-#         "total_admins": total_admins,
-#         "recent_users": recent_users,
-#         "admin_user": request.user,
-#     }
-#     return render(request, "custom_admin/admin_dashboard.html", context)
-
-
 # ──────────────────────────────────────────────
 #  DASHBOARD
 # ──────────────────────────────────────────────
@@ -171,18 +144,11 @@ def admin_dashboard(request):
     total_admins = User.objects.filter(is_staff=True).count()
 
     # Companies by status
-    pending_companies = User.objects.filter(
-        role="COMPANY", company_status="PENDING"
-    ).select_related("company_profile")
-    approved_companies = User.objects.filter(
-        role="COMPANY", company_status="APPROVED"
-    ).select_related("company_profile")
-    rejected_companies = User.objects.filter(
-        role="COMPANY", company_status="REJECTED"
-    ).select_related("company_profile")
-    rollback_companies = User.objects.filter(
-        role="COMPANY", company_status="ROLLBACK"
-    ).select_related("company_profile")
+    pending_companies = User.objects.filter(role="COMPANY", company_profile__company_status="PENDING").select_related("company_profile")
+
+    approved_companies = User.objects.filter(role="COMPANY", company_profile__company_status="APPROVED").select_related("company_profile")
+    rejected_companies = User.objects.filter(role="COMPANY", company_profile__company_status="REJECTED").select_related("company_profile")
+    rollback_companies = User.objects.filter(role="COMPANY", company_profile__company_status="ROLLBACK").select_related("company_profile")
 
     # Recent registrations
     recent_users = User.objects.order_by("-date_joined")[:10]
@@ -225,22 +191,47 @@ def view_company_details(request, user_id):
 # ──────────────────────────────────────────────
 @admin_login_required
 def approve_company(request, user_id):
-    user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-    user.is_approved = True
-    user.company_status = "APPROVED"
-    user.save()
+    company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
 
     try:
-        profile = user.company_profile
-        profile.rejected_fields = {}
-        profile.rejection_reason = ""
-        profile.admin_message = ""
+        profile = company_user.company_profile
+    except CompanyProfile.DoesNotExist:
+        profile = None
+
+    # POST — approve karo
+    if request.method == "POST":
+        company_user.is_approved = True
+        company_user.save()
+
+        if profile:
+            profile.company_status = "APPROVED"
+            profile.feedback = ""
+            profile.rejected_fields = {}
+            profile.save()
+
+        messages.success(request, f"{company_user.email} approved successfully.")
+        return redirect("custom_admin:admin_dashboard")
+
+    # GET — confirmation page dikhao
+    return render(request, "custom_admin/approve_company.html", {
+        "company_user": company_user,
+        "profile": profile,
+    })
+# def approve_company(request, user_id):
+    company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+    company.is_approved = True
+    company.company_status = "APPROVED"
+    company.save()
+
+    try:
+        profile = company.company_profile
+        profile.feedback = ""
         profile.save()
     except CompanyProfile.DoesNotExist:
-        pass
+        messages.error(request,'Compny not found.')
 
-    messages.success(request, f"{user.email} approved successfully.")
-    return redirect("custom_admin:dashboard")
+    messages.success(request, f"{company.email} approved successfully.")
+    return redirect("custom_admin:admin_dashboard")
 
 
 # ──────────────────────────────────────────────
@@ -290,7 +281,10 @@ def reject_company(request, user_id):
         company_user.save()
 
         messages.success(request, f"{company_user.email} rejected.")
-        return redirect("custom_admin:dashboard")
+
+        return redirect('custom_admin:admin_dashboard')
+        # return render("custom_admin/reject_company.html")
+        # return render(request, "custom_admin/reject_company.html")
 
     # GET — show reject form
     try:
@@ -298,14 +292,7 @@ def reject_company(request, user_id):
     except CompanyProfile.DoesNotExist:
         profile = None
 
-    return render(
-        request,
-        "custom_admin/reject_company.html",
-        {
-            "company_user": company_user,
-            "profile": profile,
-        },
-    )
+    return render(request,"custom_admin/reject_company.html",{"company_user": company_user, "profile": profile})
 
 
 # ──────────────────────────────────────────────
@@ -355,7 +342,7 @@ def rollback_company(request, user_id):
         company_user.save()
 
         messages.success(request, f"{company_user.email} sent for rollback correction.")
-        return redirect("custom_admin:dashboard")
+        return redirect("custom_admin:admin_dashboard")
 
     # show rollback form
     try:
@@ -382,40 +369,43 @@ def company_type(request):
     return render(request, "custom_admin/company_type.html")
 
 
-@staff_member_required
+# # @admin_login_required 
+# def admin_company_list(request):
+#     companies = CustomUser.objects.filter(role="COMPANY")
+#     return render(request, "custom_admin/admin_dashboard.html", {"companies": companies})
 def admin_company_list(request):
     companies = CustomUser.objects.filter(role="COMPANY")
-    return render(
-        request, "custom_admin/admin_dashboard.html", {"companies": companies}
-    )
+    # Ya jo bhi aapka related model name ho: 'profile', 'company', etc.
+    
+    return redirect("custom_admin:admin_dashboard")
+
+# @admin_login_required 
+# def approve_company(request, user_id):
+#     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+#     company.is_approved = True
+#     company.save()
+#     return redirect("custom_admin:admin_company_list")
 
 
-@staff_member_required
-def approve_company(request, user_id):
-    company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-    company.is_approved = True
-    company.save()
-    return redirect("admin_company_list")
+# @admin_login_required 
+# def reject_company(request, user_id):
+#     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+#     company.is_approved = False
+#     company.save()
+#     return redirect("custom_admin:admin_company_list")
 
 
-@staff_member_required
-def reject_company(request, user_id):
-    company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-    company.is_approved = False
-    company.save()
-    return redirect("admin_company_list")
+# def company_type_list(request):
+#     types = CompanyType.objects.all()
+#     return render(request, "custom_admin/company_type.html", {"types": types})
 
 
-def company_type_list(request):
-    types = CompanyType.objects.all()
-    return render(request, "custom_admin/company_type.html", {"types": types})
+# def delete_company(request, user_id):
+#     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+#     company.delete()
+#     return redirect("custom_admin:admin_dashboard")
 
-def delete_company(request, user_id):
-    company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-    company.delete()
-    return redirect("custom_admin:dashboard")
-
-def edit_company(request, user_id):
-    company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-    # Implement form handling for editing company details
-    return render(request, "custom_admin/edit_company.html", {"company": company})
+# def edit_company(request, user_id):
+#     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+#     # Implement form handling for editing company details
+#     return render(request, "custom_admin/edit_company.html", {"company": company})

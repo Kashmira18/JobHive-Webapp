@@ -8,10 +8,26 @@ class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ("COMPANY",   "Company"),
         ("CANDIDATE", "Candidate"),
+        ('ADMIN','admin')
     )
     role        = models.CharField(max_length=20, choices=ROLE_CHOICES, default="CANDIDATE")
     is_approved = models.BooleanField(default=False)
     phone       = models.CharField(max_length=20, blank=True, null=True)
+    def save(self, *args, **kwargs):
+
+        # agar user superuser hai to role automatically ADMIN ho
+        if self.is_superuser:
+            self.role = "ADMIN"
+            self.is_approved=True
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.username} ({self.role})"
+
+
+class CompanyProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE ,related_name="company_profile")
+    
 
     STATUS_CHOICES = (
         ("PENDING",   "Pending Review"),
@@ -23,23 +39,14 @@ class CustomUser(AbstractUser):
         max_length=20,
         choices=STATUS_CHOICES,
         default="PENDING",
-        blank=True,
-        null=True
+        # blank=True,
+        # null=True
     )
-
-    def __str__(self):
-        return f"{self.username} ({self.role})"
-
-
-class CompanyProfile(models.Model):
-    user = models.OneToOneField(
-        CustomUser,
-        on_delete=models.CASCADE,
-        related_name="company_profile"
-    )
+    feedback = models.TextField(blank=True, null=True) #for admin feedback to company
 
     # Owner Info
     designation     = models.CharField(max_length=100, blank=True)
+    # company_name=models.CharField(max_length=20, blank=True)
 
     # Company Info
     trade_name      = models.CharField(max_length=200, blank=True)
@@ -75,21 +82,22 @@ class CompanyProfile(models.Model):
     pinterest       = models.URLField(blank=True)
 
     # Admin feedback — REJECT + ROLLBACK 
-    rejection_reason = models.TextField(blank=True)
-    admin_message    = models.TextField(blank=True)   # rollback ya reject ka message
-    rejected_fields  = models.JSONField(default=dict, blank=True)
+    # rejection_reason = models.TextField(blank=True)
+    # admin_message    = models.TextField(blank=True)   # rollback ya reject ka message
+    # rejected_fields  = models.JSONField(default=dict, blank=True)
     # Format: {
     #   "trade_name": "Name is incorrect",
     #   "logo":       "Logo is blurry",
     #   "ntn_number": "Invalid NTN"
     # }
+    
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.trade_name or self.user.username} — Profile"
+        return self.company_name
 
     class Meta:
         verbose_name        = "Company Profile"

@@ -21,7 +21,8 @@ def register_view(request):
     if request.method == "POST":
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.save()
             if user.role == "COMPANY":
                 # Company → pending
                 # user session mein store hoa sirf pending show karne ke liye

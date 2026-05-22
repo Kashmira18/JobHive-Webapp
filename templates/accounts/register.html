@@ -620,6 +620,7 @@
         <!-- ═══════ RIGHT ═══════ -->
         <section class="right">
             <div class="card-pro">
+                {%csrf_token%}
 
                 <h3>Create Account</h3>
                 <p class="subtitle">Choose your account type to get
@@ -652,7 +653,7 @@
                     </button>
                 </div>
 
-                <form method="POST" id="regForm" novalidate>
+                <form method="POST" id="regForm">
                     {% csrf_token %}
                     <input type="hidden" name="role" id="roleVal" value="{{ form.role.value|default:'CANDIDATE' }}" />
 
@@ -674,8 +675,7 @@
                                         autocomplete="username" />
                                 </div>
                                 {% if form.username.errors %}
-                                <span class="inv-fb">{{
-                                    form.username.errors.0 }}</span>
+                                <span class="inv-fb">{{form.username.errors.0 }}</span>
                                 {% endif %}
                             </div>
 
@@ -691,8 +691,7 @@
                                         autocomplete="email" />
                                 </div>
                                 {% if form.email.errors %}
-                                <span class="inv-fb">{{ form.email.errors.0
-                                    }}</span>
+                                <span class="inv-fb">{{ form.email.errors.0 }}</span>
                                 {% endif %}
                             </div>
 
@@ -727,8 +726,7 @@
                                 </div>
                                 <div class="str-lbl" id="c_strLbl"></div>
                                 {% if form.password1.errors %}
-                                <span class="inv-fb">{{
-                                    form.password1.errors.0 }}</span>
+                                <span class="inv-fb">{{form.password1.errors.0 }}</span>
                                 {% endif %}
                             </div>
 
@@ -747,8 +745,7 @@
                                 </div>
                                 <div class="match-msg d-none" id="c_match"></div>
                                 {% if form.password2.errors %}
-                                <span class="inv-fb">{{
-                                    form.password2.errors.0 }}</span>
+                                <span class="inv-fb">{{form.password2.errors.0 }}</span>
                                 {% endif %}
                             </div>
 
