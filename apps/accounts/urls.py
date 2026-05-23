@@ -17,6 +17,7 @@ urlpatterns = [
     path('reset-password/invalid/', views.custom_password_reset_invalid, name='password_reset_invalid'),
 
         # ── Company Approval Flow ──
+    path("company/approved/", views.company_approved, name="company_approved"),
     # path('company/documents/', views.company_documents, name='company_documents'),
     path('company/pending/',           views.company_pending,            name='company_pending'),
     path('company/documents-review/',  views.company_documents_review,   name='company_documents_review'),

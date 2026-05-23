@@ -46,50 +46,64 @@ def register_view(request):
 
 
 # ── LOGIN ──
-# ____________________________________________________________
+
+# _______________________________________________________________________________________
+
+
 # def login_view(request):
 #     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
+#         username_or_email = request.POST.get("username", "").strip()
+#         password = request.POST.get("password", "")
 
-#         if "@" in username:
-#             try:
-#                 user_obj = CustomUser.objects.filter(email=username).first()
-#                 target_username = user_obj.username
-#             except CustomUser.DoesNotExist:
-#                 target_username = None
+#         # Email se username nikalna
+#         if "@" in username_or_email:
+#             user_obj = CustomUser.objects.filter(
+#                 email__iexact=username_or_email
+#             ).first()
+#             target_username = user_obj.username if user_obj else None
 #         else:
-#             target_username = username
-
+#             target_username = username_or_email
 
 #         user = authenticate(request, username=target_username, password=password)
 
 #         if user is not None:
-#             login(request, user)
+
+#             # ── COMPANY ──
 #             if user.role == "COMPANY":
-#                 if not user.is_approved:
-#                     logout(request)
-#                     messages.error(request, "Your company account is not approved yet.")
-#                     return redirect("login")
-#                 return redirect("company_dashboard")
+
+#                 if user.is_approved:
+#                     # Approved → pehle congrats page, login wahan hoga
+#                     request.session["pending_user_id"] = user.pk
+#                     return redirect("company_approved")  # ← CHANGE
+#                 else:
+#                     # Not approved → pending page
+#                     request.session["pending_user_id"] = user.pk
+#                     return redirect("company_pending")
+
+#             # ── CANDIDATE ──
 #             else:
-#                 return redirect("candidate_dashboard")
+#                 login(request, user)
+#                 return redirect("candidate:candidate_dashboard")
+
 #         else:
-#             messages.error(request, "Invalid username or password.")
+#             messages.error(
+#                 request, "Invalid email/username or password. Please try again."
+#             )
+
 #     return render(request, "accounts/login.html")
-# _______________________________________________________________________________________
+
+# _______________________________________________________________________________
 
 
 def login_view(request):
+    form = LoginForm(request.POST or None)
+
     if request.method == "POST":
         username_or_email = request.POST.get("username", "").strip()
-        password = request.POST.get("password", "")
+        password          = request.POST.get("password", "")
 
-        # Email se username nikalna
         if "@" in username_or_email:
-            user_obj = CustomUser.objects.filter(
-                email__iexact=username_or_email
-            ).first()
+            user_obj        = CustomUser.objects.filter(email__iexact=username_or_email).first()
             target_username = user_obj.username if user_obj else None
         else:
             target_username = username_or_email
@@ -97,30 +111,86 @@ def login_view(request):
         user = authenticate(request, username=target_username, password=password)
 
         if user is not None:
-
-            # ── COMPANY ──
             if user.role == "COMPANY":
+                request.session["pending_user_id"] = user.pk
 
-                if user.is_approved:
-                    # Approved → pehle congrats page, login wahan hoga
+                # Profile se safe tareeqay se status check karna
+                try:
+                    profile = user.company_profile
+                    status = profile.company_status
+                except CompanyProfile.DoesNotExist:
+                    status = "PENDING"
+
+                # ── APPROVED ──
+                if user.is_approved and status == "APPROVED":
+                    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+                    return redirect("company:company_dashboard")
+
+                elif user.is_approved and status == "JUST_APPROVED":
                     request.session["pending_user_id"] = user.pk
-                    return redirect("company_approved")  # ← CHANGE
+                    return redirect("company_approved")
+
+                # ── REJECTED ──
+                elif status == "REJECTED":
+                    return redirect("company_resubmit")
+
+                # ── ROLLBACK ──
+                elif status == "ROLLBACK":
+                    return redirect("company_resubmit")
+
+                # ── PENDING ──
                 else:
-                    # Not approved → pending page
-                    request.session["pending_user_id"] = user.pk
                     return redirect("company_pending")
 
-            # ── CANDIDATE ──
             else:
-                login(request, user)
+                # Candidate logic
+                login(request, user, backend="django.contrib.auth.backends.ModelBackend")
                 return redirect("candidate:candidate_dashboard")
 
         else:
-            messages.error(
-                request, "Invalid email/username or password. Please try again."
-            )
+            messages.error(request, "Invalid email/username or password. Please try again.")
 
-    return render(request, "accounts/login.html")
+    return render(request, "accounts/login.html", {"form": form})
+
+
+
+
+def company_approved(request):
+    user_id = request.session.get("pending_user_id")
+
+    if not user_id:
+        if request.user.is_authenticated and request.user.role == "COMPANY":
+            return redirect("company:company_dashboard")
+        return redirect("login")
+
+    try:
+        user = CustomUser.objects.get(pk=user_id)
+        profile = user.company_profile
+    except (CustomUser.DoesNotExist, CompanyProfile.DoesNotExist):
+        return redirect("login")
+
+    if not user.is_approved:
+        return redirect("company_pending")
+
+    # ── STATUS CHANGED TO PERMANENT APPROVED ──
+    # Taake agli dafa login karne par Congrats page bypass ho jaye
+    profile.company_status = "APPROVED"
+    profile.save()
+
+    # Session clear
+    if "pending_user_id" in request.session:
+        del request.session["pending_user_id"]
+
+    # Login execute karein
+    login(request, user, backend="django.contrib.auth.backends.EmailOrUsernameBackend")
+
+    # Congrats template render hoga jahan 5 sec ka JS laga hai
+    return render(request, "accounts/company_approved.html", {"user": user})
+
+
+
+
+
 
 
 # ── LOGOUT ──
@@ -300,13 +370,7 @@ def custom_password_reset_invalid(request):
     return render(request, "accounts/password_reset_invalid.html")
 
 
-# def company_registration(request):
-#     return render(request, "accounts/company_registration.html")
 def company_registration(request):
-    """
-    Company registration ke baad profile complete karne ka form.
-    User already registered hai (role=COMPANY), ab details fill karni hain.
-    """
     # Session se user lo
     user_id = request.session.get("pending_user_id")
     if not user_id:

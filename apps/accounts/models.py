@@ -25,6 +25,8 @@ class CustomUser(AbstractUser):
         return f"{self.username} ({self.role})"
 
 
+
+
 class CompanyProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE ,related_name="company_profile")
     
@@ -39,8 +41,8 @@ class CompanyProfile(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default="PENDING",
-        # blank=True,
-        # null=True
+        blank=True,
+        null=True
     )
     feedback = models.TextField(blank=True, null=True) #for admin feedback to company
 
