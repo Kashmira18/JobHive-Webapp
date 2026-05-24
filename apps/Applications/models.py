@@ -1,5 +1,6 @@
 from django.db import models
-from accounts.models import CompanyProfile 
+from accounts.models import CustomUser
+from accounts.models import CompanyProfile
 from candidate.models import CandidateProfile
 from Jobs.models import Job
 # Create your models here.
@@ -35,7 +36,7 @@ class ApplicationStatusHistory(models.Model):
     application = models.ForeignKey(Applications, on_delete=models.CASCADE, related_name="history")
     old_status=models.CharField(max_length=30)
     new_status= models.CharField(max_length=30)
-    changed_by= models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    changed_by= models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
     note  = models.TextField(blank=True)
     changed_at = models.DateTimeField(auto_now_add=True)
 

@@ -50,7 +50,7 @@ class ProfessionalInfo(models.Model):
     industry = models.CharField(max_length=150, blank=True)
     years_of_experience = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
     job_type_preference = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, blank=True)
-    availability=models.CharField(max_length=50, null=True, Blank=True) #Extra Field dalni hy abi
+    availability=models.CharField(max_length=50, null=True, blank=True) #Extra Field dalni hy abi
     def __str__(self):
         return f"{self.candidate.username} – {self.job_title}"
 
@@ -97,11 +97,11 @@ class Skill(models.Model):
         ("Expert","Expert"),
    )
     candidate = models.ForeignKey(CandidateProfile, on_delete=models.CASCADE, related_name='skills')
-    Skill_name= models.CharField(max_length=100, null=True, blank=True)
+    skill_name= models.CharField(max_length=100, null=True, blank=True)
     proficiency=models.CharField(max_length=50, choices=profiency_level, null=True, blank=True) #Extra Field dalni hy abi
 
     class Meta:
-        unique_together = ('candidate', 'name')
+        unique_together = ('candidate', 'skill_name')
 
     def __str__(self):
         return self.name

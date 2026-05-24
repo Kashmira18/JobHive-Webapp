@@ -32,11 +32,11 @@ class Job(models.Model):
         ('other','Other')
     )
     experience_level=(
-        ('entry-level','Entry-level')
-        ('mid-level','Mid-level')
-        ('senior-level','Senior-level')
-        ('lead-level','Lead-level')
-        ('executive-level','Executive-level')
+        ('entry-level','Entry-level'),
+        ('mid-level','Mid-level'),
+        ('senior-level','Senior-level'),
+        ('lead-level','Lead-level'),
+        ('executive-level','Executive-level'),
 
     )
 
