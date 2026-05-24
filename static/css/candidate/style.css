@@ -1,0 +1,232 @@
+/* .sidebar .nav-link {
+    color: #6c757d;
+    padding: 15px 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+} */
+/* 
+.sidebar .nav-link i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+} */
+
+/* .sidebar .nav-link:hover {
+    color: #0f0c2e;
+    background-color: #f5feff;
+
+} */
+
+/* .sidebar .nav-link.active {
+    background-color: #0f0c2e;
+    color: #fff;
+} */
+
+/* Profile Header */
+.profile-section img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* .user-name {
+    color: #0f0c2e;
+    font-weight: 700;
+    font-size: 1.5rem;
+} */
+
+/* Stats Cards */
+.stat-card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    margin-right: 15px;
+}
+
+.icon-applied {
+    background-color: #e3f9e5;
+    color: #288ea7;
+}
+
+/* Greenish */
+.icon-saved {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+/* Blueish */
+.icon-alert {
+    background-color: #f3f0ff;
+    color: #6f42c1;
+}
+
+/* Purplish */
+.icon-view {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Greyish */
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+    /* Blue color for numbers */
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+/* Table Styling */
+.table-header-red {
+    background-color: #0f0c2e;
+    color: white;
+    padding: 15px;
+    border-radius: 5px 5px 0 0;
+}
+
+.job-table {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.job-table th {
+    background-color: #0f0c2e;
+    color: white;
+    font-weight: 500;
+    border: none;
+    padding: 15px;
+}
+
+.job-table td {
+    vertical-align: middle;
+    padding: 20px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.company-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.job-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.company-name {
+    color: #0d6efd;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.job-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.status-btn {
+    min-width: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 8px 12px;
+    text-transform: uppercase;
+}
+
+.btn-hired {
+    background-color: #0f0c2e;
+    color: white;
+    border: none;
+}
+
+.btn-applied {
+    background-color: #6f42c1;
+    /* Purple */
+    color: white;
+    border: none;
+}
+
+/* Featured Job Card */
+.featured-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.featured-title {
+    color: #0f0c2e;
+    font-weight: 700;
+}
+
+.tag-badge {
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.bg-tag-blue {
+    background-color: #e0f7fa;
+    color: #006064;
+}
+
+.bg-tag-pink {
+    background-color: #fce4ec;
+    color: #880e4f;
+}
+
+.bg-tag-green {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+
+.bg-tag-purple {
+    background-color: #f3e5f5;
+    color: #4a148c;
+}
+
+.apply-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.apply-link:hover {
+    color: #0f0c2e;
+}
+
+/* Responsive Scroll for table on mobile */
+.table-responsive {
+    overflow-x: auto;
+}

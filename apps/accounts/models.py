@@ -13,6 +13,8 @@ class CustomUser(AbstractUser):
     role        = models.CharField(max_length=20, choices=ROLE_CHOICES, default="CANDIDATE")
     is_approved = models.BooleanField(default=False)
     phone       = models.CharField(max_length=20, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def save(self, *args, **kwargs):
 
         # agar user superuser hai to role automatically ADMIN ho

@@ -64,6 +64,9 @@ INSTALLED_APPS = [
     "custom_admin",
     'candidate',
     'company',
+    'Jobs',
+    'Applications',
+    'Notifications',
 
     #All-Auth
     "allauth",

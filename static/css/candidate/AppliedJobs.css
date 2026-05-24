@@ -1,0 +1,265 @@
+/* =========================================
+   Root Variables
+   ========================================= */
+:root {
+    /* --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; */
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #6c757d;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f8f9fa;
+    --color-border-secondary: #dee2e6;
+    --color-border-tertiary: #e9ecef;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+}
+
+body {
+    /* font-family: var(--font-sans); */
+    background-color: var(--color-background-secondary);
+}
+
+/* =========================================
+   Typography & Layout
+   ========================================= */
+.page-heading {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* =========================================
+   Table Card & Container
+   ========================================= */
+.table-card {
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-secondary) !important;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+/* Fix: Table Layout & Responsiveness */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 750px;
+    /* IMPORTANT: Yeh mobile pe table ko squish hone se bachayega aur scroll layega */
+}
+
+/* Custom Dark Header */
+.thead-dark-custom th {
+    background-color: #1B3A6B !important;
+    color: #ffffff !important;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    border: none;
+    padding: 14px;
+    white-space: nowrap;
+    /* Header text tootne se bachayega */
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--color-border-tertiary);
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: var(--color-background-secondary);
+}
+
+/* Column Widths */
+th:nth-child(1) {
+    width: 35%;
+}
+
+/* Job Title */
+th:nth-child(2) {
+    width: 15%;
+}
+
+/* City */
+th:nth-child(3) {
+    width: 15%;
+}
+
+/* Applied On */
+th:nth-child(4) {
+    width: 20%;
+}
+
+/* Status */
+th:nth-child(5) {
+    width: 15%;
+}
+
+/* Details */
+
+/* Fix: Cleaned up duplicate TD rules */
+td {
+    padding: 14px;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    vertical-align: middle;
+    white-space: nowrap;
+    /* Txt line break nahi hoga */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Lamba text ... ban jayega */
+}
+
+/* =========================================
+   Job Details (Avatars & Text)
+   ========================================= */
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #E6F1FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0C447C;
+    flex-shrink: 0;
+}
+
+.job-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-text-primary);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.job-salary {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+/* =========================================
+   Status Badges
+   ========================================= */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sdot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Colors for Badges */
+.s-applied {
+    background: #E6F1FB;
+    color: #0C447C;
+}
+
+.sd-applied {
+    background: #185FA5;
+}
+
+.s-under-review {
+    background: #FAEEDA;
+    color: #633806;
+}
+
+.sd-under-review {
+    background: #BA7517;
+}
+
+.s-interview-scheduled {
+    background: #E1F5EE;
+    color: #085041;
+}
+
+.sd-interview-scheduled {
+    background: #1D9E75;
+}
+
+.s-offer-received,
+.s-hired {
+    background: #EAF3DE;
+    color: #27500A;
+}
+
+.sd-offer-received,
+.sd-hired {
+    background: #639922;
+}
+
+.s-rejected {
+    background: #FCEBEB;
+    color: #791F1F;
+}
+
+.sd-rejected {
+    background: #E24B4A;
+}
+
+.s-expired,
+.s-withdrawn {
+    background: #F1EFE8;
+    color: #444441;
+}
+
+.sd-expired,
+.sd-withdrawn {
+    background: #888780;
+}
+
+/* =========================================
+   Modal Details
+   ========================================= */
+.section-divider {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-border-secondary);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.section-divider:first-child {
+    margin-top: 0;
+}
+
+.detail-label {
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+.detail-value {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    text-align: right;
+}
+
+.readonly-note {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    border: 1px dashed var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-secondary);
+}

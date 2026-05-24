@@ -1,0 +1,218 @@
+{% extends "candidate/candidate_base.html" %}
+
+{% block content %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Applied Jobs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/candidate/AppliedJobs.css'%}">
+</head>
+
+<body>
+    <div class="container-fluid py-4 px-4">
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <span class="page-heading">My Applications</span>
+            <div class="d-flex gap-2 flex-wrap">
+                <input class="form-control form-control-sm" style="width:200px" id="search"
+                    placeholder="Search job or company..." oninput="render()" />
+                <select class="form-select form-select-sm" style="width:170px" id="filter" onchange="render()">
+                    <option value="">All Status</option>
+                    <option>Applied</option>
+                    <option>Under Review</option>
+                    <option>Interview Scheduled</option>
+                    <option>Offer Received</option>
+                    <option>Hired</option>
+                    <option>Rejected</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- <div class="alert alert-light border d-flex align-items-center gap-2 py-2 px-3 notice-bar mb-3">
+            <span>ℹ️</span>
+            <span>Application status is updated by the employer. You can only view your application details — editing is
+                not
+                available.</span>
+        </div> -->
+
+        <div class="card border table-card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="thead-dark-custom">
+                        <tr>
+                            <th class="py-3 px-3">Job Title</th>
+                            <th class="py-3 px-3">City</th>
+                            <th class="py-3 px-3">Applied On</th>
+                            <th class="py-3 px-3">Status</th>
+                            <th class="py-3 px-3">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+            <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top"
+                style="font-size:12px;color:#6c757d">
+                <span id="count-label"></span>
+                <div class="d-flex gap-1" id="pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:12px">
+                <div class="modal-header border-bottom pb-2">
+                    <div>
+                        <h5 class="modal-title fw-500 mb-0" id="m-title" style="font-size:15px;font-weight:500"></h5>
+                        <div id="m-company" style="font-size:13px;color:#6c757d"></div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="section-divider">Job Details</div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">City</span><span
+                            class="detail-value" id="m-city"></span></div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">Salary</span><span
+                            class="detail-value" id="m-salary"></span></div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">Job Type</span><span
+                            class="detail-value" id="m-type"></span></div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">Experience
+                            Required</span><span class="detail-value" id="m-exp"></span></div>
+
+                    <div class="section-divider mt-3">Application Details</div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">Applied On</span><span
+                            class="detail-value" id="m-date"></span></div>
+                    <div class="d-flex justify-content-between py-1"><span class="detail-label">Source</span><span
+                            class="detail-value" id="m-source"></span></div>
+
+                    <div class="d-flex align-items-center justify-content-between mt-3 p-3 rounded"
+                        style="background:#f8f9fa">
+                        <span style="font-size:12px;color:#6c757d">Your application status</span>
+                        <span id="m-status-badge"></span>
+                    </div>
+
+                    <div class="readonly-note text-center mt-3 p-2">🔒 Read-only view — status is managed by the
+                        employer</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+
+        const JOBS = [
+            { id: 1, title: "Frontend Developer", company: "Systems Ltd", city: "Lahore", salary: "Rs 80,000–100,000 / Month", type: "Full-time", exp: "2 Years", date: "10 Apr, 2026", source: "Rozee.pk", status: "Interview Scheduled" },
+            { id: 2, title: "Laravel Backend Developer", company: "Techlogix", city: "Karachi", salary: "Rs 60,000–80,000 / Month", type: "Full-time", exp: "3 Years", date: "15 Apr, 2026", source: "LinkedIn", status: "Under Review" },
+            { id: 3, title: "UI/UX Designer", company: "Netsol Technologies", city: "Islamabad", salary: "Negotiable", type: "Contract", exp: "1 Year", date: "01 Apr, 2026", source: "Indeed", status: "Applied" },
+            { id: 4, title: "React Native Developer", company: "10Pearls", city: "Rawalpindi", salary: "Rs 90,000–120,000 / Month", type: "Full-time", exp: "2 Years", date: "20 Apr, 2026", source: "Rozee.pk", status: "Offer Received" },
+            { id: 5, title: "Data Analyst", company: "Arbisoft", city: "Lahore", salary: "Rs 70,000 / Month", type: "Full-time", exp: "1 Year", date: "05 Apr, 2026", source: "Referral", status: "Rejected" },
+            { id: 6, title: "QA Engineer", company: "VentureDive", city: "Peshawar", salary: "Rs 45,000–55,000 / Month", type: "Full-time", exp: "Fresh", date: "18 Apr, 2026", source: "LinkedIn", status: "Applied" },
+            { id: 7, title: "Android Developer", company: "Folio3", city: "Multan", salary: "Rs 75,000 / Month", type: "Full-time", exp: "2 Years", date: "22 Apr, 2026", source: "Rozee.pk", status: "Applied" },
+            { id: 8, title: "DevOps Engineer", company: "Contour Software", city: "Karachi", salary: "Rs 110,000 / Month", type: "Full-time", exp: "3 Years", date: "25 Apr, 2026", source: "LinkedIn", status: "Applied" },
+            { id: 9, title: "PHP Developer", company: "Creative Chaos", city: "Lahore", salary: "Rs 55,000–65,000 / Month", type: "Full-time", exp: "1 Year", date: "28 Apr, 2026", source: "Indeed", status: "Applied" },
+        ];
+
+        // FIX 1: Uncommented the default return so it doesn't return undefined
+        function effectiveStatus(j) {
+            if (['Hired', 'Rejected', 'Offer Received', 'Withdrawn'].includes(j.status)) return j.status;
+            return j.status;
+        }
+
+        // FIX 2: Uncommented necessary helper functions
+        function sk(s) { return s.replace(/ /g, '-').toLowerCase(); }
+        function initials(t) { return t.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase(); }
+
+        let page = 1; const PER = 8;
+        let bsModal = null;
+
+        function filtered() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const f = document.getElementById('filter').value;
+            return JOBS.filter(j => {
+                const es = effectiveStatus(j);
+                return (j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.city.toLowerCase().includes(q)) && (!f || es === f);
+            });
+        }
+
+        function render() {
+            const data = filtered();
+            const total = data.length;
+            const pages = Math.max(1, Math.ceil(total / PER));
+            if (page > pages) page = 1;
+            const slice = data.slice((page - 1) * PER, page * PER);
+            const tb = document.getElementById('tbody');
+
+            if (!slice.length) {
+                tb.innerHTML = '<tr><td colspan="5" class="text-center py-4">No applications found</td></tr>';
+
+                // Clear pagination if no data
+                document.getElementById('count-label').textContent = '';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            tb.innerHTML = slice.map(j => {
+                const es = effectiveStatus(j);
+                const s = sk(es);
+                return `<tr onclick="openDetail(${j.id})" style="cursor: pointer;">
+        <td class="px-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="avatar bg-light text-dark fw-bold rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">${initials(j.title)}</div>
+                <div><div class="job-name fw-semibold">${j.title}</div><div class="job-salary text-muted" style="font-size: 12px;">${j.salary}</div></div>
+            </div>
+        </td>
+        <td class="px-3 align-middle">${j.city}</td>
+        <td class="px-3 align-middle">${j.date}</td>
+        <td class="px-3 align-middle"><span class="status-badge s-${s}"><span class="sdot sd-${s}"></span>${es}</span></td>
+        <td class="px-3 align-middle text-end"><button class="btn btn-sm btn-outline-secondary">View</button></td>
+    </tr>`;
+            }).join('');
+
+            // FIX 3: Added basic pagination logic to satisfy your HTML elements
+            document.getElementById('count-label').textContent = `Showing ${(page - 1) * PER + 1}-${Math.min(page * PER, total)} of ${total}`;
+
+            let paginationHTML = '';
+            for (let i = 1; i <= pages; i++) {
+                paginationHTML += `<button class="btn btn-sm ${i === page ? 'btn-primary' : 'btn-outline-secondary'}" onclick="goPage(${i})">${i}</button>`;
+            }
+            document.getElementById('pagination').innerHTML = paginationHTML;
+        }
+
+        function goPage(p) { page = p; render(); }
+
+        function openDetail(id) {
+            const j = JOBS.find(x => x.id === id);
+            const es = effectiveStatus(j); const s = sk(es);
+
+            document.getElementById('m-title').textContent = j.title;
+            document.getElementById('m-company').textContent = j.company + ' · ' + j.city;
+            document.getElementById('m-city').textContent = j.city;
+            document.getElementById('m-salary').textContent = j.salary;
+            document.getElementById('m-type').textContent = j.type;
+            document.getElementById('m-exp').textContent = j.exp;
+            document.getElementById('m-date').textContent = j.date;
+            document.getElementById('m-source').textContent = j.source;
+            document.getElementById('m-status-badge').innerHTML = `<span class="status-badge s-${s}"><span class="sdot sd-${s}"></span>${es}</span>`;
+
+            if (!bsModal) bsModal = new bootstrap.Modal(document.getElementById('detailModal'));
+            bsModal.show();
+        }
+
+        render();
+    </script>
+
+</body>
+
+</html>
+{%endblock%}
