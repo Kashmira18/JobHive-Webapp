@@ -14,9 +14,6 @@ from .forms import (
     ForgotPasswordForm,
     SetNewPasswordForm,
 )
-# companyRejection model ko import karna hai taake company resubmit page mein rejected fields dikha sakein
-
-
 # ── REGISTER ──
 def register_view(request):
     if request.method == "POST":
@@ -707,3 +704,27 @@ def company_resubmit(request):
 def logout_view(request):
     logout(request) 
     return redirect('accounts:login')
+
+def send_verification_email(user):
+    token=signer.sign(user.id)
+    verification_link= request.build_absolute_uri(reverse("accounts:verify", args=[token])) 
+    send_mail(
+        subject="Verify your email address",
+        message=render_to_string("emails/verify_email.html", {"link": verification_link}),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+    )
+
+
+
+
+def verify_email(request, token):
+    try:
+        pk=signer.unsign(token, max_age=86400) # 24-hour expiry 
+        user= CustomUser.objects.get(pk=pk) 
+        user.is_verified = True
+        user.save()
+        messages.success(request, "Email verified successfully.")
+    except (BadSignature, SignatureExpired):
+        messages.error(request, "Verification link is invalid or expired.")
+    return redirect("accounts:login")
