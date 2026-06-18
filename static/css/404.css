@@ -1,0 +1,78 @@
+/* --- Global Body Style & Centering --- */
+.error-page {
+    background: linear-gradient(to right, #a5dce9, #94e1f4);
+    color: #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    position: relative;
+}
+
+/* --- Main Wrapper --- */
+.main-wrapper {
+    width: 100%;
+    z-index: 2;
+}
+
+/* --- Error Box (The Single Content Container) --- */
+.error-box {
+    padding: 20px;
+    max-width: 450px;
+    margin: 0 auto;
+    margin-top: -100px;
+}
+
+/* --- The '404' Heading (Large and Red) --- */
+.error-box h1 {
+    font-size: 170px;
+    color: #e53951;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+/* --- The Subheading (Oops! Page not found!) --- */
+.error-box h3 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* Style for the warning icon, likely from Font Awesome */
+.error-box h3 .fa-warning {
+    margin-right: 8px;
+    color: #333;
+}
+
+/* --- The Paragraph Text --- */
+.error-box p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+/* --- The "Back to Home" Button --- */
+.btn-custom {
+    background: linear-gradient(to right, #001839, #047b99);
+    border: none;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-custom:hover {
+    opacity: 0.95;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}

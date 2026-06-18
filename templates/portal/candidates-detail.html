@@ -1,0 +1,455 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Candidate-detail Page</title>
+        <!-- Custom CSS -->
+        {%load static%}
+        <link rel="stylesheet" href="{% static 'css/candidates-detail.css' %}">
+        <!-- Bootstrap 5 CDN -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+        <!-- OR Version 5.x -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css">
+        <!-- OR -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.2/icofont.min.css">
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
+
+    </head>
+
+    <body>
+
+        <!-- ===== Hero Banner Start ===== -->
+        <!-- <section
+            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
+            <div class="container">
+                <h1 class="text-white fw-bold mb-2">Candidate</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page">Candidate Detail</li>
+                    </ol>
+                </nav>
+            </div>
+        </section> -->
+        <!-- ===== He ro Banner Start ===== -->
+        <section
+            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
+            <div class="container">
+                <h1 class="text-white fw-bold mb-2">Candidate</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'home'%}">Home</a></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page">Candidate</li>
+                    </ol>
+                </nav>
+            </div>
+        </section>
+        <!-- ===== Hero Banner End ===== -->
+        <!-- ===== Hero Banner End ===== -->
+
+        <!-- ======= profile======== -->
+        <div class="container py-4">
+            <div
+                class="candidate-card d-flex align-items-center justify-content-between p-3 rounded-3">
+
+                <!-- Left Section -->
+                <div class="d-flex align-items-center">
+                    <img src="silverkblack.jpg" alt="profile"
+                        class="profile-img me-3">
+                    <div>
+                        <h4 class="candidate-name mb-1">Frida Marchand</h4>
+                        <p class="candidate-role mb-2">Web Developer</p>
+                        <p class="candidate-info mb-0">
+                            <span> New York, USA</span> &nbsp;&nbsp; |
+                            &nbsp;&nbsp;
+                            <span>📞 +88 456 796 457</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Section -->
+                <div class="d-flex flex-column align-items-end">
+                    <button class="btn shortlist-btn mb-2 px-4">Short
+                        List</button>
+                    <button class="btn download-btn px-4">Download
+                        Resume</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ======details====== -->
+        <div class="container">
+            <div class="row ">
+                <div class="col-lg-7 col-xl-8">
+                    <div class="team-details-item">
+                        <div class="content">
+                            <h4 class="title">About Candidate</h4>
+                            <p class="desc">It is a long established fact that a
+                                reader will be distracted the readable
+                                content
+                                of page when looking atits layout. The point of
+                                using is that has more-or-less normal a
+                                distribution of letters, as opposed to usin
+                                content publishing packages web page editors. It
+                                is
+                                a long established fact that a reader will be
+                                distracts by the readable content of a page
+                                when
+                                looking at its layout. The point of using Lorem
+                                Ipsum is that has look like readable
+                                publishing
+                                packages and web page editors.</p>
+                            <p class="desc">It is a long established fact that a
+                                reader will be distracted the readable
+                                content
+                                of a page when looking atits layout. The point
+                                of using is that has more-or-less normal a
+                                distribution of letters, as opposed to usin
+                                content publishing packages web page editors.
+                            </p>
+                        </div>
+                        <div class="candidate-details-wrap">
+                            <h4 class="content-title">Education</h4>
+                            <div class="candidate-details-content">
+                                <div class="content-item">
+                                    <h4 class="title">Graphic Design
+                                        <span>//</span> <span>2015 -
+                                            2018</span></h4>
+                                    <h5 class="sub-title">University of
+                                        Michigan, Ann Arbor</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                                <div class="content-item">
+                                    <h4 class="title">Web Development
+                                        <span>//</span> <span>2019 -
+                                            2020</span></h4>
+                                    <h5 class="sub-title">Franklin and Marshall
+                                        College</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                                <div class="content-item">
+                                    <h4 class="title">Diploma In Fine Arts
+                                        <span>//</span> <span>2020 -
+                                            2022</span></h4>
+                                    <h5 class="sub-title">Franklin and Marshall
+                                        College</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="candidate-details-wrap">
+                            <h4 class="content-title">Work & Experience</h4>
+                            <div class="candidate-details-content">
+                                <div class="content-item">
+                                    <h4 class="title">Computer Operator
+                                        <span>//</span> <span>2014 -
+                                            2016</span></h4>
+                                    <h5 class="sub-title">Sanguine Skincare
+                                        Ltd.</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                                <div class="content-item">
+                                    <h4 class="title">Uuser Interface Designer
+                                        <span>//</span> <span>2017 -
+                                            2020</span></h4>
+                                    <h5 class="sub-title">Lambent Illumination
+                                        Ltd.</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                                <div class="content-item">
+                                    <h4 class="title">Senior UI Designer
+                                        <span>//</span> <span>2020 -
+                                            Present</span></h4>
+                                    <h5 class="sub-title">Karibian IT Solution
+                                        Ltd.</h5>
+                                    <p class="desc">It is a long established
+                                        fact that a reader will be distracted
+                                        the
+                                        readable
+                                        content of a page when looking atits
+                                        layout the point of using is that has
+                                        moreo
+                                        less
+                                        normal a distribution letters content
+                                        publishing packages web page
+                                        editors.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-list-wrap">
+                            <div class="content mb--0">
+                                <h4 class="title">Professional Skills</h4>
+                                <ul class="team-details-list mb--0">
+                                    <li><i class="icofont-check"></i> Web
+                                        application Design</li>
+                                    <li><i class="icofont-check"></i> User
+                                        Interface (UI) design</li>
+                                    <li><i class="icofont-check"></i> Mobile
+                                        Application Design</li>
+                                    <li><i class="icofont-check"></i> Landing
+                                        Page Design</li>
+                                    <li><i class="icofont-check"></i> Web
+                                        Interface Design</li>
+                                    <li><i class="icofont-check"></i>
+                                        Interaction Design</li>
+                                    <li><i class="icofont-check"></i> User
+                                        Experience</li>
+                                    <li><i class="icofont-check"></i> Graphic
+                                        Design</li>
+                                    <li><i class="icofont-check"></i> Branding &
+                                        Identity</li>
+                                    <li><i class="icofont-check"></i> Project
+                                        Planning</li>
+                                    <li><i class="icofont-check"></i>
+                                        Prototyping</li>
+                                    <li><i class="icofont-check"></i> Problem
+                                        Solving</li>
+                                </ul>
+                            </div>
+                            <div class="content mb--0">
+                                <h4 class="title">Software Skills</h4>
+                                <ul class="team-details-list mb--0">
+                                    <li><i class="icofont-check"></i> Adobe
+                                        Photoshop</li>
+                                    <li><i class="icofont-check"></i> Adobe
+                                        Illustrator</li>
+                                    <li><i class="icofont-check"></i> Adobe
+                                        XD</li>
+                                    <li><i class="icofont-check"></i> Figma</li>
+                                    <li><i class="icofont-check"></i>
+                                        Sketch</li>
+                                    <li><i class="icofont-check"></i> InVision
+                                        Studio</li>
+                                    <li><i class="icofont-check"></i> UXPin</li>
+                                    <li><i class="icofont-check"></i>
+                                        MockFlow</li>
+                                    <li><i class="icofont-check"></i>
+                                        Balsamiq</li>
+                                    <li><i class="icofont-check"></i> Microsoft
+                                        Word</li>
+                                    <li><i class="icofont-check"></i> Microsoft
+                                        Excel</li>
+                                    <li><i class="icofont-check"></i> Microsoft
+                                        PowerPoint</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-xl-4">
+                    <div class="team-sidebar">
+                        <div class="widget-item">
+                            <div class="widget-title">
+                                <h3 class="title">Information</h3>
+                            </div>
+                            <div class="summery-info">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="table-name">Category</td>
+                                            <td class="dotted">:</td>
+                                            <td>Development</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Offered
+                                                Salary</td>
+                                            <td class="dotted">:</td>
+                                            <td>$5000 / Monthly</td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                class="table-name">Experience</td>
+                                            <td class="dotted">:</td>
+                                            <td>05 Years</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Language</td>
+                                            <td class="dotted">:</td>
+                                            <td>English, Germany</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Age</td>
+                                            <td class="dotted">:</td>
+                                            <td>27-30 Years</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Gender</td>
+                                            <td class="dotted">:</td>
+                                            <td>Female</td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                class="table-name">Qualification</td>
+                                            <td class="dotted">:</td>
+                                            <td>BSC, MSC</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Level</td>
+                                            <td class="dotted">:</td>
+                                            <td>Senior</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-name">Views</td>
+                                            <td class="dotted">:</td>
+                                            <td>8,567</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="widget-item">
+                            <div class="widget-title">
+                                <h3 class="title">Share With</h3>
+                            </div>
+                            <div class="social-icons">
+                                <a href="https://www.facebook.com"
+                                    target="_blank" rel="noopener"><i
+                                        class="icofont-facebook"></i></a>
+                                <a href="https://twitter.com" target="_blank"
+                                    rel="noopener"><i
+                                        class="icofont-twitter"></i></a>
+                                <a href="https://www.skype.com" target="_blank"
+                                    rel="noopener"><i
+                                        class="icofont-skype"></i></a>
+                                <a href="https://www.pinterest.com"
+                                    target="_blank" rel="noopener"><i
+                                        class="icofont-pinterest"></i></a>
+                                <a href="https://dribbble.com/" target="_blank"
+                                    rel="noopener"><i
+                                        class="icofont-dribbble"></i></a>
+                            </div>
+                        </div>
+                        <div class="widget-item widget-contact">
+                            <div class="widget-title">
+                                <h3 class="title">Contact Now</h3>
+                            </div>
+                            <div class="widget-contact-form">
+                                <form id="contact-form"
+                                    action="https://whizthemes.com/mail-php/raju/arden/mail.php"
+                                    method="POST">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <input class="form-control"
+                                                    type="text" name="con_name"
+                                                    placeholder="Name:">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <input class="form-control"
+                                                    type="email"
+                                                    name="con_email"
+                                                    placeholder="Email:">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <textarea class="form-control"
+                                                    name="con_message"
+                                                    placeholder="Message"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group mb--0">
+                                                <button
+                                                    class="btn-theme d-block w-100"
+                                                    type="submit">Send
+                                                    Message</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!--== Message Notification ==-->
+                                <div class="form-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'portal/footer.html' %}
+
+        <!-- Bootstrap JS -->
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Custom JS -->
+        <!-- <script src="script.js"></script> -->
+    </body>
+
+</html>
+
+{%endblock%}
+

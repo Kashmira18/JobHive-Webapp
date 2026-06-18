@@ -1,0 +1,257 @@
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay */
+.candidate-hero::before {
+
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.candidate-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-item a {
+    color: #ffffffcc !important;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-item.active {
+    color: #00c2ff !important;
+    font-weight: 600;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #ffffffb3;
+}
+
+
+
+/* Card container */
+/* .card {
+    background-color: #0b1f3a;
+    color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 30px 20px;
+    position: relative;
+    overflow: hidden;
+} */
+
+/* Hover effect */
+/* .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+} */
+
+/* Developer name */
+.card h5 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #001a3c;
+}
+
+/* Role */
+.card .text-muted {
+    color: #001a3c !important;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Technologies */
+.card p {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    color: #000f28;
+}
+
+/* Star rating */
+/* .star-rating {
+    color: #f1c40f;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+} */
+
+/* View Profile button */
+.card .btn-outline-primary {
+    border-color: #3498db;
+    color: #3498db;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.card .btn-outline-primary:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+
+/* Optional: glowing border on hover */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* border-radius: 20px; */
+    padding: 2px;
+    background: linear-gradient(135deg, #f7fcff, #73abe1);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    pointer-events: none;
+    opacity: 0;
+    /* cursor: pointer; */
+    cursor: auto;
+    transition: opacity 0.1s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.job-card {
+    /* background-color: #F4F7F7; */
+    background-color: #001a3c;
+    border-radius: 5px;
+    padding: 70px 21px 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 50px;
+
+}
+
+.job-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.job-logo {
+    background: white;
+    border-radius: 5px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.job-logo img {
+    width: 60px;
+    height: 60px;
+}
+
+.job-details h5 {
+    color: white;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.job-details p {
+    margin-top: 8px;
+}
+
+.text-green {
+    color: #00c2ff;
+    font-weight: 600;
+}
+
+.job-meta {
+    font-size: 14px;
+    color: #89a6d1;
+    margin-top: 8px;
+}
+
+.salary {
+    text-align: right;
+}
+
+.salary h5 {
+    margin-top: 10px;
+    font-weight: 600;
+    color: #999;
+}
+
+
+h4,
+h5 {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+ul li {
+    margin-bottom: 6px;
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    border-radius: 30px;
+}
+
+/* .btn-outline-primary,
+.btn-outline-info,
+.btn-outline-danger {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
+
+.apply-btn {
+    background: linear-gradient(90deg, #00c2ff, #003166);
+    color: #fff;
+    padding: 12px 28px;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 30px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.apply-btn:hover {
+    background: linear-gradient(90deg, #5ac9eb, #2a5c91);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    color: #fff;
+}

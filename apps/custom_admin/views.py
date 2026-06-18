@@ -13,7 +13,7 @@ from company.models import CompanyType
 from .forms import AdminLoginForm, AdminForgotPasswordForm, AdminResetPasswordForm
 from .decorators import admin_login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from accounts.models import CompanyProfile, CustomUser
+from accounts.models import CompanyProfile, CustomUser, CompanyRejection
 
 User = get_user_model()
 
@@ -385,9 +385,12 @@ def approve_company(request, user_id):
     return redirect("custom_admin:admin_dashboard")   
 
 
+
+# ________________________________________________________________________________________________
+
 @admin_login_required
 def reject_company(request, user_id):
-    company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+    company_user = get_object_or_404(User, pk=user_id, role="COMPANY")
 
     if request.method == "POST":
         try:
@@ -395,23 +398,43 @@ def reject_company(request, user_id):
         except CompanyProfile.DoesNotExist:
             profile = CompanyProfile.objects.create(user=company_user)
 
-        profile.admin_message    = request.POST.get("admin_message", "").strip()
-        profile.rejection_reason = profile.admin_message
-        profile.company_status = "REJECTED"
+        admin_msg = request.POST.get("admin_message", "").strip()
+        profile.admin_message    = admin_msg
+        profile.rejection_reason = admin_msg
+        profile.company_status   = "REJECTED"
+        profile.save()
 
-        rejected = {}
+        # 1. Check karein ke admin ne kaun si fields reject ki hain
         field_keys = [
             "trade_name", "legal_name", "ntn_number", "company_email",
             "company_type", "industry", "logo", "city",
             "legal_address", "country", "province", "website", "overview",
         ]
+        
+        rejected = {}
         for key in field_keys:
             reason = request.POST.get(f"field_{key}", "").strip()
             if reason:
-                rejected[key] = reason
+                rejected[key] = True  # Field reject ho gayi
 
-        profile.rejected_fields = rejected
-        profile.save()
+        # 2. ── CompanyRejection Table mein data save karna ──
+        CompanyRejection.objects.create(
+            company=profile,
+            message=admin_msg,
+            trade_name=rejected.get("trade_name", False),
+            legal_name=rejected.get("legal_name", False),
+            ntn_number=rejected.get("ntn_number", False),
+            company_email=rejected.get("company_email", False),
+            company_type=rejected.get("company_type", False),
+            industry=rejected.get("industry", False),
+            logo=rejected.get("logo", False),
+            city=rejected.get("city", False),
+            legal_address=rejected.get("legal_address", False),
+            country=rejected.get("country", False),
+            province=rejected.get("province", False),
+            website=rejected.get("website", False),
+            overview=rejected.get("overview", False),
+        )
 
         company_user.is_approved    = False
         company_user.company_status = "REJECTED"
@@ -433,7 +456,7 @@ def reject_company(request, user_id):
 
 @admin_login_required
 def rollback_company(request, user_id):
-    company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+    company_user = get_object_or_404(User, pk=user_id, role="COMPANY")
 
     if request.method == "POST":
         try:
@@ -441,22 +464,42 @@ def rollback_company(request, user_id):
         except CompanyProfile.DoesNotExist:
             profile = CompanyProfile.objects.create(user=company_user)
 
-        profile.admin_message = request.POST.get("admin_message", "").strip()
+        admin_msg = request.POST.get("admin_message", "").strip()
+        profile.admin_message  = admin_msg
         profile.company_status = "ROLLBACK"
+        profile.save()
 
-        rollback_fields = {}
+        # 1. Check karein ke admin ne kaun si fields rollback ki hain
         field_keys = [
             "trade_name", "legal_name", "ntn_number", "company_email",
             "company_type", "industry", "logo", "city",
             "legal_address", "country", "province", "website", "overview",
         ]
+        
+        rollback_fields = {}
         for key in field_keys:
             reason = request.POST.get(f"field_{key}", "").strip()
             if reason:
-                rollback_fields[key] = reason
+                rollback_fields[key] = True
 
-        profile.rejected_fields = rollback_fields
-        profile.save()
+        # 2. ── CompanyRejection Table mein data save karna ──
+        CompanyRejection.objects.create(
+            company=profile,
+            message=admin_msg,
+            trade_name=rollback_fields.get("trade_name", False),
+            legal_name=rollback_fields.get("legal_name", False),
+            ntn_number=rollback_fields.get("ntn_number", False),
+            company_email=rollback_fields.get("company_email", False),
+            company_type=rollback_fields.get("company_type", False),
+            industry=rollback_fields.get("industry", False),
+            logo=rollback_fields.get("logo", False),
+            city=rollback_fields.get("city", False),
+            legal_address=rollback_fields.get("legal_address", False),
+            country=rollback_fields.get("country", False),
+            province=rollback_fields.get("province", False),
+            website=rollback_fields.get("website", False),
+            overview=rollback_fields.get("overview", False),
+        )
 
         company_user.is_approved    = False
         company_user.company_status = "ROLLBACK"
@@ -474,6 +517,111 @@ def rollback_company(request, user_id):
         "company_user": company_user,
         "profile":      profile,
     })
+
+# _____________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @admin_login_required
+# def reject_company(request, user_id):
+#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+
+#     if request.method == "POST":
+#         try:
+#             profile = company_user.company_profile
+#         except CompanyProfile.DoesNotExist:
+#             profile = CompanyProfile.objects.create(user=company_user)
+
+#         profile.admin_message    = request.POST.get("admin_message", "").strip()
+#         profile.rejection_reason = profile.admin_message
+#         profile.company_status = "REJECTED"
+
+#         rejected = {}
+#         field_keys = [
+#             "trade_name", "legal_name", "ntn_number", "company_email",
+#             "company_type", "industry", "logo", "city",
+#             "legal_address", "country", "province", "website", "overview",
+#         ]
+#         for key in field_keys:
+#             reason = request.POST.get(f"field_{key}", "").strip()
+#             if reason:
+#                 rejected[key] = reason
+
+#         profile.rejected_fields = rejected
+#         profile.save()
+
+#         company_user.is_approved    = False
+#         company_user.company_status = "REJECTED"
+#         company_user.save()
+
+#         messages.success(request, f"{company_user.email} rejected.")
+#         return redirect("custom_admin:admin_dashboard")
+
+#     try:
+#         profile = company_user.company_profile
+#     except CompanyProfile.DoesNotExist:
+#         profile = None
+
+#     return render(request, "custom_admin/reject_company.html", {
+#         "company_user": company_user,
+#         "profile":      profile,
+#     })
+
+
+# @admin_login_required
+# def rollback_company(request, user_id):
+#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
+
+#     if request.method == "POST":
+#         try:
+#             profile = company_user.company_profile
+#         except CompanyProfile.DoesNotExist:
+#             profile = CompanyProfile.objects.create(user=company_user)
+
+#         profile.admin_message = request.POST.get("admin_message", "").strip()
+#         profile.company_status = "ROLLBACK"
+
+#         rollback_fields = {}
+#         field_keys = [
+#             "trade_name", "legal_name", "ntn_number", "company_email",
+#             "company_type", "industry", "logo", "city",
+#             "legal_address", "country", "province", "website", "overview",
+#         ]
+#         for key in field_keys:
+#             reason = request.POST.get(f"field_{key}", "").strip()
+#             if reason:
+#                 rollback_fields[key] = reason
+
+#         profile.rejected_fields = rollback_fields
+#         profile.save()
+
+#         company_user.is_approved    = False
+#         company_user.company_status = "ROLLBACK"
+#         company_user.save()
+
+#         messages.success(request, f"{company_user.email} sent for rollback.")
+#         return redirect("custom_admin:admin_dashboard")
+
+#     try:
+#         profile = company_user.company_profile
+#     except CompanyProfile.DoesNotExist:
+#         profile = None
+
+#     return render(request, "custom_admin/rollback_company.html", {
+#         "company_user": company_user,
+#         "profile":      profile,
+#     })
 
 
 

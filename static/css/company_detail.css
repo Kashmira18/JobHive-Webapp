@@ -1,0 +1,239 @@
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay */
+.candidate-hero::before {
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.candidate-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-item a {
+    color: #ffffffcc !important;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-item.active {
+
+    color: #00c2ff !important;
+    font-weight: 600;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #ffffffb3;
+}
+
+
+/* ___________________ */
+body {
+    background-color: #f8f9fa;
+}
+
+.company-header {
+    background: linear-gradient(135deg, #1e316a 0%, #101928 100%);
+    color: #fff;
+    padding: 40px 30px;
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
+.company-description {
+    color: #fff;
+    text-align: center;
+}
+
+.company-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    background-color: #fff;
+    position: absolute;
+    /* bottom: 40px; */
+    top: 110px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.company-logo img {
+    width: 70%;
+
+}
+
+.company-body {
+    background: #fff;
+    padding: 60px 30px 30px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #e9ecf5;
+    color: #33C2E8;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.info-icon:hover {
+    transform: translateY(-3px);
+}
+
+.social-icons a {
+    color: #1e293b;
+    margin-right: 15px;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.social-icons a:hover {
+    color: #1aaed7;
+}
+
+.hours li {
+    border-bottom: 1px solid #eee;
+    padding: 6px 0;
+}
+
+.hours span {
+    float: right;
+    color: #555;
+}
+
+.closed {
+    color: red;
+    font-weight: 500;
+}
+
+.review-box {
+    border: 1px solid #eee;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #6c757d;
+    font-style: italic;
+    display: inline-block;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.job-card {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.btn-outline-primary {
+    border-radius: 30px;
+}
+
+.badge-blue {
+    background-color: #1e316a;
+    color: #fff;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    font-display: block;
+}
+
+.info-icon {
+    color: #1e40af;
+    margin-right: 5px;
+}
+
+.ad-box {
+    background-color: #1e293b;
+    color: white;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.side-card {
+    border-radius: 10px;
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.review-card {
+    max-width: 350px;
+    margin: 40px auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 20px;
+}
+
+.review-card {
+    font-weight: 600;
+    color: #2a2a2a;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.rating i {
+    color: #ddd;
+    font-size: 1.1rem;
+}
+
+.rating i.checked {
+    color: #f8c10c;
+}
+
+.review-item {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.review-item i {
+    color: #1aaed7;
+    margin-right: 8px;
+}

@@ -1,0 +1,1219 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transparent Navbar with Hover Menu | JobHive</title>
+
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/style.css'%}" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+
+    <!-- Custom CSS -->
+
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet" />
+    <style>
+        .job-section {
+            max-width: 1000px; /* Adjust max-width as needed */
+            margin: 50px auto; /* Center the section on the page */
+            height:0%;
+                margin-bottom: -15rem;
+
+        }
+
+        /* Row Styling - The main container border */
+        .job-row {
+            background-color: white;
+            border: 1px solid #dee2e6; /* Light border around the whole section */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 1. Trending Jobs Box Style */
+        .tranding-jobs-box {
+            background-color: #31c2ef; /* The vibrant blue color */
+            font-size: 1.1rem;
+            line-height: 1.2;
+            letter-spacing: 1px;
+        }
+
+
+        .job-card {
+            border-right: 1px solid #f0f0f0;
+            min-height: 130px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+            
+        }
+        .job-card:hover {
+            background-color: #fcfcfc;
+        }
+        
+        /* Style for the stretched link to ensure text color is preserved */
+        .job-link {
+            text-decoration: none; /* Removes underline from the stretched link */
+            color: inherit; /* Keeps all text colors as defined by other classes */
+        }
+
+        /* Remove border for the last job card */
+        .job-row > .job-card:last-child {
+            border-right: none;
+        }
+
+        /* Handle the border on smaller screens (when job cards stack) */
+        @media (max-width: 767.98px) { 
+            .job-card {
+                border-right: none;
+                border-bottom: 1px solid #f0f0f0; 
+            }
+            .job-row > .job-card:last-child {
+                border-bottom: none;
+            }
+        }
+
+        /* Job Title (Black Text) */
+        .job-title {
+            color: #444;
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* Company Name (Colored Text) */
+        .job-company {
+            color: #49c55b; /* Default Green */
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Specific Orange for Envato Inc. */
+        .job-company-orange {
+            color: #f77839; /* Orange for Envato */
+        }
+
+        /* Logo Sizing */
+        .job-logo {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+
+          .fade-in-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            will-change: opacity, transform;
+        }
+
+        /* Final state: element is visible and in its final position */
+        .fade-in-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        
+      </style>
+  </head>
+
+  <body>
+
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="home-slider-area">
+        <!-- <img src="{% static 'images/slider-bg.webp' %}" /> -->
+        <div class="container">
+          <div class="slider-content">
+            <h2><span class="counter">2,568</span> Jobs
+              Available<br>Choose Your Dream Job</h2>
+            <p>Find great jobs to build your bright career —
+              thousands of opportunities await!</p>
+            <div class="job-search-container">
+              <form class="job-search-form">
+                <div class="form-group">
+                  <input type="text" class="form-control"
+                    placeholder="Job title or keywords">
+                </div>
+
+                <div class="form-group">
+                  <select class="form-control">
+                    <option selected>Choose City</option>
+                    <option>New York</option>
+                    <option>California</option>
+                    <option>Texas</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <select class="form-control">
+                    <option selected>Category</option>
+                    <option>Web Developer</option>
+                    <option>Graphic Designer</option>
+                    <option>App Developer</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <button type="submit" class="btn-search">
+                    <i class="bi bi-search"></i> Search
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Job Search Form -->
+
+          <!-- Play Video Button -->
+          <div class="play-video-btn">
+            <a href="#"
+              target="_blank">
+              <img src="{% static 'images\play.webp' %}"
+                alt="Play Video">
+            </a>
+          </div>
+
+        </section>
+        <div class="container job-section">
+          <div class="row g-0 job-row">
+
+            <div class="col-3 col-md-3 col-lg-2 p-0">
+              <div
+                class="tranding-jobs-box d-flex align-items-center justify-content-center h-100 p-3">
+                <span
+                  class="text-white text-center fw-bold">TRANDING<br>JOBS</span>
+              </div>
+            </div>
+
+            <div
+              class="col-9 col-md-3 col-lg-3 d-flex align-items-center job-card p-3 p-md-4">
+              <a href="{% url 'job_details'%}"
+                class="stretched-link job-link">
+                <div class="d-flex align-items-center">
+                  <img src="{% static 'images/paywait.png' %}"
+                    alt="Pay Wait Logo" class="job-logo me-3">
+                  <div>
+                    <div class="job-title">Senior Health and
+                      Food</div>
+                    <div class="job-company">Pay Wait</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div
+              class="col-12 col-md-3 col-lg-4 d-flex align-items-center job-card p-3 p-md-4">
+              <a href="{% url 'job_details'%}" class="stretched-link job-link">
+                <div class="d-flex align-items-center">
+                  <img src="{% static 'images/apusinc.png' %}"
+                    alt="Apus Inc. Logo" class="job-logo me-3">
+                  <div>
+                    <div class="job-title">iOS Developer – iOS, Git,
+                      API</div>
+                    <div class="job-company">Apus Inc.</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div
+              class="col-12 col-md-3 col-lg-3 d-flex align-items-center job-card p-3 p-md-4">
+              <a href="{% url 'job_details'%}"
+                class="stretched-link job-link">
+                <div class="d-flex align-items-center">
+                  <img src="{% static 'images/frontend.png' %}"
+                    alt="jobhive Inc. Logo" class="job-logo me-3">
+                  <div>
+                    <div class="job-title">Front-End Web
+                      Developer</div>
+                    <div
+                      class="job-company job-company-orange">Envato
+                      Inc.</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+          </div>
+        </div>
+        <div class="home-slider-shape">
+          <img class="shape1" data-aos="fade-down" data-aos-duration="1500"
+            src="{% static 'images\vector1.webp' %}" width="270" height="234"
+            alt="Image-HasTech">
+          <img class="shape2" data-aos="fade-left" data-aos-duration="2000"
+            src="{% static 'images\vector2.webp' %}" width="201" height="346"
+            alt="Image-HasTech">
+          <img class="shape3" data-aos="fade-right" data-aos-duration="2000"
+            src="{% static 'images\vector3.webp' %}" width="276" height="432"
+            alt="Image-HasTech">
+          <img class="shape4" data-aos="flip-left" data-aos-duration="1500"
+            src="{% static 'images\vector4.webp' %}" width="127" height="121"
+            alt="Image-HasTech">
+        </div>
+      </main>
+      <!-- ______________counter___________________ -->
+      <!-- Counter Section -->
+      <section class="counter-section">
+        <div class="container">
+          <h2 class="counter-title">JobHive Statistics</h2>
+          <p class="counter-subtitle">Connecting talent with opportunities every day</p>
+
+          <div class="row text-center">
+            <!-- Counter 1 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="counter-box">
+                <div class="counter-icon">
+                  <i class="fas fa-briefcase fa-1x text-info"></i>
+                </div>
+                <div class="counter" data-target="500">0</div>
+                <p class="counter-text">Jobs Posted</p>
+              </div>
+            </div>
+
+            <!-- Counter 2 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="counter-box">
+                <div class="counter-icon">
+                  <i class="fas fa-users fa-1x text-info"></i>
+                </div>
+                <div class="counter" data-target="1200">0</div>
+                <p class="counter-text">Happy Candidates</p>
+              </div>
+            </div>
+
+            <!-- Counter 3 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="counter-box">
+                <div class="counter-icon">
+                  <i class="fas fa-building fa-1x text-info"></i>
+                </div>
+                <div class="counter" data-target="300">0</div>
+                <p class="counter-text">Verified Companies</p>
+              </div>
+            </div>
+
+            <!-- Counter 4 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="counter-box">
+                <div class="counter-icon">
+                  <i class="fas fa-handshake fa-1x text-info"></i>
+                </div>
+                <div class="counter" data-target="857">0</div>
+                <p class="counter-text">Successful Hires</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ______________end counter___________________ -->
+      <!-- _______top-hiring-companies______ -->
+      <section class="top-hiring-companies py-5">
+        <div class="container">
+          <div
+            class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title">TOP HIRING COMPANIES</h2>
+
+            <div class="nav-arrows d-none d-md-flex">
+              <button
+                class="btn btn-outline-secondary me-2 rounded-circle"
+                type="button"
+                data-bs-target="#companyCarousel"
+                data-bs-slide="prev">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="btn btn-outline-secondary rounded-circle"
+                type="button"
+                data-bs-target="#companyCarousel"
+                data-bs-slide="next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="companyCarousel" class="carousel slide"
+            data-bs-ride="false" data-bs-interval="false">
+            <div class="carousel-inner">
+
+              <div class="carousel-item active">
+                <div class="row row-cols-2 row-cols-md-4 g-4">
+
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 1: WordPress/Akshay INC -->
+                          <img
+                            src="{% static 'images\akshaynic.jpg' %}"
+                            alt="Akshay INC. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Akshay
+                          INC.</h3>
+                        <p
+                          class="company-location text-muted small">(New
+                          York)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">3
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 2: Pay Walt -->
+                          <img
+                            src="{% static 'images\paywait.png' %}"
+                            alt="Pay Walt Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Pay
+                          Walt</h3>
+                        <p
+                          class="company-location text-muted small">(Ohio)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 3: Apus Inc. -->
+                          <img
+                            src="{% static 'images\apusinc.png' %}"
+                            alt="Apus Inc. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Apus
+                          Inc.</h3>
+                        <p
+                          class="company-location text-muted small">(NewYork)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 4: Envato Inc. -->
+                          <img
+                            src="{% static 'images\frontend.png' %}"
+                            alt="Envato Inc. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Envato
+                          Inc.</h3>
+                        <p
+                          class="company-location text-muted small">(India)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-item">
+                <div class="row row-cols-2 row-cols-md-4 g-4">
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 5: Placeholder for next slide -->
+                          <img
+                            src="{% static 'images\fshop.png' %}"
+                            alt="FShop Inc. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">FShop
+                          Inc.</h3>
+                        <p
+                          class="company-location text-muted small">(Australia)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 6: Placeholder for next slide -->
+                          <img
+                            src="{% static 'images\paywait.png' %}"
+                            alt="EVNShop Inc. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">EVNShop
+                          Inc.</h3>
+                        <p
+                          class="company-location text-muted small">(New
+                          York)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 7: Generic -->
+                          <img
+                            src="{% static 'images\frontend.png' %}"
+                            alt="Generic Co. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Next
+                          Co.</h3>
+                        <p
+                          class="company-location text-muted small">(London)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">5
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="col">
+                    <a href="#"
+                      class="company-card-link text-decoration-none">
+                      <div
+                        class="company-card p-3 border rounded-3 text-center h-100">
+                        <div
+                          class="logo-box d-flex justify-content-center align-items-center mb-3">
+                          <!-- Logo 8: Generic -->
+                          <img
+                            src="{% static 'images\evnshop.png' %}"
+                            alt="Sample Inc. Logo"
+                            class="company-logo">
+                        </div>
+                        <h3
+                          class="company-name fs-6 fw-bold">Sample
+                          Inc.</h3>
+                        <p
+                          class="company-location text-muted small">(Paris)</p>
+                        <div
+                          class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1
+                          OPENING</div>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= Popular Category Section ======= -->
+      <section class="popular-category py-5">
+        <div class="container text-center">
+          <h2 class="section-title mb-2">Popular Category</h2>
+          <p class="section-subtitle mb-5">
+            Many desktop publishing packages and web page editors
+          </p>
+
+          <div class="row g-3 justify-content-center">
+            <!-- Category Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Accounting/Finance
+                (305)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Production/Operation
+                (95)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Education/Training
+                (212)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Design/Creative
+                (93)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Health &
+                Fitness
+                (4)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Research/Consultancy
+                (34)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Engineer/Architects
+                (376)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Telecommunication
+                (450)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Data
+                Entry/Operator
+                (25)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#" class="category-card">Marketing/Sales
+                (666)</a>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Security/Support
+                Service (62)</a>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <a href="#"
+                class="category-card">Security/Support
+                Service (62)</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="recent-job-area bg-color-gray">
+        <div class="container" data-aos="fade-down">
+          <div class="row">
+            <div class="col-12">
+              <div class="section-title text-center">
+                <h3 class="title">Recent Job
+                  Circulars</h3>
+                <div class="desc">
+                  <p>Many desktop publishing packages
+                    and web page editors</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\1.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Darkento
+                        Ltd.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Front-end
+                      Developer</a></h3>
+                  <h5 class="work-type">Full-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\2.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Inspire
+                        Fitness Co.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Senior
+                      UI Designer</a></h3>
+                  <h5 class="work-type">part-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\3.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Cogent
+                        Data</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Graphic
+                      Designer</a></h3>
+                  <h5 class="work-type">Remote</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+            <!-- _______________________2nd row
+                    _________________________________ -->
+
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\4.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Darkento
+                        Ltd.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Front-end
+                      Developer</a></h3>
+                  <h5 class="work-type">Full-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+            <!-- ____________________ -->
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\5.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Inspire
+                        Fitness Co.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Senior
+                      UI Designer</a></h3>
+                  <h5 class="work-type">part-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+
+            <!-- ____________________ -->
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\6.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Cogent
+                        Data</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Graphic
+                      Designer</a></h3>
+                  <h5 class="work-type">Remote</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+
+            <!-- _______________________3rd row_________________________________ -->
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\7.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Darkento
+                        Ltd.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Front-end
+                      Developer</a></h3>
+                  <h5 class="work-type">Full-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+            <!-- ____________________ -->
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\8.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Inspire
+                        Fitness Co.</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Senior
+                      UI Designer</a></h3>
+                  <h5 class="work-type">part-time</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+            </div>
+            <!-- ____________________ -->
+            <div class="col-md-6 col-lg-4">
+              <!--== Start Recent Job Item ==-->
+              <div class="recent-job-item">
+                <div class="company-info">
+                  <div class="logo">
+                    <a
+                      href="#"><img
+                        src="{% static 'images\9.webp' %}"
+                        width="100" height="100"
+                        alt="Image-HasTech"></a>
+                  </div>
+                  <div class="content-recent-job">
+                    <h4 class="name"><a
+                        href="{% url 'job_details'%}">Cogent
+                        Data</a></h4>
+                    <p class="address">New York,
+                      USA</p>
+                  </div>
+                </div>
+                <div class="main-content">
+                  <h3 class="title"><a
+                      href="{% url 'job_details'%}">Graphic
+                      Designer</a></h3>
+                  <h5 class="work-type">Remote</h5>
+                  <p class="desc">CSS3, HTML5,
+                    Javascript, Bootstrap,
+                    Jquery</p>
+                </div>
+                <div class="recent-job-info">
+                  <div class="salary">
+                    <h4>$5000</h4>
+                    <p>/monthly</p>
+                  </div>
+                  <a class="btn-theme btn-sm"
+                    href="{% url 'job_details'%}">Apply
+                    Now</a>
+                </div>
+              </div>
+              <!--== End Recent Job Item ==-->
+
+            </section>
+            <!-- ______registration cards start_______ -->
+            <section class="registration-cards">
+              <div class="container">
+                <div class="row justify-content-center position-relative">
+
+                  <!-- OR Divider - Visible only on large screens -->
+                  <div
+                    class="col-12 d-flex justify-content-center position-absolute top-50 start-50 translate-middle d-none d-lg-flex"
+                    style="z-index: 10;">
+                    <div
+                      class="or-divider border border-2 rounded-circle d-flex align-items-center justify-content-center shadow-lg">
+                      <span class="fw-bold text-secondary small">OR</span>
+                    </div>
+                  </div>
+
+                  <!-- Employer Card (Left) -->
+                  <div class="col-12 col-lg-5 mb-4 mb-lg-0">
+                    <div
+                      class="card employer-card text-center border-0 rounded-4 shadow-sm h-100 p-4">
+                      <div
+                        class="card-body d-flex flex-column align-items-center justify-content-start">
+
+                        <!-- Icon: Monitor -->
+                        <div class="icon-box mb-4">
+                          <svg xmlns="http://www.w3.org/2000/svg"
+                            width="60" height="60"
+                            viewBox="0 0 24 24" fill="none"
+                            stroke="#00a2e8" stroke-width="1"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-monitor">
+                            <rect x="2" y="3" width="20" height="14"
+                              rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16"
+                              y2="21"></line>
+                            <line x1="12" y1="17" x2="12"
+                              y2="21"></line>
+                          </svg>
+                        </div>
+
+                        <!-- Title -->
+                        <h3
+                          class="card-title fw-bold text-uppercase mb-2"
+                          style="font-size: 1.2rem; color: #333;">I'M
+                          AN EMPLOYER</h3>
+
+                        <!-- Divider -->
+                        <div class="title-divider mb-4"
+                          style="background-color: #00a2e8;"></div>
+
+                        <!-- Text -->
+                        <p class="text-muted mb-5 flex-grow-1"
+                          style="font-size: 0.9rem;">Signed in
+                          companies are able to post new job offers,
+                          searching for candidate...</p>
+
+                        <!-- Button -->
+                        <a href="#"
+                          class="btn btn-primary register-btn employer-btn w-100 py-3 rounded-pill fw-bold text-uppercase">
+                          <i class="fas fa-plus me-2"></i> Register As
+                          Company
+                        </a>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Candidate Card (Right) -->
+                  <div class="col-12 col-lg-5">
+                    <div
+                      class="card candidate-card text-center border-0 rounded-4 shadow-sm h-100 p-4 position-relative">
+
+                      <!-- FREE Badge -->
+                      <!-- <span
+                        class="badge position-absolute top-0 end-0 mt-3 me-3 text-uppercase fw-bold">FREE</span> -->
+
+                      <div
+                        class="card-body d-flex flex-column align-items-center justify-content-start">
+
+                        <!-- Icon: Candidate/User -->
+                        <div class="icon-box mb-4">
+                          <svg xmlns="http://www.w3.org/2000/svg"
+                            width="60" height="60"
+                            viewBox="0 0 24 24" fill="none"
+                            stroke="#00a2e8" stroke-width="1"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-user">
+                            <path
+                              d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                        </div>
+
+                        <!-- Title -->
+                        <h3
+                          class="card-title fw-bold text-uppercase mb-2"
+                          style="font-size: 1.2rem;">I'M AN
+                          CANDIDATE</h3>
+
+                        <!-- Divider -->
+                        <div class="title-divider mb-4"
+                          style="background-color: #ed5566;"></div>
+
+                        <!-- Text -->
+                        <p class="text-white-50 mb-5 flex-grow-1"
+                          style="font-size: 0.9rem;">Signed in
+                          companies are able to post new job offers,
+                          searching for candidate...</p>
+
+                        <!-- Button -->
+                        <a href="#"
+                          class="btn btn-danger register-btn candidate-btn w-100 py-3 rounded-pill fw-bold text-uppercase">
+                          <i class="fas fa-plus me-2"></i> Register
+                          Candidate
+                        </a>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+            <!-- ______end registration cards start_______ -->
+            {% include 'portal/footer.html' %}
+
+            <!-- Bootstrap JS -->
+            <!-- jQuery & Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <script
+              src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+            <script
+              src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+            <script>
+    // Counter Animation
+    function animateCounters() {
+      $('.counter').each(function () {
+        const $this = $(this);
+        const target = $this.data('target');
+        const countTo = target;
+
+        // Only animate if not already animated
+        if (!$this.hasClass('animated')) {
+          $({ countNum: 0 }).animate(
+            { countNum: countTo },
+            {
+              duration: 2500,
+              easing: 'swing',
+              step: function () {
+                $this.text(Math.floor(this.countNum).toLocaleString());
+              },
+              complete: function () {
+                $this.text(this.countNum.toLocaleString());
+                $this.addClass('animated');
+              }
+            }
+          );
+        }
+      });
+    }
+
+    // Trigger when section is in viewport
+    $(window).scroll(function () {
+      const sectionPos = $('.counter-section').offset().top - window.innerHeight;
+      if ($(window).scrollTop() > sectionPos) {
+        animateCounters();
+      }
+    });
+
+    // Optional: Trigger on load if already in view
+    if ($('.counter-section').isInViewport()) {
+      animateCounters();
+    }
+
+    // Helper: Check if element is in viewport
+    $.fn.isInViewport = function () {
+      const elementTop = $(this).offset().top;
+      const elementBottom = elementTop + $(this).outerHeight();
+      const viewportTop = $(window).scrollTop();
+      const viewportBottom = viewportTop + $(window).height();
+      return elementBottom > viewportTop && elementTop < viewportBottom;
+    };
+  </script>
+          </body>
+        </html>
+
+        {%endblock%}

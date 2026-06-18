@@ -1,0 +1,203 @@
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay */
+.candidate-hero::before {
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.candidate-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-item a {
+    color: #ffffffcc !important;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-item.active {
+
+    color: #00c2ff !important;
+    font-weight: 600;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #ffffffb3;
+}
+
+
+
+/* Card container */
+.card {
+    background-color: #0b1f3a;
+    color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 30px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Developer name */
+.card h5 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+/* Role */
+.card .text-muted {
+    color: #b0c4de !important;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Technologies */
+.card p {
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    color: #dbe9ff;
+}
+
+/* Star rating */
+.star-rating {
+    color: #f1c40f;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+/* View Profile button */
+.card .btn-outline-primary {
+    border-color: #4cb9f4;
+    color: #4cb9f4;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.card .btn-outline-primary:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+
+/* Optional: glowing border on hover */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, #3498db, #1abc9c);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+
+
+
+
+/* __________________ */
+.nav-item {
+    /* background: #4cb9f4; */
+    color: #ffffff;
+
+}
+
+.job-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+}
+
+.job-img {
+    height: 100px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+}
+
+.job-badge {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.badge {
+    font-size: 0.8rem;
+}
+
+.company-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: #fff;
+}
+
+.company-link:hover {
+    text-decoration: underline;
+    color: #000;
+}
+
+.company-logos img {
+    max-height: 35px;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+.company-logos img:hover {
+    opacity: 1;
+}
+
+/* .nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    background-color: #3498db;
+} */
+.button.nav-link.active {
+    background: #6cc4ff;
+}

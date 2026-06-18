@@ -1,0 +1,900 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* --- Hero Section --- */
+.home-slider-area {
+    position: relative;
+    height: 120vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background-image: url('../images/slider-bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding-left: 130px;
+    padding-top: 150px;
+
+}
+
+
+.slider-content {
+
+    padding-right: 100px;
+    padding-left: 100px;
+
+}
+
+/* Add a dark overlay for readability */
+.home-slider-area::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* background: rgba(0, 0, 0, 0.6); */
+    -webkit-tap-highlight-color: transparent;
+    z-index: 1;
+}
+
+/* Ensure text appears above the overlay */
+.slider-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 20px;
+}
+
+/* Optional: Style text */
+.slider-content h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.slider-content p {
+    font-size: 18px;
+    color: #e0e0e0;
+}
+
+/* --- Overlay for readability --- */
+.home-slider-area::before {
+
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Navy transparent overlay */
+    z-index: 1;
+}
+
+/* --- Content --- */
+.slider-content {
+    position: relative;
+    z-index: 5;
+    max-width: 1000px;
+    margin-bottom: 90px;
+}
+
+.slider-content h2 {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+
+    color: #ffffff;
+    font-family: sans-serif;
+}
+
+.slider-content p {
+    font-size: 15px;
+    margin-bottom: 30px;
+    color: #dce4f2;
+}
+
+/* --- Job Search Form --- */
+.job-search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    padding: 12px 40px 12px 15px;
+    ;
+}
+
+.job-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.job-search-form .form-group {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Style for inputs and selects */
+.job-search-form .form-control {
+    width: 100%;
+    padding: 12px 40px 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    appearance: none;
+    background-color: #fff;
+    background-image: none;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+/* Add dropdown arrow manually */
+.job-search-form select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='gray' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 14px;
+}
+
+/* Focus effect */
+.job-search-form .form-control:focus {
+    border-color: #23C0E9;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+/* Search button style */
+.btn-search {
+    background-color: #23C0E9;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+/* Hover effect for button */
+.btn-search:hover {
+    background-color: #14A1C5;
+    transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .job-search-form {
+        flex-direction: column;
+    }
+}
+
+/* --- Video Button --- */
+.play-video-btn {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.play-video-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    border-radius: 50%;
+    /* makes it perfectly round */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.play-video-btn a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    /* button size */
+    height: 80px;
+    background-color: #23C0E9;
+    /* light blue background */
+    border-radius: 50%;
+    /* makes it perfectly round */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    /* text-decoration: none; */
+}
+
+.play-video-btn img {
+    width: 10px;
+    transition: transform 0.3s;
+}
+
+.play-video-btn img:hover {
+    transform: scale(1);
+}
+
+.play-video-btn a:hover {
+    background-color: #14A1C5;
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .slider-content h2 {
+        font-size: 32px;
+    }
+
+    .slider-content p {
+        font-size: 16px;
+    }
+}
+
+/* ===== Home Slider Shape Container ===== */
+.home-slider-shape {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Common shape image styles */
+.home-slider-shape img {
+    position: absolute;
+    max-width: 100%;
+    top: -600px;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+/* Shape 1 - Top Left */
+.home-slider-shape .shape1 {
+    top: 150px;
+    right: 60px;
+    width: 150px;
+    height: auto;
+
+    margin-top: -830px;
+    margin-right: -90px;
+}
+
+/* Shape 2 - Middle Right */
+.home-slider-shape .shape2 {
+    top: 150px;
+    right: 60px;
+    width: 150px;
+    height: auto;
+    margin-top: -870px;
+    margin-right: -100px;
+}
+
+/* Shape 3 - Bottom Left */
+.home-slider-shape .shape3 {
+    left: 100px;
+    width: 150px;
+    height: 290px;
+    padding-top: 60px;
+    margin-top: 250px;
+    margin-left: -100px;
+}
+
+/* Shape 4 - Bottom Right */
+.home-slider-shape .shape4 {
+    right: 100px;
+    width: 150px;
+    height: 190px;
+    padding-top: 60px;
+    margin-top: 300px;
+    margin-right: -100px;
+}
+
+/* Optional hover animation */
+.home-slider-shape img:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 992px) {
+    .home-slider-shape .shape1 {
+        top: 40px;
+        left: 40px;
+        width: 150px;
+    }
+
+    .home-slider-shape .shape2 {
+        top: 100px;
+        right: 40px;
+        width: 140px;
+    }
+
+    .home-slider-shape .shape3 {
+        bottom: 50px;
+        left: 60px;
+        width: 180px;
+    }
+
+    .home-slider-shape .shape4 {
+        bottom: 60px;
+        right: 60px;
+        width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .home-slider-shape img {
+        display: none;
+    }
+}
+
+/* _______________counter start_______________________ */
+.counter-section {
+    padding: 30px 0;
+    background-color: #f8f9fa;
+    text-align: center;
+    /* padding-top: 100px; */
+}
+
+.counter-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.counter-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 3rem;
+}
+
+.counter-box {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.counter-box:hover {
+    transform: translateY(-10px);
+}
+
+.counter-icon {
+    font-size: 2.5rem;
+    color: #23C0E9;
+    /* Orange color */
+    margin-bottom: 1rem;
+}
+
+.counter-number {
+    font-size: 4.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.counter-text {
+    font-size: 1rem;
+    color: #777;
+    font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .counter-title {
+        font-size: 2rem;
+    }
+
+    .counter-number {
+        font-size: 2.2rem;
+    }
+}
+
+/* _______________counter end_______________________ */
+/* __________top-hiring-companies_____ */
+.top-hiring-companies {
+    background-color: #ffffff;
+}
+
+/* Section Title Styling */
+/* .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    position: relative;
+    padding-bottom: 10px;
+} */
+
+/* Custom Underline for the Title */
+/* .section-title::before {
+    content: '';
+    position: absolute;
+    bottom: 70px;
+    left: 390px;
+    width: 30%;
+    height: 3px;
+    background-color: #007bff;
+} */
+
+/* Company Card Styling */
+.company-card-link {
+    display: block;
+    color: inherit;
+    height: 100%;
+    border-radius: 50px;
+}
+
+.company-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-color: #cbcbcb !important;
+}
+
+.company-card-link:hover .company-card {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.btn-opening {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    padding: 8px 15px;
+    pointer-events: none;
+    color: white;
+    background-color: #012c57;
+    border: 1px solid #012c57;
+    transition: all 0.2s;
+}
+
+/* Button Hover Effect (Red/Pink from video) */
+.company-card-link:hover .btn-opening {
+    background-color: #23C0E9;
+    border-color: #23C0E9;
+}
+
+/* Logo Placeholder/Box Styling */
+.logo-box {
+    height: 80px;
+    width: 100%;
+}
+
+.logo-placeholder {
+    width: 60px;
+    height: 60px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Logo Placeholders (Visuals based on image) */
+.logo-wordpress {
+    background-color: #21759b;
+    border-radius: 50%;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 60px;
+    text-align: center;
+}
+
+.logo-paywalt {
+    background-color: #d8f5d1;
+    border-radius: 10px;
+}
+
+.logo-apus {
+    background-color: #f1fff0;
+    border-radius: 50%;
+}
+
+.logo-envato {
+    background-color: #ff9900;
+    border-radius: 50%;
+}
+
+
+/* Button Styling */
+.company-card-link .btn-dark {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    padding: 8px 15px;
+    pointer-events: none;
+    color: white;
+}
+
+/* Navigation Arrows (for the desktop view) */
+.nav-arrows .btn-outline-secondary {
+    border: 1px solid #ced4da;
+    color: #6c757d;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    line-height: 28px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+/* __________end-top-hiring-companies_____ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto&display=swap');
+
+/* ======= Section Styling ======= */
+.popular-category {
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+    color: #222;
+}
+
+.section-subtitle {
+    color: #686868;
+    font-size: 1rem;
+}
+
+/* ======= Category Cards ======= */
+.category-card {
+    display: block;
+    background-color: #f7f9f9;
+    color: #222;
+    text-decoration: none;
+    padding: 20px;
+    padding-bottom: 30px;
+    text-align: center;
+    justify-content: center;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease-out;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transform: translateY(0);
+}
+
+.category-card:hover {
+    background-color: #23C0E9;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
+}
+
+/* ===== Recent Job Area Styling ===== */
+.recent-job-area {
+
+    background-color: #f5f7fa;
+    padding: 100px 0;
+    font-family: "Poppins", sans-serif;
+}
+
+.section-title h3.title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #0b1a2e;
+    margin-bottom: 10px;
+}
+
+.section-title .desc p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 35px;
+}
+
+/* === Recent Job Item (Main Card) === */
+.recent-job-item {
+    background: #fff;
+    border-radius: 4px;
+    padding: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    transition: all 0.1s ease-in-out;
+    border: 1px solid transparent;
+}
+
+.recent-job-item:hover {
+    transform: translateY(-1px);
+    border-color: #14A1C5;
+    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.2);
+}
+
+/* === Company Info === */
+.company-info {
+    display: flex;
+    align-items: center;
+    /* margin-bottom: 20px; */
+}
+
+.company-info .logo img {
+    border-radius: 12px;
+    background: #f2f2f2;
+}
+
+.company-info .name a {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0b1a2e;
+    text-decoration: none;
+}
+
+.company-info .address {
+    font-size: 14px;
+    color: #777;
+    /* margin: 3px 0 0; */
+}
+
+/* === Main Job Content === */
+.main-content .title a {
+    color: #08192c;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.main-content .title a:hover {
+    color: #23C0E9;
+}
+
+.main-content .work-type {
+    color: #0056b3;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.main-content .desc {
+    color: #666;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* === Salary & Apply Button === */
+.recent-job-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.recent-job-info .salary h4 {
+    color: #0b1a2e;
+    font-size: 18px;
+    margin: 0;
+}
+
+.recent-job-info .salary p {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+/* Apply Button */
+.btn-theme {
+    background-color: #23C0E9;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.1s ease;
+}
+
+.btn-theme:hover {
+    background-color: #14A1C5;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .recent-job-item {
+        padding: 20px;
+    }
+
+    .main-content .title a {
+        font-size: 18px;
+    }
+
+    .btn-theme {
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 575px) {
+    .section-title h3.title {
+        font-size: 26px;
+    }
+
+    .recent-job-area {
+        padding: 60px 0;
+    }
+}
+
+/* ======= Responsive ======= */
+@media (max-width: 576px) {
+    .category-card {
+        font-size: 14px;
+        padding: 18px;
+    }
+}
+
+/* -------------------- */
+@keyframes slideInOut {
+
+    0%,
+    100% {
+        transform: translateX(0);
+        /* Start and end position (no horizontal offset) */
+    }
+
+    50% {
+        transform: translateX(-20px);
+        /* Move 20px to the left at midpoint */
+    }
+}
+
+@keyframes moveUpDown {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* --- BASE CONTAINER & IMAGE STYLES --- */
+
+.home-slider-shape {
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+}
+
+.home-slider-shape img {
+    position: absolute;
+    z-index: 5;
+    opacity: 0.8;
+}
+
+/* --- SHAPE POSITIONS  --- */
+
+.shape1 {
+    position: fixed;
+    top: 50px;
+    right: 100px;
+    left: auto;
+    animation: slideInOut 4s ease-in-out infinite alternate;
+}
+
+.shape2 {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    bottom: auto;
+    animation: slideInOut 5s ease-in-out infinite alternate;
+}
+
+.shape3 {
+    top: 40%;
+    right: 2%;
+    animation: moveUpDown 6s ease-in-out infinite alternate;
+}
+
+.shape4 {
+    bottom: 20%;
+    left: 30%;
+    animation: moveUpDown 4.5s ease-in-out infinite alternate;
+}
+
+/* <!-- ______registration cards start_______ --> */
+.registration-cards {
+    background-color: #f7f7f7;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+/* --- Shared Card Styling --- */
+.card {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    height: 100%;
+}
+
+/* Title Divider (the thin colored line) */
+/* .title-divider {
+    width: 40px;
+    height: 3px;
+    margin: 0 auto 1.5rem;
+} */
+
+/* --- Employer Card  --- */
+.employer-card {
+    background-color: white;
+}
+
+/* Employer Button (Light Blue) */
+.employer-btn {
+    background-color: #00a2e8 !important;
+    border-color: #00a2e8 !important;
+    transition: background-color 0.3s;
+}
+
+.employer-btn:hover {
+    background-color: #0087c2 !important;
+    border-color: #0087c2 !important;
+}
+
+.employer-card .icon-box svg {
+    stroke: #00a2e8;
+}
+
+/* ---  Candidate Card  --- */
+.candidate-card {
+    background-color: #333a4d;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.candidate-btn {
+    background-color: #ed5566 !important;
+    border-color: #ed5566 !important;
+    transition: background-color 0.3s;
+}
+
+.candidate-btn:hover {
+    background-color: #d14958 !important;
+    border-color: #d14958 !important;
+}
+
+.candidate-card .icon-box svg {
+    stroke: #00a2e8;
+}
+
+/* FREE Badge on Candidate Card */
+.candidate-card .badge {
+    background-color: #333;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* --- OR Divider Styling --- */
+.or-divider {
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-color: #c0c0c0 !important;
+}
+
+@media (max-width: 991.98px) {
+    .or-divider {
+        display: none !important;
+    }
+
+    .candidate-card {
+        margin-top: 15px;
+    }
+}
+
+/* <!-- ______End registration cards start_______ --> */

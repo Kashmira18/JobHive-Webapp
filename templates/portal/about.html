@@ -1,0 +1,164 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Transparent Navbar with Hover Menu | JobHive</title>
+
+        {%load static%}
+        <link rel="stylesheet" href="{% static 'css/about.css'%}" />
+
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+
+        <!-- Custom CSS -->
+
+        <!-- Bootstrap Icons -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+            rel="stylesheet" />
+    </head>
+
+    <body>
+        <!-- HERO SECTION -->
+        <section
+            class="hero d-flex align-items-center justify-content-center text-center">
+            <div class="overlay"></div>
+            <div class="container position-relative text-white">
+                <h1 class="fw-bold display-4">About</h1>
+                <p class="breadcrumb-text mt-3">
+                    <a href="{% url 'home'%}">Home</a> <span> > </span> <span
+                        class="active">About us</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- _______about main start__________ -->
+        <section class="platform-section py-5">
+            <div class="container platform-box">
+                <div class="row align-items-center">
+
+                    <!-- LEFT CONTENT -->
+                    <div class="col-lg-7">
+                        <h2 class="section-title mb-4">Our Perfect Platform</h2>
+                        <p>
+                            Doctus omnesque duo ne, cu vel offendit erroribus.
+                            Laudem hendrerit pro ex, cum postea delectus
+                            ad.
+                            Te pro feugiat perpetua tractatos. Nam movet omnes
+                            id, usu te meis corpora. Auge doming quaestio
+                            vix at.
+                        </p>
+
+                        <p>
+                            Nam ea eripuit assueverit, invenire delicatissimi ad
+                            pro, an dicam principes duo. Paulo
+                            prodesset duo ad.
+                            Duo eu summo verear. Natum gubergren definitionem id
+                            usu.
+                        </p>
+
+                        <p>
+                            Unum postea sit an, iudico invenire expetenda ei
+                            sea, atqui fierent sed ut.
+                            Ex pri numquam indoctum suavitate, sed id movet
+                            mentitum consequat.
+                        </p>
+                    </div>
+
+                    <!-- RIGHT IMAGE -->
+                    <div class="col-lg-5 text-center">
+                        <img src="pexels-jkerro.jpg" alt="Business Team"
+                            class="img-fluid platform-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="service-section">
+            <div class="container platform-box">
+                <h2 class="mb-5">Our Service</h2>
+
+                <div class="row">
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-clock"></i></div>
+                            <h5>Advertise A Job</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-search"></i></div>
+                            <h5>CV Search</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-user"></i></div>
+                            <h5>Recruiter Profiles</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-box"></i></div>
+                            <h5>Temp Search</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-desktop"></i></div>
+                            <h5>Display Jobs</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="service-box">
+                            <div class="icon-circle"><i
+                                    class="fas fa-gem"></i></div>
+                            <h5>For Agencies</h5>
+                            <p>Duis a tristique lacus. Donec vehicula ante id
+                                lorem venenatis posuere. Morbi in lectus.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- _______END about main start__________ -->
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        {% include 'portal/footer.html' %}
+
+    </body>
+</html>
+
+{%endblock%}
+

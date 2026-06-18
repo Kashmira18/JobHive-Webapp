@@ -1,0 +1,733 @@
+/* Footer Section 01________subscribe now*/
+/* Footer Area Styles */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'); */
+
+/* .footer-area {
+    background-color: #1A2032;
+    font-family: 'Poppins', sans-serif;
+} */
+
+/* Footer Top */
+
+
+/* footer last */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+.footer-area .widget-item {
+    font-family: 'Poppins', sans-serif;
+
+    margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-area .widget-item.widget-about {
+        margin: 0 40px 30px;
+        text-align: center;
+    }
+}
+
+@media only screen and (max-width: 479.98px) {
+    .footer-area .widget-item.widget-about {
+        margin: 0 10px 30px;
+    }
+}
+
+.footer-area .widget-title {
+    font-size: 28px;
+    color: #fff;
+    text-transform: capitalize;
+    margin-bottom: 40px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .widget-title {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-area .widget-title {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .nav-menu-item1 {
+        margin-left: 0;
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .nav-menu-item2 {
+        margin-left: 0;
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .nav-menu-item3 {
+        margin-left: 0;
+    }
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .nav-menu-item4 {
+        margin-left: 0;
+    }
+}
+
+.footer-area .widget-logo-area {
+    margin-bottom: 42px;
+    margin-top: -8px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .widget-logo-area {
+        margin-bottom: 18px;
+        margin-top: -3px;
+    }
+}
+
+.footer-area .desc {
+    color: #d8dadf;
+    font-size: 18px;
+    line-height: 1.95;
+    margin-bottom: 32px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .desc {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+}
+
+.footer-area .social-icons {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-area .social-icons {
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+}
+
+.footer-area .social-icons a {
+    border: 2px solid #e3e8f1;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 14px;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    line-height: 45px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .social-icons a {
+        font-size: 13px;
+        height: 42px;
+        width: 42px;
+        line-height: 38px;
+    }
+}
+
+.footer-area .social-icons a+a {
+    margin-left: 15px;
+}
+
+.footer-area .social-icons a:hover {
+    border-color: #14A1C5;
+    background-color: #14A1C5;
+}
+
+.footer-area .nav-menu {
+    margin-bottom: 0;
+}
+
+.footer-area .nav-menu li {
+    color: #d8dadf;
+    display: block;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.footer-area .nav-menu li a {
+    color: #d8dadf;
+    font-size: 15px;
+    text-decoration: none;
+    line-height: 40px;
+    font-weight: 90;
+    padding: 0 2px;
+    display: block;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-area .nav-menu li a {
+        font-size: 14px;
+        line-height: 45px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-area .nav-menu li a {
+        line-height: 35px;
+    }
+}
+
+.footer-area .nav-menu li a:hover {
+    color: #14A1C5;
+}
+
+.footer-top {
+    background-color: #14A1C5;
+    padding: 47px 0 43px;
+}
+
+@media only screen and (max-width: 991px) {
+    .footer-top {
+        padding: 47px 0 57px;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .footer-newsletter-content {
+        text-align: center;
+    }
+}
+
+.footer-newsletter-content .title {
+    color: #fefdfc;
+    font-size: 35px;
+    line-height: 1.5;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-newsletter-content .title {
+        font-size: 32px;
+        margin-bottom: 0;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-newsletter-content .title {
+        font-size: 25px;
+    }
+}
+
+.footer-newsletter-form {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: end;
+    margin-top: 28px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-newsletter-form {
+        margin-top: 18px;
+    }
+}
+
+.footer-newsletter-form form {
+    display: inline-block;
+    position: relative;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-newsletter-form form {
+        width: 100%;
+    }
+}
+
+.footer-newsletter-form form [type=email] {
+    background-color: #fff;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    width: 600px;
+    border: none;
+    height: 70px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #272a33;
+    padding: 0 210px 0 32px;
+}
+
+.footer-newsletter-form form [type=email]::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: #272a33;
+}
+
+.footer-newsletter-form form [type=email]::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #272a33;
+}
+
+.footer-newsletter-form form [type=email]:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #272a33;
+}
+
+.footer-newsletter-form form [type=email]:-moz-placeholder {
+    /* Firefox 18- */
+    color: #272a33;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-newsletter-form form [type=email] {
+        font-size: 14px;
+        height: 55px;
+        padding: 0 210px 0 22px;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .footer-newsletter-form form [type=email] {
+        padding: 1px 148px 0 22px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-newsletter-form form [type=email] {
+        padding: 1px 118px 0 22px;
+    }
+}
+
+.footer-newsletter-form form [type=submit] {
+    position: absolute;
+    right: 4px;
+    padding: 0;
+    margin: 0;
+    background-color: #272a33;
+    color: #fff;
+    font-size: 16px;
+    border: 2px solid #272a33;
+    width: 201px;
+    height: 62px;
+    border-radius: 5px;
+    top: 50%;
+    -webkit-transform: translate(0%, -50%);
+    transform: translate(0%, -50%);
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-newsletter-form form [type=submit] {
+        font-size: 14px;
+        width: 140px;
+        height: 46px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-newsletter-form form [type=submit] {
+        font-size: 13px;
+        width: 110px;
+    }
+}
+
+.footer-newsletter-form form [type=submit]:hover {
+    background-color: #14A1C5;
+    border-color: #14A1C5;
+    color: #fff;
+}
+
+
+
+/* _____new__________ */
+
+.footer-main {
+    background-color: #1A2032;
+    position: relative;
+    padding: 126px 0 86px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-main {
+        padding: 75px 0 34px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-main {
+        padding: 75px 0 44px;
+    }
+}
+
+.footer-main .widget-collapsed-title {
+    display: block;
+    position: relative;
+    background-color: #1A2032;
+    border: 1px solid #1A2032;
+    height: 60px;
+    line-height: 60px;
+    padding: 0 20px;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 0;
+    color: #fff;
+    font-weight: 600;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+@media only screen and (min-width: 768px) {
+    .footer-main .widget-collapsed-title {
+        display: none;
+    }
+}
+
+.footer-main .widget-collapsed-title:before {
+    font-family: "IcoFont";
+    font-size: 14px;
+    content: "";
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 60px;
+    text-align: center;
+}
+
+.footer-main .widget-collapsed-title:not(.collapsed):before {
+    content: "";
+    font-family: "IcoFont";
+}
+
+.footer-main .widget-collapse-body {
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+}
+
+@media only screen and (min-width: 768px) {
+    .footer-main .widget-collapse-body {
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-main .widget-collapse-body {
+        background-color: #081738;
+        border: 1px solid #081738;
+        border-top: none;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-main .widget-collapse-body .collapse-body {
+        padding: 16px 24px 16px;
+    }
+}
+
+.footer-bottom {
+    background-color: #1A2032;
+    text-align: center;
+}
+
+.footer-bottom .footer-bottom-content {
+    border-top: 1px solid rgba(232, 238, 244, 0.08);
+    padding: 23px 0 24px;
+}
+
+.footer-bottom .copyright {
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 0;
+    position: relative;
+    top: 1px;
+}
+
+@media only screen and (max-width: 1199px) {
+    .footer-bottom .copyright {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .footer-bottom .copyright {
+        vertical-align: -1px;
+    }
+}
+
+.footer-bottom .copyright a {
+    color: #14A1C5;
+}
+
+.footer-bottom .copyright a:hover {
+    color: #fff;
+}
+
+.footer-bottom .copyright i {
+    color: #14A1C5;
+    font-size: 16px;
+    vertical-align: 0px;
+
+    margin: 0;
+}
+
+/* ================================
+   FOOTER GLOBAL STYLING
+================================ */
+.footer-area {
+    background-color: #0f0f11;
+    /* dark background */
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.footer-area a {
+    transition: 0.3s ease;
+}
+
+/* ================================
+   NEWSLETTER SECTION
+================================ */
+.footer-top {
+    padding: 35px 0;
+    border-bottom: 1px solid #222;
+}
+
+.footer-newsletter-content .title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.footer-newsletter-form form {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-newsletter-form input {
+    flex: 1;
+    padding: 12px;
+    background: #1a1a1c;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.footer-newsletter-form input::placeholder {
+    color: #999;
+}
+
+.btn-newsletter {
+    padding: 12px 22px;
+    background: #006eff;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-newsletter:hover {
+    background: #0057d4;
+}
+
+/* ================================
+   MAIN FOOTER
+================================ */
+.footer-main {
+    padding: 60px 0 20px;
+}
+
+.footer-main h6 {
+    font-size: 15px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.footer-main ul li {
+    margin-bottom: 7px;
+}
+
+.footer-main ul li a {
+    color: #b5b5b5;
+    font-size: 14px;
+}
+
+.footer-main ul li a:hover {
+    color: #fff;
+}
+
+/* Blue left border headings */
+.footer-main h6 {
+    border-left: 3px solid #0d6efd !important;
+    padding-left: 8px;
+}
+
+/* ================================
+   SOCIAL ICONS
+================================ */
+.footer-main .social-icons a {
+    font-size: 18px;
+    margin-right: 15px;
+    color: #ddd;
+}
+
+.footer-main .social-icons a:hover {
+    color: #0d6efd;
+}
+
+/* ================================
+   BOX: Sign up & Change Country
+================================ */
+.footer-main .border {
+    border-color: #444 !important;
+}
+
+.footer-main .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.footer-main .btn-primary:hover {
+    background-color: #005ad1;
+}
+
+.footer-main .btn-outline-light {
+    border-color: #888;
+    color: #eee;
+}
+
+.footer-main .btn-outline-light:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* ================================
+   COPYRIGHT SECTION
+================================ */
+.footer-area hr {
+    border-color: #333;
+}
+
+.footer-area small {
+    color: #aaa;
+}
+
+.footer-area .text-secondary {
+    color: #b5b5b5 !important;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+    .footer-newsletter-form form {
+        flex-direction: column;
+    }
+
+    .btn-newsletter {
+        width: 100%;
+    }
+
+    .footer-main {
+        padding-top: 40px;
+    }
+}
+
+/* ============================
+   FOOTER LOGO BOX
+============================ */
+.footer-logo-box {
+    padding-right: 25px;
+    text-decoration: none;
+}
+
+.footer-job-logo {
+    width: 150px;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+.footer-logo-box p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #b5b5b5;
+}
+
+.footer-logo-box .social-icons a {
+    color: #ddd;
+    transition: 0.3s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    /* background: linear-gradient(145deg, #3a3a3a, #282828); */
+    background-color: #14A1C5;
+    color: #fff;
+    font-size: 20px;
+    margin: 0 6px;
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+
+.footer-logo-box .social-icons a:hover {
+    transform: translateY(-2px) scale(1.08);
+    background: linear-gradient(145deg, #84def4, #14A1C5);
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(29, 138, 255, 0.4);
+}
+
+/* Logo responsive fix */
+@media (max-width: 768px) {
+    .footer-job-logo {
+        width: 130px;
+    }
+}
+
+/* _____new end_____ */
+
+
+/* --- Floating Scroll Up Button Styles --- */
+#scrollUpButton {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 0;
+    transform: scale(0.8);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    background: radial-gradient(circle at top left, #29d4ff 0%, #14A1C5 100%);
+    /* background: linear-gradient(to bottom right, #87CEFA 0%, #4682B4 100%); */
+}
+
+#scrollUpButton.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#scrollUpButton i {
+    color: white;
+    font-size: 1.5rem;
+}

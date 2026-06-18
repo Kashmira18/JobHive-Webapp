@@ -1,0 +1,555 @@
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    /* background: linear-gradient(rgba(10, 30, 60, 0.7),
+            rgba(5, 45, 110, 0.75)),
+        url("../images/slider-bg.webp") center/cover no-repeat; */
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay */
+.candidate-hero::before {
+    /* background: rgba(255, 255, 255, 0.15); */
+    /* backdrop-filter: blur(10px); */
+    /* border: 1px solid rgba(255, 255, 255, 0.25); */
+    border-radius: 12px;
+    /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); */
+    padding: 0.8rem 1.5rem;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.candidate-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-item a {
+    color: #ffffffcc !important;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-item.active {
+
+    color: #00c2ff !important;
+    font-weight: 600;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #ffffffb3;
+}
+
+
+/* ======profile===== */
+
+
+/* Candidate Card */
+.candidate-card {
+    background: #0e3675;
+    border-radius: 20px;
+    border: 1px solid #ffffff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    transition: 0.3s ease;
+    margin-top: 50px;
+    height: 35vh;
+}
+
+.candidate-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    background-color: #0a244d;
+
+}
+
+/* Profile Image */
+.profile-img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e8f1ff;
+}
+
+/* Text Styling */
+.candidate-name {
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+}
+
+.candidate-role {
+    font-weight: 600;
+    color: #1572ff;
+}
+
+.candidate-info {
+    color: #89a6d1;
+    font-size: 0.95rem;
+}
+
+/* Buttons */
+.shortlist-btn {
+    background: white;
+    border: 1px solid #1572ff;
+    color: #1572ff;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.shortlist-btn:hover {
+    background: #1572ff;
+    /* background-color: #0e3675; */
+    color: white;
+    transform: scale(1.05);
+}
+
+.download-btn {
+    background: #1572ff;
+    color: white;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.download-btn:hover {
+    background-color: #0e3675;
+    border: 1px solid #ffffff;
+    color: white;
+    transform: scale(1.05);
+}
+
+
+/* ========details======= */
+
+
+/* ===== VARIABLES & RESET ===== */
+:root {
+    --navy-blue: #1e3a5f;
+    --dark-blue: #2c5282;
+    --medium-blue: #3182ce;
+    --light-blue: #4299e1;
+    --accent-blue: #63b3ed;
+    --white: #ffffff;
+    --light-gray: #f7fafc;
+    --medium-gray: #e2e8f0;
+    --dark-gray: #4a5568;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: var(--light-gray);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h3.title,
+h4.title,
+h4.content-title {
+    color: var(--navy-blue);
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+h3.title {
+    font-size: 1.5rem;
+    padding-bottom: 10px;
+}
+
+h3.title::after,
+h4.content-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, var(--medium-blue), var(--accent-blue));
+    border-radius: 2px;
+}
+
+h4.title {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+h4.content-title {
+    font-size: 1.4rem;
+    margin-top: 30px;
+}
+
+h5.sub-title {
+    color: var(--medium-blue);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 5px 0 10px;
+}
+
+p.desc {
+    color: var(--text-light);
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+/* ===== LAYOUT ===== */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.col-lg-7,
+.col-lg-5,
+.col-xl-8,
+.col-xl-4 {
+    padding: 0 15px;
+}
+
+.col-lg-7,
+.col-xl-8 {
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+}
+
+.col-lg-5,
+.col-xl-4 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+}
+
+/* ===== MAIN CONTENT ===== */
+.team-details-item {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.content {
+    margin-bottom: 30px;
+}
+
+.candidate-details-wrap {
+    margin-bottom: 30px;
+}
+
+.content-item {
+    background: var(--light-gray);
+    border-left: 4px solid var(--medium-blue);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 0 8px 8px 0;
+    transition: all 0.3s ease;
+}
+
+.content-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.content-item h4.title {
+    color: var(--dark-blue);
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.content-item h4.title span {
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* ===== SKILLS SECTIONS ===== */
+.content-list-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.content-list-wrap .content {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 15px;
+    margin-bottom: 0;
+}
+
+.team-details-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.team-details-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.team-details-list li:hover {
+    color: var(--medium-blue);
+    transform: translateX(5px);
+}
+
+.team-details-list li i {
+    color: var(--medium-blue);
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
+/* ===== SIDEBAR ===== */
+.team-sidebar {
+    position: sticky;
+    top: 30px;
+}
+
+.widget-item {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.widget-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.widget-title {
+    margin-bottom: 20px;
+}
+
+/* ===== INFORMATION TABLE ===== */
+.summery-info {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table tr {
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.table tr:last-child {
+    border-bottom: none;
+}
+
+.table td {
+    padding: 12px 5px;
+    vertical-align: top;
+}
+
+.table-name {
+    color: var(--text-dark);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.dotted {
+    color: var(--medium-blue);
+    padding: 0 5px;
+}
+
+.table td:last-child {
+    color: var(--dark-blue);
+    font-weight: 500;
+    text-align: right;
+}
+
+/* ===== SOCIAL ICONS ===== */
+.social-icons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--light-gray);
+    color: var(--dark-blue);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background: var(--medium-blue);
+    color: var(--white);
+    transform: translateY(-3px);
+}
+
+.social-icons a i {
+    font-size: 1.2rem;
+}
+
+/* ===== CONTACT FORM ===== */
+.widget-contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--light-gray);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--medium-blue);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    background: var(--white);
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.btn-theme {
+    background: linear-gradient(to right, var(--medium-blue), var(--dark-blue));
+    color: var(--white);
+    border: none;
+    padding: 14px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-theme:hover {
+    background: linear-gradient(to right, var(--dark-blue), var(--navy-blue));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* ===== MESSAGE NOTIFICATION ===== */
+.form-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.form-message.success {
+    background: rgba(72, 187, 120, 0.1);
+    color: #38a169;
+    border: 1px solid #38a169;
+}
+
+.form-message.error {
+    background: rgba(245, 101, 101, 0.1);
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 991px) {
+
+    .col-lg-7,
+    .col-lg-5,
+    .col-xl-8,
+    .col-xl-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .content-list-wrap .content {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .team-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .team-details-item,
+    .widget-item {
+        padding: 20px;
+    }
+
+    .social-icons {
+        justify-content: flex-start;
+    }
+
+    .social-icons a {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .team-details-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    h3.title {
+        font-size: 1.3rem;
+    }
+
+    h4.title,
+    h4.content-title {
+        font-size: 1.2rem;
+    }
+
+    .content-item {
+        padding: 15px;
+    }
+}

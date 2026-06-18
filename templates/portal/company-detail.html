@@ -1,0 +1,289 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Candidate-detail Page</title>
+        <!-- Custom CSS -->
+        {%load static%}
+        <link rel="stylesheet" href="{% static 'css/company_detail.css' %}">
+        <!-- Bootstrap 5 CDN -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+        <!-- OR Version 5.x -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css">
+        <!-- OR -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.2/icofont.min.css">
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
+
+    </head>
+
+    <body>
+
+        <!-- ===== Hero Banner Start ===== -->
+        <section
+            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
+            <div class="container">
+                <h1 class="text-white fw-bold mb-2">Company</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'home'%}">Home</a></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page">Company Detail</li>
+                    </ol>
+                </nav>
+            </div>
+        </section>
+        <!-- ===== Hero Banner End ===== -->
+
+        <div class="container my-5">
+  <div class="card border-0 shadow-sm">
+    <!-- Header -->
+    <div class="company-header">
+      <div class="company-description">
+          <h3 class="fw-bold">Mercantile Enterprises Pvt Ltd</h3>
+      <p class="mb-0">Lahore, Pakistan</p>
+      </div>
+    
+      </div>
+      <div class="company-logo">
+        <img src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Company Logo">
+      </div>
+    
+
+    <!-- Body -->
+    <div class="company-body">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-2">
+            <div class="info-icon"><i class="bi bi-briefcase"></i></div>
+            <div><strong>Industry:</strong> Printing</div>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="info-icon"><i class="bi bi-geo-alt"></i></div>
+            <div><strong>Location:</strong> Lahore, Pakistan</div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="info-icon"><i class="bi bi-people"></i></div>
+            <div><strong>Employees:</strong> 120</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-2">
+            <div class="info-icon"><i class="bi bi-building"></i></div>
+            <div><strong>Business Entity:</strong> Private Limited Company (Pvt. Ltd.)</div>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <div class="info-icon"><i class="bi bi-calendar-event"></i></div>
+            <div><strong>Established:</strong> Jan 2019</div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="info-icon"><i class="bi bi-globe"></i></div>
+            <div><strong>Website:</strong> <a href="#" class="text-decoration-none text-primary">mercantileenterprises.pk</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <button class="btn btn-outline-primary me-2"><i class="bi bi-person-plus"></i> Follow</button>
+          <button class="btn btn-primary"><i class="bi bi-pencil-square"></i> Write Review</button>
+        </div>
+        <div class="social-icons mt-3 mt-md-0">
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+          <a href="#"><i class="bi bi-twitter"></i></a>
+          <a href="#"><i class="bi bi-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="review-box">
+          <i class="bi bi-star"></i> <i class="bi bi-star"></i> <i class="bi bi-star"></i> <i class="bi bi-star"></i> <i class="bi bi-star"></i> 
+          &nbsp; No reviews yet
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container py-4">
+  <div class="row g-4">
+    <!-- LEFT CONTENT -->
+    <div class="col-lg-8">
+      
+      <!-- About Section -->
+      <div class="card mb-4 p-3">
+        <h6 class="section-title"><i class="bi bi-info-circle me-2"></i>About Mercantile Enterprises Pvt Ltd</h6>
+        <p class="mb-0 text-muted">Printing and Packaging Company based in Lahore, Pakistan.</p>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="card mb-4 p-3">
+        <h6 class="section-title"><i class="bi bi-briefcase me-2"></i>Current Openings at Mercantile Enterprises Pvt Ltd</h6>
+        <div class="row g-2 mt-2">
+          <div class="col-md-5">
+            <input type="text" class="form-control" placeholder="Job Title or Skill">
+          </div>
+          <div class="col-md-5">
+            <input type="text" class="form-control" placeholder="City">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Card 1 -->
+      <div class="card job-card mb-3 p-3">
+        <div class="d-flex justify-content-between">
+          <h6 class="fw-bold">Graphic Designer</h6>
+          <span class="badge badge-blue">New Job</span>
+        </div>
+        <p class="text-muted small mb-1"><i class="bi bi-building info-icon"></i> Mercantile Enterprises Pvt Ltd</p>
+        <div class="d-flex flex-wrap small mb-2 text-muted">
+          <div class="me-3"><i class="bi bi-clock info-icon"></i>Full Time</div>
+          <div class="me-3"><i class="bi bi-sun info-icon"></i>Morning Shift</div>
+          <div><i class="bi bi-cash-stack info-icon"></i> Rs. 60,000 - 80,000 PKR</div>
+        </div>
+        <p class="small mb-2">Job Description: We are seeking a creative and detail-oriented Graphic Designer to join our printing team. The candidate will be responsible for producing high-quality print and digital materials.</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="text-muted small mb-0"><i class="bi bi-geo-alt info-icon"></i>Lahore, Pakistan</p>
+          <button class="btn btn-outline-primary btn-sm">View Job Details</button>
+        </div>
+      </div>
+
+      <!-- Job Card 2 -->
+      <div class="card job-card mb-3 p-3">
+        <div class="d-flex justify-content-between">
+          <h6 class="fw-bold">Social Media / Digital Marketing Manager</h6>
+          <span class="badge badge-blue">New Job</span>
+        </div>
+        <p class="text-muted small mb-1"><i class="bi bi-building info-icon"></i> Mercantile Enterprises Pvt Ltd</p>
+        <div class="d-flex flex-wrap small mb-2 text-muted">
+          <div class="me-3"><i class="bi bi-clock info-icon"></i>Full Time</div>
+          <div class="me-3"><i class="bi bi-sun info-icon"></i>Morning Shift</div>
+          <div><i class="bi bi-cash-stack info-icon"></i> Rs. 60,000 - 80,000 PKR</div>
+        </div>
+        <p class="small mb-2">We are hiring an experienced Digital Marketing Manager to develop and manage marketing campaigns across social media platforms. Expertise in brand awareness and engagement is a must.</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="text-muted small mb-0"><i class="bi bi-geo-alt info-icon"></i>Lahore, Pakistan</p>
+          <button class="btn btn-outline-primary btn-sm">View Job Details</button>
+        </div>
+      </div>
+
+      
+
+      <!-- Job Card 3 -->
+      <div class="card job-card mb-3 p-3">
+        <div class="d-flex justify-content-between">
+          <h6 class="fw-bold">Manager Accounts & Taxation</h6>
+          <span class="badge badge-blue">New Job</span>
+        </div>
+        <p class="text-muted small mb-1"><i class="bi bi-building info-icon"></i> Mercantile Enterprises Pvt Ltd</p>
+        <div class="d-flex flex-wrap small mb-2 text-muted">
+          <div class="me-3"><i class="bi bi-clock info-icon"></i>Full Time</div>
+          <div class="me-3"><i class="bi bi-sun info-icon"></i>Morning Shift</div>
+          <div><i class="bi bi-cash-stack info-icon"></i> Rs. 60,000 - 80,000 PKR</div>
+        </div>
+        <p class="small mb-2">We are looking for an experienced Manager Accounts & Taxation to prepare financial statements and ensure compliance with taxation laws. Experience in corporate accounting is preferred.</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <p class="text-muted small mb-0"><i class="bi bi-geo-alt info-icon"></i>Lahore, Pakistan</p>
+          <button class="btn btn-outline-primary btn-sm">View Job Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="col-lg-4">
+      <!-- Business Hours -->
+      <div class="side-card mb-3">
+        <h6 class="fw-bold"><i class="bi bi-clock-history me-2"></i>Business Hours</h6>
+        <ul class="list-unstyled hours mt-3 mb-0">
+            <li>Monday <span>9:00 AM - 5:00 PM</span></li>
+            <li>Tuesday <span>9:00 AM - 5:00 PM</span></li>
+            <li>Wednesday <span>9:00 AM - 5:00 PM</span></li>
+            <li>Thursday <span>9:00 AM - 5:00 PM</span></li>
+            <li>Friday <span>9:00 AM - 5:00 PM</span></li>
+            <li>Saturday <span class="closed">Closed</span></li>
+            <li>Sunday <span class="closed">Closed</span></li>
+          </ul>
+        
+      </div>
+
+      <!-- Company Reviews -->
+       <div class="review-card">
+    <div class="side-card">
+              <i class="fa-solid fa-star text-primary"></i> Company Reviews
+    </div>
+
+    <div class="text-center">
+      <div class="rating mb-1">
+        <i class="fa fa-star"></i>
+        <i class="fa fa-star"></i>
+        <i class="fa fa-star"></i>
+        <i class="fa fa-star"></i>
+        <i class="fa fa-star"></i>
+      </div>
+      <small class="text-muted">Based on 0 employee reviews</small>
+    </div>
+    <div class="review-item">
+      <span><i class="fa-solid fa-arrow-trend-up me-2 text-primary"></i>Career Growth</span>
+    </div>
+    <div class="review-item">
+      <span><i class="fa-solid fa-money-bill-wave me-2 text-primary"></i>Compensation</span>
+    </div>
+    <div class="review-item">
+      <span><i class="fa-solid fa-mug-hot me-2 text-primary"></i>Work/Life Balance</span>
+    </div>
+    <div class="review-item">
+      <span><i class="fa-solid fa-user-tie me-2 text-primary"></i>Management</span>
+    </div>
+    <div class="review-item">
+      <span><i class="fa-solid fa-people-group me-2 text-primary"></i>Culture</span>
+    </div>
+     <div class="text-center mt-3">
+      <div class="circle">0%</div>
+      <div class="subtext">CEO Approval<br><small class="text-muted">Employees who recommend the CEO</small></div>
+
+      <div class="circle">0%</div>
+      <div class="subtext">Recommend<br><small class="text-muted">Employees who recommend working here</small></div>
+ 
+      <a href="#" class="arrow-link">Business Outlook <i class="fa-solid fa-arrow-right"></i></a>
+      <p class="text-muted text-center small mt-1">Employees’ view on company’s future</p>
+    </div>
+  </div>
+      </div>
+    </div>
+  </div>
+ </div>
+</div>
+  <!-- Bootstrap JS -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Custom JS -->
+        <!-- <script src="script.js"></script> -->
+          <!-- {% include 'portal/footer.html' %} -->
+    </body>
+
+</html>
+
+{%endblock%}
+

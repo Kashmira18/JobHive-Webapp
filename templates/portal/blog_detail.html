@@ -1,0 +1,173 @@
+{% extends 'portal/navbar2.html' %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+  .article-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #2d3748;
+  }
+  .article-body h2 {
+    color: #0a192f;
+    margin-top: 30px;
+    font-weight: 700;
+  }
+  .sidebar-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+  .share-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    text-decoration: none; color: white;
+    transition: opacity 0.2s;
+  }
+  .share-btn:hover { opacity: 0.9; color: white; }
+</style>
+
+<div class="container my-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"
+                    class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="#"
+                    class="text-decoration-none">Blogs</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Interview
+                Prep</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <main class="col-lg-8">
+            <article>
+                <header class="mb-4">
+                    <h1 class="fw-bold display-6 mb-3 text-dark">Top 10 Django &
+                        Python Interview Questions for Tech Grads</h1>
+                    <div
+                        class="d-flex flex-wrap gap-3 align-items-center text-muted small">
+                        <span><i class="bi bi-person-circle"></i> By
+                            <strong>Walter Houston</strong></span>
+                        <span><i class="bi bi-calendar3"></i> June 15,
+                            2026</span>
+                        <span><i class="bi bi-eye"></i> 1,240 Views</span>
+                    </div>
+                </header>
+
+                <div class="mb-4">
+                    <img src="{% static 'images/blog-img1.webp' %}"
+                        class="img-fluid rounded-3 w-100"
+                        style="max-height: 400px; object-fit: cover;"
+                        alt="Main Blog Banner">
+                </div>
+
+                <div class="article-body mb-5">
+                    <p class="lead text-muted">Building production applications
+                        in Django requires robust system knowledge. If you are
+                        preparing for code reviews or technical job
+                        applications, these core architecture answers will make
+                        your solutions stand out.</p>
+
+                    <h2>1. Understanding Django Middleware Architecture</h2>
+                    <p>Middleware is a framework of hooks into Django's
+                        request/response processing. It’s a light, low-level
+                        “plugin” system for globally altering Django’s input or
+                        output. Common use cases include user session handling,
+                        request authentication, or setting specific tracking
+                        details securely on active user sessions before view
+                        logic processes them.</p>
+
+                    <blockquote>
+                        <p
+                            class="border-start border-primary border-4 ps-3 my-4 italic text-muted">"Always ensure your custom middleware returns an HttpResponse or delegates safely to subsequent processing levels."</p>
+                    </blockquote>
+
+                    <h2>2. Optimizing Database Hits (select_related vs
+                        prefetch_related)</h2>
+                    <p>Database queries inside loops are performance killers.
+                        Django offers <code>select_related</code> for
+                        Forward/OneToOne relationships by doing a SQL JOIN
+                        operation. For reverse lookups or ManyToMany models, use
+                        <code>prefetch_related</code> which runs a clean
+                        secondary evaluation block and resolves references via
+                        Python memory structures seamlessly.</p>
+                </div>
+
+                <div
+                    class="d-flex align-items-center gap-2 border-top border-bottom py-3 mb-5">
+                    <span class="fw-bold me-2">Share this post:</span>
+                    <a href="#" class="share-btn"
+                        style="background: #0077b5;"><i
+                            class="bi bi-linkedin"></i></a>
+                    <a href="#" class="share-btn"
+                        style="background: #1877f2;"><i
+                            class="bi bi-facebook"></i></a>
+                    <a href="#" class="share-btn"
+                        style="background: #1da1f2;"><i
+                            class="bi bi-twitter-x"></i></a>
+                </div>
+            </article>
+        </main>
+
+        <aside class="col-lg-4">
+            <div class="sidebar-card p-4 mb-4">
+                <h5 class="fw-bold mb-3">Search Blog</h5>
+                <div class="input-group">
+                    <input type="text" class="form-control"
+                        placeholder="Search keywords...">
+                    <button class="btn btn-primary" type="button"><i
+                            class="bi bi-search"></i></button>
+                </div>
+            </div>
+
+            <div class="card text-bg-dark p-4 mb-4 text-center border-0"
+                style="background: linear-gradient(135deg, #0a192f, #0d6efd);">
+                <h4 class="fw-bold text-white mb-2">Build Your Next Step</h4>
+                <p class="small text-white-50 mb-3">Post a role or apply
+                    seamlessly using JobHive's curated professional dashboards
+                    today.</p>
+                <a href="{% url 'home' %}"
+                    class="btn btn-light fw-bold w-100 rounded-pill">Explore Job
+                    Portal</a>
+            </div>
+
+            <div class="sidebar-card p-4">
+                <h5 class="fw-bold mb-3">Popular Articles</h5>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div
+                            style="min-width: 60px; height: 60px; background: #e2e8f0; border-radius: 8px;"></div>
+                        <div>
+                            <a href="#"
+                                class="text-decoration-none text-dark fw-bold small d-block"
+                                style="line-height:1.2;">How automated workflows
+                                classify candidate records</a>
+                            <span class="text-muted extra-small"
+                                style="font-size:0.75rem;">May 24, 2026</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-center">
+                        <div
+                            style="min-width: 60px; height: 60px; background: #e2e8f0; border-radius: 8px;"></div>
+                        <div>
+                            <a href="#"
+                                class="text-decoration-none text-dark fw-bold small d-block"
+                                style="line-height:1.2;">Maintaining branch
+                                hygiene in team repos</a>
+                            <span class="text-muted extra-small"
+                                style="font-size:0.75rem;">April 12, 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+{% include 'portal/footer.html' %}
+{% endblock %}

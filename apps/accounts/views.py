@@ -7,13 +7,14 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .models import CustomUser, CompanyProfile
+from .models import CustomUser, CompanyProfile, CompanyRejection
 from .forms import (
     CustomUserRegistrationForm,
     LoginForm,
     ForgotPasswordForm,
     SetNewPasswordForm,
 )
+# companyRejection model ko import karna hai taake company resubmit page mein rejected fields dikha sakein
 
 
 # ── REGISTER ──
@@ -95,6 +96,7 @@ def register_view(request):
 # _______________________________________________________________________________
 
 
+
 def login_view(request):
     form = LoginForm(request.POST or None)
 
@@ -114,10 +116,9 @@ def login_view(request):
             if user.role == "COMPANY":
                 request.session["pending_user_id"] = user.pk
 
-                # Profile se safe tareeqay se status check karna
+                # ── company_status CompanyProfile mein hai ──
                 try:
-                    profile = user.company_profile
-                    status = profile.company_status
+                    status = user.company_profile.company_status or "PENDING"
                 except CompanyProfile.DoesNotExist:
                     status = "PENDING"
 
@@ -126,24 +127,19 @@ def login_view(request):
                     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
                     return redirect("company:company_dashboard")
 
-                elif user.is_approved and status == "JUST_APPROVED":
-                    request.session["pending_user_id"] = user.pk
-                    return redirect("company_approved")
-
-                # ── REJECTED ──
+                # ── REJECTED → resubmit form ──
                 elif status == "REJECTED":
                     return redirect("company_resubmit")
 
-                # ── ROLLBACK ──
+                # ── ROLLBACK → resubmit form ──
                 elif status == "ROLLBACK":
                     return redirect("company_resubmit")
 
-                # ── PENDING ──
+                # ── PENDING ya kuch aur ──
                 else:
                     return redirect("company_pending")
 
             else:
-                # Candidate logic
                 login(request, user, backend="django.contrib.auth.backends.ModelBackend")
                 return redirect("candidate:candidate_dashboard")
 
@@ -151,6 +147,63 @@ def login_view(request):
             messages.error(request, "Invalid email/username or password. Please try again.")
 
     return render(request, "accounts/login.html", {"form": form})
+
+# def login_view(request):
+#     form = LoginForm(request.POST or None)
+
+#     if request.method == "POST":
+#         username_or_email = request.POST.get("username", "").strip()
+#         password          = request.POST.get("password", "")
+
+#         if "@" in username_or_email:
+#             user_obj        = CustomUser.objects.filter(email__iexact=username_or_email).first()
+#             target_username = user_obj.username if user_obj else None
+#         else:
+#             target_username = username_or_email
+
+#         user = authenticate(request, username=target_username, password=password)
+
+#         if user is not None:
+#             if user.role == "COMPANY":
+#                 request.session["pending_user_id"] = user.pk
+
+#                 # Profile se safe tareeqay se status check karna
+#                 try:
+#                     profile = user.company_profile
+#                     status = profile.company_status
+#                 except CompanyProfile.DoesNotExist:
+#                     status = "PENDING"
+
+#                 # ── APPROVED ──
+#                 if user.is_approved and status == "APPROVED":
+#                     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+#                     return redirect("company:company_dashboard")
+
+#                 elif user.is_approved and status == "JUST_APPROVED":
+#                     request.session["pending_user_id"] = user.pk
+#                     return redirect("company_approved")
+
+#                 # ── REJECTED ──
+#                 elif status == "REJECTED":
+#                     return redirect("company_resubmit")
+
+#                 # ── ROLLBACK ──
+#                 elif status == "ROLLBACK":
+#                     return redirect("company_resubmit")
+
+#                 # ── PENDING ──
+#                 else:
+#                     return redirect("company_pending")
+
+#             else:
+#                 # Candidate logic
+#                 login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+#                 return redirect("candidate:candidate_dashboard")
+
+#         else:
+#             messages.error(request, "Invalid email/username or password. Please try again.")
+
+#     return render(request, "accounts/login.html", {"form": form})
 
 
 
@@ -461,6 +514,195 @@ def company_registration(request):
     return redirect("company_pending")
 
 
+# def company_resubmit(request):
+#     user_id = request.session.get("pending_user_id")
+#     if not user_id:
+#         return redirect("login")
+
+#     try:
+#         user = CustomUser.objects.get(pk=user_id, role="COMPANY")
+#     except CustomUser.DoesNotExist:
+#         return redirect("login")
+ 
+#     if request.method == "POST":
+#         # Resubmit logic same as registration
+#         return company_registration(request)
+
+#     return render(request, "accounts/company_resubmit.html", {"user": user})    
+
+def company_resubmit(request):
+    # ── User dhundo — 2 tarike ──
+    # 1. Already logged in hai (approved company ne rollback li)
+    # 2. Session mein pending_user_id hai (login ke baad redirect)
+    user = None
+
+    if request.user.is_authenticated and request.user.role == "COMPANY":
+        user = request.user
+    else:
+        user_id = request.session.get("pending_user_id")
+        if user_id:
+            try:
+                user = CustomUser.objects.get(pk=user_id, role="COMPANY")
+            except CustomUser.DoesNotExist:
+                pass
+
+    if user is None:
+        return redirect("login")
+
+    # ── Profile dhundo ──
+    try:
+        profile = CompanyProfile.objects.get(user=user)
+    except CompanyProfile.DoesNotExist:
+        request.session["pending_user_id"] = user.pk
+        return redirect("company_registration")
+
+    # ── Status check — sirf REJECTED ya ROLLBACK allow karo ──
+    status = profile.company_status or "PENDING"
+    if status not in ("REJECTED", "ROLLBACK"):
+        if user.is_approved:
+            return redirect("company:company_dashboard")
+        return redirect("company_pending")
+
+    # ── Latest rejection fetch karo ──
+    latest_rejection = CompanyRejection.objects.filter(
+        company=profile
+    ).order_by('-id').first()
+
+    # ── POST — save karo ──
+    if request.method == "POST":
+        if latest_rejection:
+            if latest_rejection.trade_name:
+                profile.trade_name = request.POST.get("trade_name", profile.trade_name)
+            if latest_rejection.legal_name:
+                profile.legal_name = request.POST.get("legal_name", profile.legal_name)
+            if latest_rejection.ntn_number:
+                profile.ntn_number = request.POST.get("ntn_number", profile.ntn_number)
+            if latest_rejection.company_email:
+                profile.company_email = request.POST.get("company_email", profile.company_email)
+            if latest_rejection.company_type:
+                profile.company_type = request.POST.get("company_type", profile.company_type)
+            if latest_rejection.industry:
+                profile.industry = request.POST.get("industry", profile.industry)
+            if latest_rejection.website:
+                profile.website = request.POST.get("website", profile.website)
+            if latest_rejection.country:
+                profile.country = request.POST.get("country", profile.country)
+            if latest_rejection.province:
+                profile.province = request.POST.get("province", profile.province)
+            if latest_rejection.city:
+                profile.city = request.POST.get("city", profile.city)
+            if latest_rejection.legal_address:
+                profile.legal_address = request.POST.get("legal_address", profile.legal_address)
+            if latest_rejection.overview:
+                profile.overview = request.POST.get("overview", profile.overview)
+            if latest_rejection.logo and request.FILES.get("logo"):
+                profile.logo = request.FILES["logo"]
+
+        # Status wapas PENDING karo
+        profile.company_status = "PENDING"
+        profile.save()
+
+        # Session set karo taake pending page user dhund sake
+        request.session["pending_user_id"] = user.pk
+
+        messages.success(request, "Your updates have been resubmitted successfully!")
+        return redirect("company_pending")
+
+    context = {
+        "user":             user,
+        "profile":          profile,
+        "latest_rejection": latest_rejection,
+        "status":           status,
+    }
+    return render(request, "accounts/company_resubmit.html", context)
+
+
+
+
+# def company_resubmit(request):
+#     """
+#     Company ko resubmit page dikhao jab:
+#     1. Admin ne reject/rollback kiya ho.
+#     """
+#     # ── Step 1: User dhundo ──
+#     user = None
+#     if request.user.is_authenticated and request.user.role == 'COMPANY':
+#         user = request.user
+
+#     if user is None:
+#         user_id = request.session.get('pending_user_id')
+#         if user_id:
+#             try:
+#                 user = CustomUser.objects.get(pk=user_id, role='COMPANY')
+#             except CustomUser.DoesNotExist:
+#                 pass
+
+#     if user is None:
+#         return redirect('accounts:login')
+
+#     # ── Step 2: Profile dhundo ──
+#     try:
+#         profile = CompanyProfile.objects.get(user=user)
+#     except CompanyProfile.DoesNotExist:
+#         request.session['pending_user_id'] = user.pk
+#         return redirect('accounts:company_registration') # Aapke form ka name
+
+#     # ── Step 3: Latest rejection dhundo ──
+#     latest_rejection = CompanyRejection.objects.filter(
+#         company=profile
+#     ).order_by('-created_at').first()
+
+#     # ── Step 4: POST — Save Karo ──
+#     if request.method == 'POST':
+#         field_map = {
+#             'trade_name':    'trade_name',
+#             'legal_name':    'legal_name',
+#             'ntn_number':    'ntn_number',
+#             'company_email': 'company_email',
+#             'company_type':  'company_type',
+#             'industry':      'industry',
+#             'website':       'website',
+#             'country':       'country',
+#             'province':      'province',
+#             'city':          'city',
+#             'legal_address': 'legal_address',
+#             'overview':      'overview',
+#         }
+
+#         # Agar admin ne field ko true marked (reject) kiya hai toh hi update allow karo
+#         if latest_rejection:
+#             for field_name, model_attr in field_map.items():
+#                 is_rejected = getattr(latest_rejection, field_name, False)
+#                 if is_rejected:
+#                     val = request.POST.get(field_name, '').strip()
+#                     if val:
+#                         setattr(profile, model_attr, val)
+
+#             # Logo upload field handle karein
+#             if latest_rejection.logo and 'logo' in request.FILES:
+#                 profile.logo = request.FILES['logo']
+
+#         # AttributeError FIX: status ki jagah company_status use karein
+#         profile.company_status = 'PENDING'
+#         profile.save()
+
+#         user.is_approved = False
+#         user.save()
+
+#         request.session['pending_user_id'] = user.pk
+#         messages.success(request, "Your profile has been resubmitted for review!")
+#         return redirect('accounts:company_pending')
+
+#     # ── Step 5: Context ──
+#     context = {
+#         'user':             user,
+#         'profile':          profile,
+#         'latest_rejection': latest_rejection,
+#         'admin_message':    latest_rejection.message if latest_rejection else '',
+#         'company_name':     profile.trade_name or user.username,
+#         'profile_status':   profile.company_status, # company_status use kiya
+#     }
+#     return render(request, 'accounts/company_resubmit.html', context)
 
 def logout_view(request):
     logout(request) 

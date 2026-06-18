@@ -1,0 +1,455 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JobHive – Update Your Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      body { background:#F0F4F8; font-family:'Plus Jakarta Sans',sans-serif; color:#1A1D2E; min-height:100vh; }
+      .page-wrap { max-width:860px; margin:0 auto; padding:36px 20px 60px; }
+
+      /* Status banner */
+      .status-banner { border-radius:16px; padding:24px 28px; margin-bottom:24px; display:flex; align-items:flex-start; gap:16px; position:relative; overflow:hidden; }
+      .status-banner.rejected { background:linear-gradient(135deg,#1a0505,#3d1010); border:1px solid rgba(239,68,68,.3); }
+      .status-banner.rollback { background:linear-gradient(135deg,#1a1205,#3d2d0a); border:1px solid rgba(245,158,11,.3); }
+      .status-banner::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.05); }
+      .banner-icon { width:52px; height:52px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.4rem; position:relative; z-index:2; }
+      .rejected .banner-icon { background:rgba(239,68,68,.15); border:1.5px solid rgba(239,68,68,.3); color:#f87171; }
+      .rollback .banner-icon { background:rgba(245,158,11,.15); border:1.5px solid rgba(245,158,11,.3); color:#fbbf24; }
+      .banner-text { position:relative; z-index:2; }
+      .banner-text h5 { color:#fff; font-size:1rem; font-weight:700; margin:0 0 5px; }
+      .banner-text p { color:rgba(255,255,255,.7); font-size:.83rem; margin:0; line-height:1.6; }
+
+      /* Admin message */
+      .admin-msg-box { border-radius:12px; padding:16px 18px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px; }
+      .admin-msg-box.rejected { background:#fff1f1; border:1px solid #fca5a5; }
+      .admin-msg-box.rollback { background:#fffbeb; border:1px solid #fde68a; }
+      .admin-msg-box i { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+      .rejected .admin-msg-box i { color:#dc2626; }
+      .rollback .admin-msg-box i { color:#d97706; }
+      .admin-msg-box .msg-content h6 { font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }
+      .rejected .msg-content h6 { color:#dc2626; }
+      .rollback .msg-content h6 { color:#d97706; }
+      .admin-msg-box .msg-content p { font-size:.84rem; margin:0; line-height:1.6; }
+      .rejected .msg-content p { color:#7f1d1d; }
+      .rollback .msg-content p { color:#78350f; }
+
+      /* Progress steps */
+      .progress-steps { display:flex; align-items:center; margin-bottom:24px; background:#fff; border:1px solid #E4E6F0; border-radius:14px; padding:16px 24px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+      .ps-item { display:flex; align-items:center; gap:10px; flex:1; }
+      .ps-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.82rem; flex-shrink:0; }
+      .ps-num.done { background:#DCFCE7; color:#16A34A; border:2px solid #86EFAC; }
+      .ps-num.active { background:#31C2EF; color:#fff; border:2px solid #31C2EF; box-shadow:0 4px 10px rgba(49,194,239,.35); }
+      .ps-num.wait { background:#F8FAFC; color:#9CA3AF; border:2px solid #E4E6F0; }
+      .ps-num.warn { background:#FEF3C7; color:#d97706; border:2px solid #fde68a; }
+      .ps-num.err { background:#FEE2E2; color:#dc2626; border:2px solid #fca5a5; }
+      .ps-label { font-size:.78rem; font-weight:600; }
+      .ps-label.done { color:#16A34A; } .ps-label.active { color:#31C2EF; } .ps-label.wait { color:#9CA3AF; } .ps-label.warn { color:#d97706; } .ps-label.err { color:#dc2626; }
+      .ps-line { flex:1; height:2px; background:#E4E6F0; margin:0 4px; }
+      .ps-line.done { background:#31C2EF; } .ps-line.warn { background:#fde68a; } .ps-line.err { background:#fca5a5; }
+
+      /* Form cards */
+      .reg-card { background:#fff; border:1px solid #E4E6F0; border-radius:16px; padding:24px 26px; margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+      .card-head { display:flex; align-items:center; gap:10px; font-weight:700; font-size:.97rem; color:#1A1D2E; margin-bottom:5px; }
+      .card-head i { color:#31C2EF; }
+      .card-sub { font-size:.80rem; color:#6B7094; margin-bottom:20px; }
+
+      .form-label { font-weight:600; font-size:.80rem; color:#374151; margin-bottom:5px; }
+      .req { color:#e53935; }
+
+      .field-approved .form-label::after { content:' ✓ Approved'; color:#16a34a; font-size:.72rem; font-weight:600; }
+      .field-approved .form-control, .field-approved .form-select { border:1.5px solid #86efac !important; background:#f0fdf4 !important; color:#6b7280; }
+
+      .field-rejected .form-label { color:#dc2626 !important; }
+      .field-rejected .form-label::after { content:' ✗ Needs Fix'; color:#dc2626; font-size:.72rem; font-weight:600; }
+      .field-rejected .form-control, .field-rejected .form-select { border:1.5px solid #f87171 !important; background:#fff5f5 !important; box-shadow:0 0 0 3px rgba(239,68,68,.10) !important; }
+      .field-rejected .form-control:focus, .field-rejected .form-select:focus { border-color:#dc2626 !important; box-shadow:0 0 0 3px rgba(220,38,38,.16) !important; outline:none; }
+
+      .rejection-note { display:flex; align-items:flex-start; gap:6px; background:#fff1f1; border:1px solid #fca5a5; border-radius:7px; padding:7px 11px; margin-top:6px; font-size:.76rem; color:#dc2626; font-weight:500; line-height:1.5; }
+      .rejection-note i { flex-shrink:0; margin-top:1px; font-size:.8rem; }
+
+      .form-control, .form-select { border-radius:10px; border:1.5px solid #E4E6F0; font-size:.875rem; padding:10px 14px; transition:all .2s; color:#1A1D2E; width:100%; }
+      .form-control:focus, .form-select:focus { border-color:#31C2EF !important; box-shadow:0 0 0 3px rgba(49,194,239,.14) !important; outline:none; }
+      .input-group-text { background:#F8FAFC; border:1.5px solid #E4E6F0; border-radius:10px 0 0 10px; color:#64748b; font-size:.9rem; }
+      .input-group .form-control { border-radius:0 10px 10px 0; }
+
+      .logo-upload-zone { border:2px dashed #f87171; border-radius:14px; padding:28px 20px; text-align:center; cursor:pointer; background:#fff5f5; transition:background .2s; }
+      .logo-upload-zone.approved-zone { border:2px solid #86efac; background:#f0fdf4; cursor:default; }
+      .logo-upload-zone:hover:not(.approved-zone) { background:#fee2e2; }
+      .logo-upload-zone i { font-size:1.8rem; display:block; margin-bottom:8px; }
+      .logo-upload-zone.approved-zone i { color:#16a34a; }
+      .logo-upload-zone:not(.approved-zone) i { color:#f87171; }
+      .logo-upload-zone p { font-size:.84rem; font-weight:600; margin:0 0 3px; }
+      .logo-upload-zone small { font-size:.75rem; color:#9CA3AF; }
+      #logoPreviewImg { max-height:80px; max-width:160px; border-radius:8px; display:none; margin:8px auto 0; }
+
+      .btn-submit { background:linear-gradient(135deg,#31C2EF,#1da8d3); color:#fff; border:none; border-radius:10px; padding:11px 28px; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:.9rem; cursor:pointer; margin-top:4px; transition:opacity .2s,transform .15s; display:inline-flex; align-items:center; gap:8px; box-shadow:0 6px 20px rgba(49,194,239,.28); }
+      .btn-submit:hover { opacity:.9; transform:translateY(-1px); }
+      .btn-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
+      .spin { width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:sp .65s linear infinite; display:none; }
+      @keyframes sp { to { transform:rotate(360deg); } }
+
+      @media(max-width:576px) {
+        .reg-card { padding:16px 14px; }
+        .progress-steps { padding:14px 16px; }
+        .ps-label { display:none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+
+      <!-- Status Banner — profile.company_status use karo, user nahi -->
+      {% if profile.company_status == "REJECTED" %}
+      <div class="status-banner rejected">
+        <div class="banner-icon"><i class="fas fa-times-circle"></i></div>
+        <div class="banner-text">
+          <h5>Application Rejected</h5>
+          <p>Your company registration was rejected. Please correct the highlighted fields below and resubmit your application.</p>
+        </div>
+      </div>
+      {% else %}
+      <div class="status-banner rollback">
+        <div class="banner-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="banner-text">
+          <h5>Corrections Required</h5>
+          <p>Admin has requested corrections to some fields. Please update the highlighted fields and resubmit.</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Admin Message -->
+      {% if latest_rejection and latest_rejection.message %}
+      <div class="admin-msg-box {% if profile.company_status == 'REJECTED' %}rejected{% else %}rollback{% endif %}">
+        <i class="fas fa-comment-dots"></i>
+        <div class="msg-content">
+          <h6>Admin Message</h6>
+          <p>{{ latest_rejection.message }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Progress Steps -->
+      <div class="progress-steps">
+        <div class="ps-item">
+          <div class="ps-num done"><i class="fas fa-check" style="font-size:.7rem;"></i></div>
+          <span class="ps-label done">Account Created</span>
+        </div>
+        <div class="ps-line done"></div>
+        <div class="ps-item">
+          <div class="ps-num done"><i class="fas fa-check" style="font-size:.7rem;"></i></div>
+          <span class="ps-label done">Profile Submitted</span>
+        </div>
+        <div class="ps-line {% if profile.company_status == 'REJECTED' %}err{% else %}warn{% endif %}"></div>
+        <div class="ps-item">
+          {% if profile.company_status == "REJECTED" %}
+          <div class="ps-num err"><i class="fas fa-times" style="font-size:.7rem;"></i></div>
+          <span class="ps-label err">Rejected</span>
+          {% else %}
+          <div class="ps-num warn"><i class="fas fa-exclamation" style="font-size:.7rem;"></i></div>
+          <span class="ps-label warn">Correction Needed</span>
+          {% endif %}
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-item">
+          <div class="ps-num active">4</div>
+          <span class="ps-label active">Resubmit</span>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-item">
+          <div class="ps-num wait">5</div>
+          <span class="ps-label wait">Approved</span>
+        </div>
+      </div>
+
+      <!-- Django Messages -->
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} mb-3"
+             style="border-radius:12px;font-size:.85rem;">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      {% if profile %}
+      <form method="POST" enctype="multipart/form-data" id="resubmitForm" novalidate>
+        {% csrf_token %}
+
+        <!-- Company Information -->
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-building"></i> Company Information</div>
+          <div class="card-sub">Fields marked with ✗ need to be corrected. Fields marked with ✓ are approved.</div>
+          <div class="row g-3">
+
+            <!-- Trade Name -->
+            <div class="col-md-6 {% if latest_rejection.trade_name %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Company Trade Name <span class="req">*</span></label>
+              <input type="text" name="trade_name" class="form-control"
+                value="{{ profile.trade_name }}"
+                {% if not latest_rejection.trade_name %}readonly{% endif %} />
+              {% if latest_rejection.trade_name %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- Legal Name -->
+            <div class="col-md-6 {% if latest_rejection.legal_name %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Company Legal Name <span class="req">*</span></label>
+              <input type="text" name="legal_name" class="form-control"
+                value="{{ profile.legal_name }}"
+                {% if not latest_rejection.legal_name %}readonly{% endif %} />
+              {% if latest_rejection.legal_name %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- NTN -->
+            <div class="col-md-6 {% if latest_rejection.ntn_number %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">NTN / CUIN Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                <input type="text" name="ntn_number" class="form-control"
+                  value="{{ profile.ntn_number }}"
+                  {% if not latest_rejection.ntn_number %}readonly{% endif %} />
+              </div>
+              {% if latest_rejection.ntn_number %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- Company Email -->
+            <div class="col-md-6 {% if latest_rejection.company_email %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Company Email <span class="req">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" name="company_email" class="form-control"
+                  value="{{ profile.company_email }}"
+                  {% if not latest_rejection.company_email %}readonly{% endif %} />
+              </div>
+              {% if latest_rejection.company_email %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- Company Type -->
+            <div class="col-md-4 {% if latest_rejection.company_type %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Company Type <span class="req">*</span></label>
+              {% if latest_rejection.company_type %}
+                <select name="company_type" class="form-select">
+                  <option value="" disabled>Select type</option>
+                  <option value="Private Limited" {% if profile.company_type == "Private Limited" %}selected{% endif %}>Private Limited</option>
+                  <option value="Public Limited" {% if profile.company_type == "Public Limited" %}selected{% endif %}>Public Limited</option>
+                  <option value="Sole Proprietorship" {% if profile.company_type == "Sole Proprietorship" %}selected{% endif %}>Sole Proprietorship</option>
+                  <option value="Partnership" {% if profile.company_type == "Partnership" %}selected{% endif %}>Partnership</option>
+                  <option value="NGO / Non-Profit" {% if profile.company_type == "NGO / Non-Profit" %}selected{% endif %}>NGO / Non-Profit</option>
+                  <option value="Government" {% if profile.company_type == "Government" %}selected{% endif %}>Government</option>
+                  <option value="Other" {% if profile.company_type == "Other" %}selected{% endif %}>Other</option>
+                </select>
+                <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% else %}
+                <input type="text" name="company_type" class="form-control" value="{{ profile.company_type }}" readonly />
+              {% endif %}
+            </div>
+
+            <!-- Industry -->
+            <div class="col-md-4 {% if latest_rejection.industry %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Industry <span class="req">*</span></label>
+              {% if latest_rejection.industry %}
+                <select name="industry" class="form-select">
+                  <option value="" disabled>Select industry</option>
+                  <option value="Information Technology" {% if profile.industry == "Information Technology" %}selected{% endif %}>Information Technology</option>
+                  <option value="Finance & Banking" {% if profile.industry == "Finance & Banking" %}selected{% endif %}>Finance & Banking</option>
+                  <option value="Healthcare" {% if profile.industry == "Healthcare" %}selected{% endif %}>Healthcare</option>
+                  <option value="Education" {% if profile.industry == "Education" %}selected{% endif %}>Education</option>
+                  <option value="Manufacturing" {% if profile.industry == "Manufacturing" %}selected{% endif %}>Manufacturing</option>
+                  <option value="Retail & E-Commerce" {% if profile.industry == "Retail & E-Commerce" %}selected{% endif %}>Retail & E-Commerce</option>
+                  <option value="Media & Entertainment" {% if profile.industry == "Media & Entertainment" %}selected{% endif %}>Media & Entertainment</option>
+                  <option value="Construction" {% if profile.industry == "Construction" %}selected{% endif %}>Construction</option>
+                  <option value="Other" {% if profile.industry == "Other" %}selected{% endif %}>Other</option>
+                </select>
+                <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% else %}
+                <input type="text" name="industry" class="form-control" value="{{ profile.industry }}" readonly />
+              {% endif %}
+            </div>
+
+            <!-- Website -->
+            <div class="col-md-4 {% if latest_rejection.website %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Website</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                <input type="url" name="website" class="form-control"
+                  value="{{ profile.website }}"
+                  {% if not latest_rejection.website %}readonly{% endif %} />
+              </div>
+              {% if latest_rejection.website %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Location Information -->
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-location-dot"></i> Location Information</div>
+          <div class="card-sub">Update any location fields that require correction.</div>
+          <div class="row g-3">
+
+            <!-- Country -->
+            <div class="col-md-6 {% if latest_rejection.country %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Country <span class="req">*</span></label>
+              {% if latest_rejection.country %}
+                <select name="country" class="form-select">
+                  <option value="PK" {% if profile.country == "PK" %}selected{% endif %}>Pakistan</option>
+                  <option value="US" {% if profile.country == "US" %}selected{% endif %}>United States</option>
+                  <option value="GB" {% if profile.country == "GB" %}selected{% endif %}>United Kingdom</option>
+                  <option value="AE" {% if profile.country == "AE" %}selected{% endif %}>UAE</option>
+                  <option value="SA" {% if profile.country == "SA" %}selected{% endif %}>Saudi Arabia</option>
+                  <option value="CA" {% if profile.country == "CA" %}selected{% endif %}>Canada</option>
+                </select>
+                <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% else %}
+                <input type="text" name="country" class="form-control" value="{{ profile.country }}" readonly />
+              {% endif %}
+            </div>
+
+            <!-- Province -->
+            <div class="col-md-6 {% if latest_rejection.province %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">State / Province</label>
+              <input type="text" name="province" class="form-control"
+                value="{{ profile.province }}"
+                {% if not latest_rejection.province %}readonly{% endif %} />
+              {% if latest_rejection.province %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- City -->
+            <div class="col-md-6 {% if latest_rejection.city %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">City <span class="req">*</span></label>
+              <input type="text" name="city" class="form-control"
+                value="{{ profile.city }}"
+                {% if not latest_rejection.city %}readonly{% endif %} />
+              {% if latest_rejection.city %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+            <!-- Legal Address -->
+            <div class="col-12 {% if latest_rejection.legal_address %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Legal Address <span class="req">*</span></label>
+              <textarea name="legal_address" class="form-control" rows="3"
+                {% if not latest_rejection.legal_address %}readonly{% endif %}>{{ profile.legal_address }}</textarea>
+              {% if latest_rejection.legal_address %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Logo -->
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-image"></i> Company Logo</div>
+          <div class="card-sub">
+            {% if latest_rejection.logo %}
+              <span style="color:#dc2626;font-weight:600;">Logo needs to be updated.</span>
+            {% else %}
+              Logo is approved — no changes needed.
+            {% endif %}
+          </div>
+
+          {% if latest_rejection.logo %}
+            <div class="logo-upload-zone" onclick="document.getElementById('logoFile').click()">
+              <i class="fas fa-cloud-arrow-up"></i>
+              <p>Upload new logo</p>
+              <small>PNG, JPG or JPEG (Max 5MB)</small>
+              <img id="logoPreviewImg" alt="Preview" />
+              <input type="file" id="logoFile" name="logo" accept="image/*" class="d-none" onchange="previewLogo(this)" />
+            </div>
+            <div class="rejection-note mt-2"><i class="fas fa-circle-exclamation"></i> Logo needs correction.</div>
+          {% else %}
+            <div class="logo-upload-zone approved-zone">
+              {% if profile.logo %}
+                <img src="{{ profile.logo.url }}" style="max-height:70px;border-radius:8px;" alt="Logo" />
+              {% else %}
+                <i class="fas fa-check-circle" style="color:#16A34A;font-size:1.5rem;"></i>
+              {% endif %}
+              <p style="color:#16a34a;margin:5px 0 0;">{% if profile.logo %}Logo Approved{% else %}No logo required{% endif %}</p>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Overview -->
+        {% if profile.overview or latest_rejection.overview %}
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-align-left"></i> Company Overview</div>
+          <div class="{% if latest_rejection.overview %}field-rejected{% else %}field-approved{% endif %}">
+            <label class="form-label">Overview</label>
+            <textarea name="overview" class="form-control" rows="4"
+              {% if not latest_rejection.overview %}readonly{% endif %}>{{ profile.overview }}</textarea>
+            {% if latest_rejection.overview %}
+            <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Submit -->
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="{% url 'logout' %}" style="font-size:.82rem;color:#9ca3af;text-decoration:none;">
+            <i class="fas fa-sign-out-alt me-1"></i> Logout
+          </a>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span class="spin" id="spinEl"></span>
+            <i class="fas fa-paper-plane" id="submitIco"></i>
+            <span id="submitTxt">Resubmit for Review</span>
+          </button>
+        </div>
+
+      </form>
+
+      {% else %}
+      <div class="reg-card text-center py-4">
+        <i class="fas fa-exclamation-circle" style="font-size:2rem;color:#f87171;margin-bottom:12px;display:block;"></i>
+        <h6 style="color:#1e293b;margin-bottom:8px;">Profile not found</h6>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:16px;">Please complete your company registration form first.</p>
+        <a href="{% url 'company_registration' %}"
+           style="background:#31C2EF;color:#fff;padding:10px 24px;border-radius:9px;text-decoration:none;font-weight:600;font-size:.875rem;">
+          Complete Registration
+        </a>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function previewLogo(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('logoPreviewImg').src = e.target.result;
+            document.getElementById('logoPreviewImg').style.display = 'block';
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      var form = document.getElementById('resubmitForm');
+      if (form) {
+        form.addEventListener('submit', function() {
+          var btn = document.getElementById('submitBtn');
+          btn.disabled = true;
+          document.getElementById('spinEl').style.display = 'block';
+          document.getElementById('submitIco').style.display = 'none';
+          document.getElementById('submitTxt').textContent = 'Resubmitting…';
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,841 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Job Listings | Careers</title>
+        {%load static%}
+        <link rel="stylesheet" href="{% static 'css/job-list.css'%}" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+            rel="stylesheet">
+
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet" />
+
+    </head>
+    <body>
+        <!-- ===== Hero Banner Start ===== -->
+        <section
+            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
+            <div class="container">
+                <h1 class="text-white fw-bold mb-2">Job list</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'home'%}">Home</a></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page">//Job list</li>
+                    </ol>
+                </nav>
+            </div>
+        </section>
+        <!-- ===== Hero Banner End ===== -->
+        <div class="container py-5">
+        <!-- Tabs -->
+        <ul class="nav nav-pills justify-content-center mb-4" id="jobTabs">
+        <li class="nav-item">
+          <button
+            class="nav-link active"
+            data-bs-toggle="pill"
+            data-bs-target="#hot"
+          >
+            Hot Jobs
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            data-bs-toggle="pill"
+            data-bs-target="#recent"
+          >
+            Recent Jobs
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            data-bs-toggle="pill"
+            data-bs-target="#popular"
+          >
+            Popular Jobs
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- HOT JOBS -->
+        <div class="tab-pane fade show active" id="hot">
+          <div class="row g-4">
+            <!-- Hot Card 1 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Design Associate</h6>
+                  <small>San Francisco, CA</small><br />
+                  <span class="job-badge bg-primary text-white">Full Time</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 2 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/04/Microsoft-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >MicroSoft</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Project Manager</h6>
+                  <small>New York, USA</small><br />
+                  <span class="job-badge bg-warning text-dark">Part Time</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 3 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises </span
+                    >
+                  </a>
+                  <h6 class="mt-3">Backend Developer</h6>
+                  <small>Chicago, USA</small><br />
+                  <span class="job-badge bg-danger text-white">Remote</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 4 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1522199710521-72d69614c702');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Frontend Developer</h6>
+                  <small>Los Angeles, USA</small><br />
+                  <span class="job-badge bg-info text-white">Contract</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 5 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Sales Executive</h6>
+                  <small>Texas, USA</small><br />
+                  <span class="job-badge bg-primary text-white">Full Time</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 6 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1485217988980-11786ced9454');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Marketing Lead</h6>
+                  <small>Remote</small><br />
+                  <span class="job-badge bg-warning text-dark">Part Time</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 7 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1000&q=80');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/04/Microsoft-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >MicroSoft</span
+                    >
+                  </a>
+                  <h6 class="mt-3">HR Manager</h6>
+                  <small>Dubai</small><br />
+                  <span class="job-badge bg-danger text-white">Full Time</span>
+                </div>
+              </a>
+            </div>
+
+            <!-- Hot Card 8 -->
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f');
+                    "
+                  ></div>
+                  <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Finance Officer</h6>
+                  <small>London</small><br />
+                  <span class="job-badge bg-success text-white">Freelance</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT JOBS -->
+        <div class="tab-pane fade" id="recent">
+          <div class="row g-4">
+            <div class="col-md-3">
+              <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+                <div class="job-card">
+                  <div
+                    class="job-img"
+                    style="
+                      background-image: url('https://images.unsplash.com/photo-1596495577886-d920f1fb7238');
+                    "
+                  >
+                </div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/04/Microsoft-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >MicroSoft</span
+                    >
+                  </a>
+                  <h6 class="mt-3">Design Consultant</h6>
+                  <small>USA</small><br />
+                  <span class="job-badge bg-info text-white">Part Time</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">Graphic Designer</h6>
+                <small>UK</small><br /><span
+                  class="job-badge bg-warning text-dark"
+                  >Remote</span
+                >
+              </div>
+            </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1553729784-e91953dec042?auto=format&fit=crop&w=1000&q=80');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                <h6 class="mt-3">Finance Analyst</h6>
+                <small>Canada</small><br /><span
+                  class="job-badge bg-danger text-white"
+                  >Full Time</span
+                >
+              </div>
+            </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1543269664-7eef42226a21');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">HR Associate</h6>
+                <small>Germany</small><br /><span
+                  class="job-badge bg-primary text-white"
+                  >Contract</span
+                >
+              </div>
+            </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                <h6 class="mt-3">Marketing Manager</h6>
+                <small>France</small><br /><span
+                  class="job-badge bg-info text-white"
+                  >Part Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1521791055366-0d553872125f');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises </span
+                    >
+                  </a>
+                <h6 class="mt-3">Sales Lead</h6>
+                <small>UAE</small><br /><span
+                  class="job-badge bg-primary text-white"
+                  >Full Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                <h6 class="mt-3">Backend Developer</h6>
+                <small>Remote</small><br /><span
+                  class="job-badge bg-warning text-dark"
+                  >Freelance</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">Project Manager</h6>
+                <small>Italy</small><br /><span
+                  class="job-badge bg-danger text-white"
+                  >Full Time</span
+                >
+              </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- POPULAR JOBS -->
+        <div class="tab-pane fade" id="popular">
+          <div class="row g-4">
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises </span
+                    >
+                  </a>
+                <h6 class="mt-3">UI Designer</h6>
+                <small>USA</small><br /><span
+                  class="job-badge bg-success text-white"
+                  >Full Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.openai.com/static-rsc-1/BL0kv-b70cdp9hz1KTF4mcsnYNqdxYmzWD5Gq_wWsMvVlnqfrkjVNQ_BmQrcA5K_CTIAX-K1AjFlzJ6lQY4yRA4ELj9LFwLYyq47d2a1nJlDzfgaN45fcrUiBzSFGYMbBc2ySOylSqpulDf5Q4DKng');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                <h6 class="mt-3">Full Stack Dev</h6>
+                <small>Remote</small><br /><span
+                  class="job-badge bg-warning text-dark"
+                  >Part Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');
+                  "
+                ></div><a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">HR Specialist</h6>
+                <small>Canada</small><br /><span
+                  class="job-badge bg-danger text-white"
+                  >Full Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/04/Microsoft-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >MicroSoft</span
+                    >
+                  </a>
+                <h6 class="mt-3">QA Engineer</h6>
+                <small>France</small><br /><span
+                  class="job-badge bg-info text-white"
+                  >Contract</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://cdn.vectorstock.com/i/1000v/08/54/graphic-cartoon-character-financial-management-vector-35150854.jpg');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">Finance Manager</h6>
+                <small>Germany</small><br /><span
+                  class="job-badge bg-warning text-dark"
+                  >Remote</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://cdni.iconscout.com/illustration/premium/thumb/sales-manager-brainstorming-sales-strategies-with-the-team-illustration-svg-download-png-7099612.png');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/04/Microsoft-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >MicroSoft</span
+                    >
+                  </a>
+                <h6 class="mt-3">Sales Director</h6>
+                <small>Dubai</small><br /><span
+                  class="job-badge bg-primary text-white"
+                  >Full Time</span
+                >
+              </div>
+            </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1560264418-c4445382edbc');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://tse1.mm.bing.net/th/id/OIP.R9clgys9N6pAWL6NUl6lvQHaHa?cb=ucfimg2ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Mercantile Enterprises</span
+                    >
+                  </a>
+                <h6 class="mt-3">Marketing Lead</h6>
+                <small>London</small><br /><span
+                  class="job-badge bg-info text-white"
+                  >Part Time</span
+                >
+              </div>
+              </a>
+            </div>
+
+            <div class="col-md-3">
+                <a href="{% url 'job_details' %}" class="text-decoration-none text-dark">
+              <div class="job-card">
+                <div
+                  class="job-img"
+                  style="
+                    background-image: url('https://images.unsplash.com/photo-1573496267526-08a69e46a409');
+                  "
+                ></div>
+                <a
+                    href="{% url 'company-detail'%}"
+                    class="d-flex align-items-center text-decoration-none"
+                  >
+                    <img
+                      src="https://1000logos.net/wp-content/uploads/2021/05/Google-logo.png"
+                      style="width: 28px; height: auto"
+                      class="me-2"
+                    />
+                    <span class="company-name"
+                      >Google</span
+                    >
+                  </a>
+                <h6 class="mt-3">Product Manager</h6>
+                <small>USA</small><br /><span
+                  class="job-badge bg-danger text-white"
+                  >Full Time</span
+                >
+              </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      
+    </section>
+    <!-- Company Section -->
+<section class="text-center py-5">
+  <div class="container">
+    <h4 class="fw-bold">Our Candidates Work In Company</h4>
+    <p class="text-muted mb-5">Porro error reiciendis commodi beatae omnis similique voluptate rerum<br>ipsam fugit mollitia ipsum facilis expedita tempora suscipit iste</p>
+    <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap company-logos">
+      <img src="Indeed-Logo-PNG-Pic.png"  alt="indeed">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+      <img src="OIP.jpg" alt="linkedin">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+    </div>
+  </div>
+</section>
+
+        {% include 'portal/footer.html' %}
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+</html>
+
+{%endblock%}

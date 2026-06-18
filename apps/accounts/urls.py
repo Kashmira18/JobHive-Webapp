@@ -23,5 +23,6 @@ urlpatterns = [
     path('company/documents-review/',  views.company_documents_review,   name='company_documents_review'),
     # path('company/approved/',          views.company_approved,           name='company_approved'),
     path('company/registration/',        views.company_registration,       name='company_registration'),
+    path("company/resubmit/", views.company_resubmit, name="company_resubmit"),
 
 ]

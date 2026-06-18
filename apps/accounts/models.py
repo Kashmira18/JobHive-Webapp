@@ -104,3 +104,27 @@ class CompanyProfile(models.Model):
     class Meta:
         verbose_name        = "Company Profile"
         verbose_name_plural = "Company Profiles"
+
+
+class CompanyRejection(models.Model):
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='rejections')
+    message = models.TextField(blank=True, null=True)     # Admin ka main message
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Boolean fields bina JSON ke rejected fields track karne ke liye
+    trade_name = models.BooleanField(default=False)
+    legal_name = models.BooleanField(default=False)
+    ntn_number = models.BooleanField(default=False)
+    company_email = models.BooleanField(default=False)
+    company_type = models.BooleanField(default=False)
+    industry = models.BooleanField(default=False)
+    website = models.BooleanField(default=False)
+    country = models.BooleanField(default=False)
+    province = models.BooleanField(default=False)
+    city = models.BooleanField(default=False)
+    legal_address = models.BooleanField(default=False)
+    overview = models.BooleanField(default=False)
+    logo = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Rejection for {self.company.trade_name or self.company.legal_name} at {self.created_at.strftime('%Y-%m-%d %H:%M')}"

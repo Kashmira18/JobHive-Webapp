@@ -1,0 +1,350 @@
+{% extends 'portal/base.html'%}
+
+{%block content%}
+
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Candidate-detail Page</title>
+        <!-- Custom CSS -->
+        {%load static%}
+        <link rel="stylesheet" href="{% static 'css/company_list.css' %}">
+        <!-- Bootstrap 5 CDN -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
+        <!-- OR Version 5.x -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css">
+        <!-- OR -->
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.2/icofont.min.css">
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
+        <style>
+    body {
+  background: #f5f7fb;
+  color: #222;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Header */
+.header-section {
+  padding: 60px 0;
+  text-align: center;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+.header-section h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #0d6efd;
+  text-shadow: none;
+}
+
+/* Search Bar */
+.search-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  color: #000;
+  box-shadow: none;
+}
+
+/* Filter Buttons */
+.filter-btn {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  color: #333;
+  border-radius: 20px;
+  padding: 6px 18px;
+  transition: 0.3s;
+  margin: 5px;
+}
+.filter-btn:hover,
+.filter-btn.active {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* Cards */
+.company-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  transition: 0.3s;
+  border: 1px solid #ddd;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  height: 100%;
+}
+.company-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-color: #0d6efd;
+}
+
+.company-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.industry-badge {
+  background: #e7f1ff;
+  color: #0d6efd;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+
+.view-btn {
+  background: #ffffff;
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+  border-radius: 10px;
+  padding: 8px 18px;
+  width: 100%;
+  font-weight: 500;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+
+
+.view-btn:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+</style>
+    </head>
+
+    <body>
+
+        <!-- ===== Hero Banner Start ===== -->
+        <section
+            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
+            <div class="container">
+                <h1 class="text-white fw-bold mb-2">Company List</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a
+                                href="{% url 'home'%}">Home</a></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page">Company List</li>
+                    </ol>
+                </nav>
+            </div>
+        </section>
+        <!-- ===== Hero Banner End ===== -->
+
+  
+
+ 
+    <!-- Header -->
+    <section class="header-section">
+      <h1>Top Companies</h1>
+      <p>
+        Explore the leading organizations worldwide in a futuristic dark theme
+      </p>
+
+      <!-- Search -->
+      <div class="container mt-4">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control search-box w-100"
+          placeholder="Search companies..."
+        />
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="mt-3">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="tech">Tech</button>
+        <button class="filter-btn" data-filter="finance">Finance</button>
+        <button class="filter-btn" data-filter="design">Design</button>
+        <button class="filter-btn" data-filter="marketing">Marketing</button>
+      </div>
+    </section>
+
+   <!-- CARDS -->
+<div class="container mt-5">
+<div class="row g-4" id="companyContainer">
+
+<!-- GOOGLE -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/Google.webp' %}" class="company-logo">
+<h4>Google</h4>
+<span class="industry-badge">AI & Internet</span>
+<p>📍 California, USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- APPLE -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/apple.webp' %}" class="company-logo">
+<h4>Apple</h4>
+<span class="industry-badge">Tech</span>
+<p>📍 California, USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- MICROSOFT -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/Microsoft.png' %}" class="company-logo">
+<h4>Microsoft</h4>
+<span class="industry-badge">Cloud</span>
+<p>📍 Washington, USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- TESLA -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/tesla.png' %}" class="company-logo">
+<h4>Tesla</h4>
+<span class="industry-badge">AI Vehicles</span>
+<p>📍 Texas, USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- META -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/meta.png' %}" class="company-logo">
+<h4>Meta</h4>
+<span class="industry-badge">Social</span>
+<p>📍 USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- NVIDIA -->
+<div class="col-md-4 company-item" data-category="tech">
+<div class="company-card text-center">
+<img src="{% static 'images/nvidia.webp' %}" class="company-logo">
+<h4>NVIDIA</h4>
+<span class="industry-badge">AI Chips</span>
+<p>📍 USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- FINANCE -->
+<div class="col-md-4 company-item" data-category="finance">
+<div class="company-card text-center">
+<img src="{% static 'images/paypal.webp' %}" class="company-logo">
+<h4>PayPal</h4>
+<span class="industry-badge">Payments</span>
+<p>📍 USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- DESIGN -->
+<div class="col-md-4 company-item" data-category="design">
+<div class="company-card text-center">
+<img src="{% static 'images/adobe.webp' %}" class="company-logo">
+<h4>Adobe</h4>
+<span class="industry-badge">Design</span>
+<p>📍 USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+<!-- MARKETING -->
+<div class="col-md-4 company-item" data-category="marketing">
+<div class="company-card text-center">
+<img src="{% static 'images/hubspot.webp' %}" class="company-logo">
+<h4>HubSpot</h4>
+<span class="industry-badge">CRM</span>
+<p>📍 USA</p>
+<div class="d-flex justify-content-center">
+<a href="{% url 'company-detail' %}" class="view-btn">View Company</a>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+        <!-- Bootstrap JS -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"> </script>
+            
+        <!-- Custom JS -->
+        <!-- <script src="script.js"></script> --><script>
+         const filterBtns = document.querySelectorAll(".filter-btn");
+      const companyItems = document.querySelectorAll(".company-item");
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          const category = this.getAttribute("data-filter");
+
+          companyItems.forEach((item) => {
+            if (
+              category === "all" ||
+              item.getAttribute("data-category") === category
+            ) {
+              item.style.display = "block";
+            } else {
+              item.style.display = "none";
+            }
+          });
+        });
+      });
+
+      // Search Filter
+      document
+        .getElementById("searchInput")
+        .addEventListener("keyup", function () {
+          const query = this.value.toLowerCase();
+          companyItems.forEach((item) => {
+            const name = item.querySelector("h4").innerText.toLowerCase();
+            item.style.display = name.includes(query) ? "block" : "none";
+          });
+        });
+</script>
+        {% include 'portal/footer.html' %}
+    </body>
+
+
+
+{%endblock%}
+

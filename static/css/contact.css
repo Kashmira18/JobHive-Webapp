@@ -1,0 +1,147 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    /* background: linear-gradient(rgba(10, 30, 60, 0.7),
+            rgba(5, 45, 110, 0.75)),
+        url("../images/slider-bg.webp") center/cover no-repeat; */
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay */
+.candidate-hero::before {
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.candidate-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb-item a {
+    color: #ffffffcc !important;
+    opacity: 0.8;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffffff;
+}
+
+.breadcrumb-item.active {
+
+    color: #00c2ff !important;
+    font-weight: 600;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: #ffffffb3;
+}
+
+.divider {
+    width: 40px;
+    height: 2px;
+    background-color: #00bcd4;
+    margin: 0 auto;
+}
+
+.contact-form-section {
+    background-color: #FFFFFF;
+    padding: 60px 0;
+
+}
+
+.form-control {
+    border-radius: 10px;
+}
+
+.row .form-group i {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #23C0E9;
+}
+
+
+.form-icon {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #23C0E9;
+}
+
+/* 
+.pencil {
+    left: 10px;
+} */
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-control::placeholder {
+    padding-left: 25px;
+}
+
+.send-btn {
+    background-color: #23C0E9;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+}
+
+.send-btn:hover {
+    background-color: #1A2032;
+    color: white;
+
+
+}
+
+.contact-info-box {
+    background-color: #23C0E9;
+    color: white;
+    padding: 30px;
+    border-radius: 4px;
+    height: 500px;
+}
+
+.contact-info-box p {
+    margin-bottom: 10px;
+}
+
+.contact-info-box i {
+    margin-top: 20px;
+    margin-right: 10px;
+    row-gap: 20px;
+}
+
+.social-icons a {
+    color: white;
+    margin: 0 10px;
+}
+
+.social-icons a:hover {
+    color: #1A2032;
+
+}
