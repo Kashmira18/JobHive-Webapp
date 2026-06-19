@@ -1,0 +1,135 @@
+:root {
+    --primary-navy: #11096d;
+    --light-bg: #f8f9fa;
+    --text-dark: #333;
+}
+
+body {
+    background-color: #f3f5f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+/* Container Styling */
+.main-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Custom Tabs Styling */
+.nav-pills {
+    background: #87cfff;
+    color: white;
+    padding: 10px;
+    /* border-radius: 20px; */
+    display: inline-flex;
+    margin-bottom: 30px;
+    justify-content: center;
+    width: 100%;
+}
+
+.nav-pills .nav-link {
+    color: #555;
+    font-weight: 600;
+    border-radius: 30px;
+    padding: 8px 25px;
+    transition: all 0.3s;
+}
+
+.nav-pills .nav-link.active {
+    background-color: var(--primary-navy);
+    color: white;
+}
+
+/* Form Controls */
+.form-label {
+    font-weight: 500;
+    color: #444;
+    font-size: 0.9rem;
+}
+
+.required-star {
+    color: red;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-navy);
+    box-shadow: 0 0 0 0.2rem rgba(0, 166, 126, 0.15);
+}
+
+/* Buttons */
+.btn-empzio {
+    background-color: var(--primary-navy);
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.btn-empzio:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.remove-link {
+    color: #dc3545;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.add-new-link {
+    color: var(--primary-navy);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.section-separator {
+    border-top: 1px dashed #ddd;
+    margin: 20px 0;
+}
+
+/* Image Upload Box Imitation */
+.image-upload-box {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    background: #fafafa;
+    color: #777;
+    font-size: 0.8rem;
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 0;
+    width: 150px;
+    z-index: 10;
+}
+
+@media (max-width: 768px) {
+    .image-upload-box {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}

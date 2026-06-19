@@ -37,7 +37,7 @@ def register_view(request):
                     request, user, backend="django.contrib.auth.backends.ModelBackend"
                 )
                 messages.success(request, f"Welcome to JobHive, {user.username}!")
-                return redirect("candidate_dashboard")
+                return redirect("candidate:candidate_dashboard")
     else:
         form = CustomUserRegistrationForm()
     return render(request, "accounts/register.html", {"form": form})

@@ -1,0 +1,62 @@
+body {
+    background-color: #f8faf9;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.sidebar {
+    background-color: #fff;
+    border-right: 1px solid #eef2f1;
+}
+
+.sidebar .nav-link {
+    color: #666;
+    font-weight: 500;
+    padding: 12px 20px;
+}
+
+.sidebar .nav-link.active {
+    background-color: #00a878;
+    color: white !important;
+    border-radius: 4px;
+}
+
+/* Tab Styling */
+.nav-pills .nav-link {
+    background: #e9f5f1;
+    color: #00a878;
+    margin: 0 5px;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #00a878 !important;
+}
+
+/* Forms */
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-control {
+    border: 1px solid #e0e6e4;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.btn-primary-custom {
+    background-color: #00a878;
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 4px;
+}
+
+.btn-primary-custom:hover {
+    background-color: #008f66;
+    color: white;
+}

@@ -1,0 +1,72 @@
+:root {
+    --primary-green: #1d48a3;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #444;
+}
+
+/* Header Styling */
+.table-green {
+    background-color: var(--primary-green) !important;
+}
+
+.table thead th {
+    font-weight: 500;
+    padding: 12px 15px;
+    border: none;
+}
+
+/* Job Row Styling */
+.job-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #f0f0f0;
+}
+
+.job-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.job-meta {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.job-meta i {
+    color: #55c5a1;
+    /* Lighter teal for icons */
+    margin-right: 5px;
+    width: 14px;
+    text-align: center;
+}
+
+.deadline-text,
+.company-text {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Action Link */
+.apply-now {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.apply-now:hover {
+    text-decoration: underline;
+}
+
+/* Table Borders */
+.table td {
+    padding: 15px;
+    border-color: #f1f1f1;
+}

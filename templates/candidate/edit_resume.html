@@ -1,0 +1,299 @@
+{% extends "candidate/candidate_base.html" %}
+
+{% block content %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Resume</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'css/candidate/EditResume.css'%}">
+</head>
+
+<body>
+
+    <div class="main-card">
+
+        <ul class="nav nav-pills justify-content-center" id="resumeTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="basic-tab" data-bs-toggle="pill" data-bs-target="#basic"
+                    type="button" role="tab">Basic Information</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="pill" data-bs-target="#profile" type="button"
+                    role="tab">Profile</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="education-tab" data-bs-toggle="pill" data-bs-target="#education"
+                    type="button" role="tab">Education</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="professional-tab" data-bs-toggle="pill" data-bs-target="#professional"
+                    type="button" role="tab">Professional Info</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="resumeTabContent">
+
+            <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                <form>
+                    <div class="row position-relative">
+                        <div class="d-none d-md-block image-upload-box">
+                            <i class="fa fa-cloud-upload-alt fa-2x mb-2"></i><br>
+                            Drag and drop a file here or <u>click</u>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Khandaker">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Raufur Rahman">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Current Job Place</label>
+                            <input type="text" class="form-control" value="Egens Lab Limited">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Designation<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Manager">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Current Salary</label>
+                            <input type="text" class="form-control" value="dfg">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Expected Salary<span class="required-star">*</span></label>
+                            <input type="number" class="form-control" value="80000">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Candidate Available Time<span
+                                    class="required-star">*</span></label>
+                            <select class="form-select">
+                                <option selected>Full Time</option>
+                                <option>Part Time</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nationality<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Bangladeshi">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Year of Experiences<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="3 Years">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Qualification<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="MBA">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email<span class="required-star">*</span></label>
+                            <input type="email" class="form-control" value="candidate@gmail.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone Number<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="53634745">
+                        </div>
+
+                        <div class="col-md-12 mb-4">
+                            <label class="form-label">Website Link</label>
+                            <input type="url" class="form-control">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-empzio">Update Resume</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="profile" role="tabpanel">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Father's Name<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Khandaker Mizanur Rahman">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Mother's Name<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="Nurjahan Begum">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Birth<span class="required-star">*</span></label>
+                            <input type="date" class="form-control" value="1990-11-02">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">National ID<span class="required-star">*</span></label>
+                            <input type="text" class="form-control" value="1450138464">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Permanent Address</label>
+                            <textarea class="form-control" rows="2">House-168/170, Road-2, Ave-1, Mirpur DOHS</textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Present Address<span class="required-star">*</span></label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input" type="checkbox" id="sameAddress">
+                                <label class="form-check-label" for="sameAddress" style="font-size:0.8rem;">Same as
+                                    permanent Address</label>
+                            </div>
+                            <textarea class="form-control" rows="2">House-168/170, Road-2, Ave-1, Mirpur DOHS</textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Marital Status<span class="required-star">*</span></label>
+                            <select class="form-select">
+                                <option>Married</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Gender<span class="required-star">*</span></label>
+                            <select class="form-select">
+                                <option>Male</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Religion<span class="required-star">*</span></label>
+                            <select class="form-select">
+                                <option>Islam</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Blood Group</label>
+                            <select class="form-select">
+                                <option>A-</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Height</label>
+                            <input type="text" class="form-control" value="5'2''">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Weight</label>
+                            <input type="text" class="form-control" value="65">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Your Skills:</label>
+                            <input type="text" class="form-control" placeholder="Enter Your Skill..">
+                        </div>
+
+                        <div class="col-12 mb-4">
+                            <label class="form-label">Reference<span class="required-star">*</span></label>
+                            <textarea class="form-control" rows="4">Khandaker Raufur Rahman
+HR Manager
+Egens Lab Limited</textarea>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-empzio">Update Change</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade" id="education" role="tabpanel">
+                <h5 class="mb-4">Educational Qualification:</h5>
+                <div id="education-container">
+                    <div class="education-item">
+                        <p class="text-muted mb-2">Academic Information:</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Education Level<span class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="HSC">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">My Major<span class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="Science">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Institute/University<span
+                                        class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="Rangpur Gov't College">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Result/GPA<span class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="4.5">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Starting Period<span class="required-star">*</span></label>
+                                <input type="date" class="form-control" value="2010-07-17">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ending Period<span class="required-star">*</span></label>
+                                <input type="date" class="form-control" value="2012-06-17">
+                            </div>
+                        </div>
+                        <a class="remove-link" onclick="removeItem(this)">Remove Education Area</a>
+                        <div class="section-separator"></div>
+                    </div>
+                </div>
+
+                <a class="add-new-link" onclick="addEducation()">Add Education +</a>
+                <br>
+                <button type="button" class="btn btn-empzio mt-3">Update Change</button>
+            </div>
+
+            <div class="tab-pane fade" id="professional" role="tabpanel">
+                <h5 class="mb-4">Employment Information:</h5>
+                <div id="experience-container">
+                    <div class="experience-item">
+                        <p class="text-muted mb-2">Add Your Experiences</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Company Name<span class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="CSCEC">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Designation<span class="required-star">*</span></label>
+                                <input type="text" class="form-control" value="Assistant Manager">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Starting Period<span class="required-star">*</span></label>
+                                <input type="date" class="form-control" value="2021-03-17">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ending Period<span class="required-star">*</span></label>
+                                <input type="date" class="form-control" value="2022-03-17">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="working1">
+                                    <label class="form-check-label" for="working1">Continuing Working Here</label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Responsibility</label>
+                                <textarea class="form-control" rows="3">Managing Site work and vendors</textarea>
+                            </div>
+                        </div>
+                        <a class="remove-link" onclick="removeItem(this)">Remove Experience Area</a>
+                        <div class="section-separator"></div>
+                    </div>
+                </div>
+
+                <a class="add-new-link" onclick="addExperience()">Add New+</a>
+                <br>
+                <button type="button" class="btn btn-empzio mt-3">Update Change</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{% static 'js/candidate/EditResume.js'%}"></script>
+
+</body>
+
+</html>
+
+{%endblock%}

@@ -1,0 +1,958 @@
+{% extends "candidate/candidate_base.html" %}
+
+{% block content %}
+{%load static%}
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Profile </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        :root {
+            --primary: #150b83;
+            --primary-dark: #1a1a2e;
+            --section-color: #423d79;
+            --label: #444;
+            --input-border: #d8dde3;
+            --input-focus: #175ec8;
+            --red: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f6f9;
+            min-height: 100vh;
+        }
+
+        /* ── PAGE ── */
+        .page-wrapper {
+
+            margin: 0 auto;
+            padding: 28px 20px 52px;
+        }
+
+        .profile-banner {
+            background: linear-gradient(105deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            padding: 22px 28px;
+            color: #fff;
+            margin-bottom: 22px;
+        }
+
+        .profile-banner h4 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .profile-banner p {
+            font-size: 0.84rem;
+            opacity: 0.88;
+        }
+
+        /* Card */
+        .form-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e4eaef;
+            padding: 22px 24px;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--section-color);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            border-top: 1px dashed #cde8ec;
+        }
+
+        label.form-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--label);
+            margin-bottom: 5px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--input-border);
+            border-radius: 7px;
+            font-size: 0.85rem;
+            color: #333;
+            padding: 9px 13px;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--input-focus);
+            box-shadow: 0 0 0 3px rgba(23, 185, 200, 0.12);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #b0b8c1;
+        }
+
+        /* ── PHOTO SECTION ── */
+        .photo-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .photo-preview-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            /* prevents stretch */
+            object-position: center;
+            border: 3px solid #e0f5f7;
+            display: block;
+        }
+
+        .photo-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0f5f7, #c5eef2);
+            border: 2px dashed var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .photo-placeholder:hover {
+            background: #caf0f4;
+        }
+
+        .photo-placeholder i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .photo-placeholder span {
+            font-size: 0.65rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .photo-edit-btn {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 26px;
+            height: 26px;
+            background: var(--primary);
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .photo-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .photo-info h6 {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .photo-info p {
+            font-size: 0.77rem;
+            color: #888;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .btn-choose-photo {
+            background: rgba(23, 185, 200, 0.08);
+            color: var(--primary-dark);
+            border: 1.5px solid var(--primary);
+            border-radius: 7px;
+            padding: 7px 16px;
+            font-size: 0.81rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-choose-photo:hover {
+            background: rgba(23, 185, 200, 0.18);
+        }
+
+        /* Resume upload */
+        .resume-box {
+            border: 2px dashed #c5d8dc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #f9fdfd;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .resume-box:hover {
+            border-color: var(--primary);
+            background: #f0fafb;
+        }
+
+        .resume-box i {
+            font-size: 1.7rem;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 7px;
+        }
+
+        .resume-box p {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 2px;
+        }
+
+        .resume-box small {
+            color: #999;
+            font-size: 0.75rem;
+        }
+
+        /* ID card upload box */
+        .id-upload-box {
+            border: 1.5px dashed #c5d8dc;
+            border-radius: 8px;
+            padding: 13px 15px;
+            background: #f9fdfd;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .id-upload-box:hover {
+            border-color: var(--primary);
+            background: #f0fafb;
+        }
+
+        .id-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(23, 185, 200, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+
+        .id-text p {
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1px;
+        }
+
+        .id-text small {
+            font-size: 0.73rem;
+            color: #999;
+        }
+
+        /* Skills */
+        .skill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(23, 185, 200, 0.1);
+            color: var(--primary-dark);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.79rem;
+            font-weight: 600;
+            margin: 3px;
+        }
+
+        .skill-tag .remove {
+            cursor: pointer;
+            font-size: 0.74rem;
+            color: #999;
+        }
+
+        .skill-tag .remove:hover {
+            color: var(--red);
+        }
+
+        /* Entry cards */
+        .entry-card {
+            border: 1px solid #e2ecee;
+            border-radius: 10px;
+            padding: 15px 17px;
+            margin-bottom: 11px;
+            background: #fafcfc;
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 11px;
+            right: 11px;
+            background: #fee2e2;
+            color: var(--red);
+            border: none;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .btn-add-entry {
+            width: 100%;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--primary);
+            padding: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add-entry:hover {
+            background: rgba(23, 185, 200, 0.06);
+        }
+
+        /* Social */
+        .social-input {
+            position: relative;
+        }
+
+        .social-input .s-icon {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.95rem;
+        }
+
+        .social-input .form-control {
+            padding-left: 34px;
+        }
+
+        /* Availability pills */
+        .avail-option {
+            display: none;
+        }
+
+        .avail-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 15px;
+            border: 1.5px solid #d8dde3;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 3px;
+        }
+
+        .avail-option:checked+.avail-label {
+            border-color: var(--primary);
+            background: rgba(23, 185, 200, 0.1);
+            color: var(--primary-dark);
+        }
+
+        /* Section save button */
+        .section-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eef1f4;
+        }
+
+        .btn-sec-save {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 8px 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-sec-save:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-sec-save:active {
+            transform: translateY(0);
+        }
+
+        /* Final footer */
+        .form-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 6px;
+        }
+
+        .btn-cancel {
+            border: 1.5px solid #ccc;
+            background: #fff;
+            color: #555;
+            border-radius: 7px;
+            padding: 10px 24px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save-all {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 28px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.2s;
+        }
+
+        .btn-save-all:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <!--  -->
+
+    <div class="page-wrapper">
+
+        <!-- Banner -->
+        <div class="profile-banner">
+            <h4><i class="bi bi-person-vcard me-2"></i>Your Profile</h4>
+            <p>Complete your profile to get more oppurtunities</p>
+        </div>
+
+        <!-- ── 1. PROFILE PHOTO ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-image-fill"></i> Profile Photo</div>
+            <div class="photo-section">
+                <div class="photo-preview-wrap" id="photoWrap">
+                    <div class="photo-placeholder" onclick="document.getElementById('photoInput').click()">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Upload Photo</span>
+                    </div>
+                </div>
+                <div class="photo-info">
+                    <h6>Profile Picture</h6>
+                    <p>Upload a clear, professional headshot.<br />Square images work best. JPG or PNG, max 2MB.</p>
+                    <button class="btn-choose-photo" onclick="document.getElementById('photoInput').click()">
+                        <i class="bi bi-cloud-arrow-up me-1"></i>Choose Photo
+                    </button>
+                    <input type="file" id="photoInput" accept="image/*" style="display:none"
+                        onchange="previewPhoto(event)" />
+                </div>
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Photo</button>
+            </div>
+        </div>
+
+        <!-- ── 2. PERSONAL INFORMATION ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-person-fill"></i> Personal Information</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">First Name </label>
+                    <input type="text" class="form-control" placeholder="Enter first name" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Name *</label>
+                    <input type="text" class="form-control" placeholder="Enter last name" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Username *</label>
+                    <input type="text" class="form-control" placeholder="Enter username" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-control" placeholder="+92 300 1234567" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-control" placeholder="candidate@example.com" required />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Gender</label>
+                    <select class="form-select">
+                        <option value="">Select gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Prefer not to say</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">CNIC Number *</label>
+                    <input type="text" class="form-control" id="cnicInput" placeholder="35202-1234567-1" maxlength="15"
+                        required />
+                </div>
+                <!-- ID Card Upload -->
+                <div class="col-md-6">
+                    <label class="form-label">ID Card – Front Side *</label>
+                    <div class="id-upload-box" onclick="document.getElementById('idFront').click()">
+                        <div class="id-icon"><i class="bi bi-credit-card-2-front-fill"></i></div>
+                        <div class="id-text">
+                            <p id="idFrontLabel">Upload Front Side</p><small>JPG, PNG or PDF · Max 2MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="idFront" accept="image/*,.pdf" style="display:none"
+                        onchange="updateFileLabel('idFront','idFrontLabel')" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">ID Card – Back Side *</label>
+                    <div class="id-upload-box" onclick="document.getElementById('idBack').click()">
+                        <div class="id-icon"><i class="bi bi-credit-card-2-back-fill"></i></div>
+                        <div class="id-text">
+                            <p id="idBackLabel">Upload Back Side</p><small>JPG, PNG or PDF · Max 2MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="idBack" accept="image/*,.pdf" style="display:none"
+                        onchange="updateFileLabel('idBack','idBackLabel')" />
+                </div>
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Personal Info</button>
+            </div>
+        </div>
+
+        <!-- ── 3. PROFESSIONAL INFORMATION ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-briefcase-fill"></i> Professional Information</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Job Title / Designation *</label>
+                    <input type="text" class="form-control" placeholder="e.g., Full Stack Developer" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Industry *</label>
+                    <select class="form-select">
+                        <option value="">Select industry</option>
+                        <option>Information Technology</option>
+                        <option>Finance</option>
+                        <option>Healthcare</option>
+                        <option>Education</option>
+                        <option>Marketing</option>
+                        <option>Engineering</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Years of Experience</label>
+                    <input type="number" class="form-control" placeholder="e.g., 3" />
+                </div>
+                <!-- <div class="col-md-4">
+                    <label class="form-label">Expected Salary (PKR)</label>
+                    <input type="text" class="form-control" placeholder="e.g., 80,000" />
+                </div> -->
+                <div class="col-md-4">
+                    <label class="form-label">Job Type Preference</label>
+                    <select class="form-select">
+                        <option value="">Select type</option>
+                        <option>Full-time</option>
+                        <option>Part-time</option>
+                        <option>Remote</option>
+
+                    </select>
+                </div>
+
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Professional Info</button>
+            </div>
+        </div>
+
+        <!-- ── 4. LOCATION ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-geo-alt-fill"></i> Location Information</div>
+            <div class="row g-3">
+                <!-- <div class="col-md-6">
+                    <label class="form-label">Country *</label>
+                    <select class="form-select">
+                        <option value="">Select country</option>
+                        <option selected>Pakistan</option>
+                        <option>UAE</option>
+                        <option>United Kingdom</option>
+                        <option>United States</option>
+                    </select>
+                </div> -->
+                <div class="col-md-6">
+                    <label class="form-label">Province *</label>
+                    <input type="text" class="form-control" placeholder="Enter state or province" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">City *</label>
+                    <input type="text" class="form-control" placeholder="Enter city" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Postal Code</label>
+                    <input type="text" class="form-control" placeholder="Enter postal code" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Full Address</label>
+                    <textarea class="form-control" rows="3"
+                        placeholder="Enter complete address including street, area, and landmarks"></textarea>
+                </div>
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Location</button>
+            </div>
+        </div>
+
+        <!-- ── 5. ABOUT ME ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-file-person-fill"></i> About Me</div>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Professional Summary</label>
+                    <textarea class="form-control" rows="4"
+                        placeholder="Describe yourself, your experience, and what makes you stand out..."></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Career Objective</label>
+                    <textarea class="form-control" rows="3"
+                        placeholder="Share your career goals and the kind of role you're looking for..."></textarea>
+                </div>
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save About Me</button>
+            </div>
+        </div>
+
+        <!-- ── 6. RESUME ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-file-earmark-text-fill"></i> Resume / CV</div>
+            <div class="resume-box" onclick="document.getElementById('resumeFile').click()">
+                <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                <p id="resumeLabel">Upload your Resume / CV</p>
+                <small>PDF or DOCX · Max 5MB</small>
+            </div>
+            <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none"
+                onchange="updateFileLabel('resumeFile','resumeLabel')" />
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Resume</button>
+            </div>
+        </div>
+
+        <!-- ── 7. SKILLS ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-stars"></i> Skills</div>
+            <div class="d-flex gap-2 mb-3">
+                <input type="text" class="form-control" id="skillInput"
+                    placeholder="Type a skill and press Enter or click +" />
+                <button class="btn-sec-save px-3" style="border-radius:7px" onclick="addSkill()"><i
+                        class="bi bi-plus-lg"></i></button>
+            </div>
+            <div id="skillTags">
+                <span class="skill-tag">HTML/CSS <span class="remove" onclick="this.parentElement.remove()"><i
+                            class="bi bi-x"></i></span></span>
+                <span class="skill-tag">JavaScript <span class="remove" onclick="this.parentElement.remove()"><i
+                            class="bi bi-x"></i></span></span>
+                <span class="skill-tag">React.js <span class="remove" onclick="this.parentElement.remove()"><i
+                            class="bi bi-x"></i></span></span>
+                <span class="skill-tag">Node.js <span class="remove" onclick="this.parentElement.remove()"><i
+                            class="bi bi-x"></i></span></span>
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Skills</button>
+            </div>
+        </div>
+
+        <!-- ── 8. EDUCATION ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-mortarboard-fill"></i> Education</div>
+            <div id="educationContainer">
+                <div class="entry-card">
+                    <button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Degree / Qualification *</label><input
+                                type="text" class="form-control" placeholder="e.g., Bachelor of Computer Science" />
+                        </div>
+                        <div class="col-md-6"><label class="form-label">Institution Name *</label><input type="text"
+                                class="form-control" placeholder="e.g., FAST-NUCES" /></div>
+                        <div class="col-md-4"><label class="form-label">Start Year</label><input type="number"
+                                class="form-control" placeholder="e.g., 2018" /></div>
+                        <div class="col-md-4"><label class="form-label">End Year</label><input type="number"
+                                class="form-control" placeholder="e.g., 2022" /></div>
+                        <div class="col-md-4"><label class="form-label">Grade / CGPA</label><input type="text"
+                                class="form-control" placeholder="e.g., 3.5 / 4.0" /></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-add-entry mt-1" onclick="addEducation()"><i class="bi bi-plus me-1"></i>Add
+                Education</button>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Education</button>
+            </div>
+        </div>
+
+        <!-- ── 9. WORK EXPERIENCE ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-building-fill"></i> Work Experience</div>
+            <div id="expContainer">
+                <div class="entry-card">
+                    <button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Job Title *</label><input type="text"
+                                class="form-control" placeholder="e.g., Frontend Developer" /></div>
+                        <div class="col-md-6"><label class="form-label">Company Name *</label><input type="text"
+                                class="form-control" placeholder="e.g., Systems Limited" /></div>
+                        <div class="col-md-4"><label class="form-label">Start Date</label><input type="month"
+                                class="form-control" /></div>
+                        <div class="col-md-4"><label class="form-label">End Date</label><input type="month"
+                                class="form-control" /></div>
+                        <div class="col-md-4"><label class="form-label">Employment Type</label>
+                            <select class="form-select">
+                                <option value="">Select</option>
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Freelance</option>
+                                <option>Internship</option>
+                            </select>
+                        </div>
+                        <div class="col-12"><label class="form-label">Job Description</label><textarea
+                                class="form-control" rows="2"
+                                placeholder="Briefly describe your responsibilities and achievements..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-add-entry mt-1" onclick="addExperience()"><i class="bi bi-plus me-1"></i>Add
+                Experience</button>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Experience</button>
+            </div>
+        </div>
+
+        <!-- ── 10. SOCIAL LINKS ── -->
+        <div class="form-card">
+            <div class="section-title"><i class="bi bi-share-fill"></i> Social & Portfolio Links</div>
+            <div class="row g-3">
+                <!-- <div class="col-md-6">
+                    <label class="form-label">LinkedIn</label>
+                    <div class="social-input">
+                        <i class="bi bi-linkedin s-icon" style="color:#0a66c2"></i>
+                        <input type="url" class="form-control" placeholder="https://linkedin.com/in/yourprofile" />
+                    </div>
+                </div> -->
+                <div class="col-md-6">
+                    <label class="form-label">GitHub</label>
+                    <div class="social-input">
+                        <i class="bi bi-github s-icon" style="color:#333"></i>
+                        <input type="url" class="form-control" placeholder="https://github.com/yourusername" />
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <label class="form-label">Portfolio / Website</label>
+                    <div class="social-input">
+                        <i class="bi bi-globe2 s-icon" style="color:var(--primary)"></i>
+                        <input type="url" class="form-control" placeholder="https://yourportfolio.com" />
+                    </div>
+                </div> -->
+                <div class="col-md-6">
+                    <label class="form-label">Twitter / X</label>
+                    <div class="social-input">
+                        <i class="bi bi-twitter-x s-icon" style="color:#1da1f2"></i>
+                        <input type="url" class="form-control" placeholder="https://twitter.com/yourusername" />
+                    </div>
+                </div>
+                <!-- <div class="col-md-6">
+                    <label class="form-label">Behance</label>
+                    <div class="social-input">
+                        <i class="bi bi-behance s-icon" style="color:#053eff"></i>
+                        <input type="url" class="form-control" placeholder="https://behance.net/yourprofile" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dribbble</label>
+                    <div class="social-input">
+                        <i class="bi bi-dribbble s-icon" style="color:#ea4c89"></i>
+                        <input type="url" class="form-control" placeholder="https://dribbble.com/yourusername" />
+                    </div>
+                </div> -->
+            </div>
+            <div class="section-footer">
+                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Links</button>
+            </div>
+        </div>
+
+        <!-- FINAL FOOTER -->
+        <div class="form-footer">
+            <button class="btn-cancel"><i class="bi bi-x me-1"></i> Cancel</button>
+            <button class="btn-save-all"><i class="bi bi-save-fill"></i> Save Complete Profile</button>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Photo preview — object-fit:cover prevents stretch
+        function previewPhoto(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                document.getElementById('photoWrap').innerHTML = `
+        <img src="${ev.target.result}" class="photo-preview" alt="Profile"/>
+        <div class="photo-edit-btn" onclick="document.getElementById('photoInput').click()">
+          <i class="bi bi-pencil-fill"></i>
+        </div>`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Generic file label updater
+        function updateFileLabel(inputId, labelId) {
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(labelId);
+            if (input.files[0] && label) {
+                label.textContent = input.files[0].name;
+                const box = input.closest('.id-upload-box, .resume-box');
+                if (box) box.style.borderColor = 'var(--primary)';
+            }
+        }
+
+        // CNIC auto-format
+        document.getElementById('cnicInput').addEventListener('input', function () {
+            let v = this.value.replace(/[^0-9]/g, '');
+            if (v.length > 5 && v.length <= 12) v = v.slice(0, 5) + '-' + v.slice(5);
+            else if (v.length > 12) v = v.slice(0, 5) + '-' + v.slice(5, 12) + '-' + v.slice(12, 13);
+            this.value = v;
+        });
+
+        // Skills
+        function addSkill() {
+            const input = document.getElementById('skillInput');
+            const val = input.value.trim();
+            if (!val) return;
+            const tag = document.createElement('span');
+            tag.className = 'skill-tag';
+            tag.innerHTML = `${val} <span class="remove" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></span>`;
+            document.getElementById('skillTags').appendChild(tag);
+            input.value = ''; input.focus();
+        }
+        document.getElementById('skillInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); } });
+
+        // Education
+        function addEducation() {
+            const c = document.getElementById('educationContainer');
+            const d = document.createElement('div'); d.className = 'entry-card';
+            d.innerHTML = `<button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">Degree / Qualification *</label><input type="text" class="form-control" placeholder="e.g., Master of Business Administration"/></div>
+        <div class="col-md-6"><label class="form-label">Institution Name *</label><input type="text" class="form-control" placeholder="e.g., IBA Karachi"/></div>
+        <div class="col-md-4"><label class="form-label">Start Year</label><input type="number" class="form-control" placeholder="e.g., 2022"/></div>
+        <div class="col-md-4"><label class="form-label">End Year</label><input type="number" class="form-control" placeholder="e.g., 2024"/></div>
+        <div class="col-md-4"><label class="form-label">Grade / CGPA</label><input type="text" class="form-control" placeholder="e.g., 3.8 / 4.0"/></div>
+      </div>`;
+            c.appendChild(d);
+        }
+
+        // Experience
+        function addExperience() {
+            const c = document.getElementById('expContainer');
+            const d = document.createElement('div'); d.className = 'entry-card';
+            d.innerHTML = `<button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label">Job Title *</label><input type="text" class="form-control" placeholder="e.g., Backend Engineer"/></div>
+        <div class="col-md-6"><label class="form-label">Company Name *</label><input type="text" class="form-control" placeholder="e.g., Arbisoft"/></div>
+        <div class="col-md-4"><label class="form-label">Start Date</label><input type="month" class="form-control"/></div>
+        <div class="col-md-4"><label class="form-label">End Date</label><input type="month" class="form-control"/></div>
+        <div class="col-md-4"><label class="form-label">Employment Type</label>
+          <select class="form-select"><option value="">Select</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Internship</option></select>
+        </div>
+        <div class="col-12"><label class="form-label">Job Description</label><textarea class="form-control" rows="2" placeholder="Briefly describe your responsibilities..."></textarea></div>
+      </div>`;
+            c.appendChild(d);
+        }
+    </script>
+</body>
+
+</html>
+
+{%endblock%}

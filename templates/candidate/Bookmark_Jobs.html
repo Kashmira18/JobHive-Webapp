@@ -1,0 +1,180 @@
+{% extends "candidate/candidate_base.html" %}
+
+{% block content %}
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark Jobs Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="{%static 'candidate/css/Bookmark.css'%}"> -->
+    <style>
+        :root {
+            --primary-blue: #1d48a3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #444;
+        }
+
+        /* Header Styling */
+        .table-blue {
+            background-color: var(--primary-blue) !important;
+        }
+
+        .table thead th {
+            font-weight: 500;
+            padding: 12px 15px;
+            border: none;
+        }
+
+        /* Job Row Styling */
+        .job-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #f0f0f0;
+        }
+
+        .job-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .job-meta {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .job-meta i {
+            color: #004279;
+            /* Lighter teal for icons */
+            margin-right: 5px;
+            width: 14px;
+            text-align: center;
+        }
+
+        .deadline-text,
+        .company-text {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* Action Link */
+        .apply-now {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .apply-now:hover {
+            text-decoration: underline;
+        }
+
+        /* Table Borders */
+        .table td {
+            padding: 15px;
+            border-color: #f1f1f1;
+        }
+    </style>
+
+</head>
+
+<body class="bg-light">
+
+    <div class="container my-5">
+        <h5 class="mb-3 fw-bold">Bookmark Jobs:</h5>
+
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-blue  text-white">
+                        <tr>
+                            <th style="width: 45%;">Job Title</th>
+                            <th>Deadline</th>
+                            <th>Company</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookmark-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-footer bg-white py-3 border-top-0">
+                <p class="mb-0 text-muted small" id="result-count">3 Results Showing In 3 Jobs</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bookmarkJobs = [
+            {
+                title: "Front End Devloper",
+                location: "Mirpur, Bangladesh",
+                salary: "Negotiable",
+                deadline: "28 Feb, 2026",
+                company: "City Life Travel",
+                logo: "{% static 'images/3.webp'%}" // Replace with actual logo URL
+            },
+            {
+                title: "Ready to hire a Lead Designer",
+                location: "Mirpur, Bangladesh",
+                salary: "Negotiable",
+                deadline: "28 Feb, 2026",
+                company: "New Desire Solution",
+                logo: "{% static 'images/4.webp'%}" // Replace with actual logo URL
+            },
+            {
+                title: "We are Hiring Legal Advisor",
+                location: "Mirpur, Bangladesh",
+                salary: "R$20000 - R$30000 /Per Month",
+                deadline: "28 Feb, 2026",
+                company: "Best Solution",
+                logo: "{% static 'images/5.webp'%}" // Replace with actual logo URL
+            }
+        ];
+
+        const tableBody = document.getElementById('bookmark-table-body');
+
+        // Map through data and create rows
+        bookmarkJobs.forEach(job => {
+            const row = `
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <img src="${job.logo}" class="job-logo me-3" alt="company logo">
+                    <div>
+                        <div class="job-title">${job.title}</div>
+                        <div class="job-meta">
+                            <div><i class="fa-solid fa-location-dot"></i> ${job.location}</div>
+                            <div><i class="fa-regular fa-compass"></i> Salary: ${job.salary}</div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td><span class="deadline-text">${job.deadline}</span></td>
+            <td><span class="company-text">${job.company}</span></td>
+            <td class="text-center">
+                <a href="#" class="apply-now">Apply Now</a>
+            </td>
+        </tr>
+    `;
+            tableBody.innerHTML += row;
+        });
+    </script>
+</body>
+
+</html>
+
+{%endblock%}

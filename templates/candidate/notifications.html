@@ -1,0 +1,336 @@
+{% extends "candidate/candidate_base.html" %}
+
+{% block content %}
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications & Message Modal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Exact blue shade from the screenshots */
+            --primary-blue: #000a9b;
+            --hover-blue: #0f4d9e;
+            --light-border: #e9ecef;
+            --delete-red: #dc3545;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        /* --- Header Label --- */
+        .page-label {
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* --- Table Styling --- */
+        .notification-container {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light-border);
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-color: var(--light-border);
+        }
+
+        .table thead {
+            background-color: var(--primary-blue);
+            color: #fff;
+        }
+
+        .table thead th {
+            background-color: var(--primary-blue);
+            color: #fff;
+            border: none;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 15px 20px;
+            color: #555;
+            border-bottom: 1px solid var(--light-border);
+        }
+
+        .table-bordered> :not(caption)>*>* {
+            border-width: 0 1px;
+            /* Vertical lines only inside */
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            /* Restoring full border to match image */
+        }
+
+        /* --- Action Buttons --- */
+        .btn-show-message {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .btn-show-message:hover {
+            background-color: var(--hover-blue);
+            color: white;
+        }
+
+        .action-delete {
+            color: #ff6b6b;
+            /* Soft red */
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .action-delete:hover {
+            color: var(--delete-red);
+        }
+
+        /* --- Pagination & Footer --- */
+        .footer-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .pagination .page-item .page-link {
+            color: #333;
+            border: none;
+            margin: 0 2px;
+            border-radius: 4px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        /* --- Modal Styling (Image 2) --- */
+        .custom-modal-header {
+            background-color: var(--primary-blue);
+            color: white;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .custom-modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+            /* Make close button white */
+        }
+
+        .modal-content {
+            border-radius: 8px;
+            border: none;
+        }
+
+        /* The specific left-border text styling seen in the modal image */
+        .message-body-styled {
+            border-left: 4px solid var(--primary-blue);
+            padding-left: 15px;
+            margin: 10px 0 20px 0;
+            color: #333;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .modal-timestamp {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="page-label">
+            Notifications:
+        </div>
+
+        <div class="notification-container">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">Title</th>
+                            <th style="width: 25%; text-align: center;">Message</th>
+                            <th style="width: 25%; text-align: center;">Date</th>
+                            <th style="width: 20%; text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notificationList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer-area">
+            <div id="resultsInfo">10 Results Showing In 26 Notifications</div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#"><i
+                                class="fa-solid fa-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="modalTitle">Interview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="message-body-styled" id="modalBodyText">
+                    </div>
+                    <div class="modal-timestamp" id="modalDate">
+                        2 months ago
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data mimicking Image 1
+        const notifications = [
+            {
+                id: 1, title: "Joining Letter", date: "2 weeks ago", type: "Joining Letter",
+                body: "Congratulations! We are pleased to offer you the position. Please find the attached joining letter."
+            },
+            {
+                id: 2, title: "Interview", date: "3 weeks ago", type: "Interview",
+                body: "Dear Candidate, your interview is scheduled for next Monday. Please be prepared."
+            },
+            {
+                id: 3, title: "Interview", date: "1 month ago", type: "Interview",
+                body: "Dear Khandaker Raufur Rahman<br><br>You are shortlisted for the post of Hiring Assistant Manager from Egens. Your interview date is 17/10/2025 at 12:00 PM at the office arena. Thank you and we wish you best of luck.<br>With Regards<br>HR Department<br>Egens"
+            },
+            {
+                id: 4, title: "Sorry for not selected", date: "1 month ago", type: "Rejection",
+                body: "Thank you for your interest. Unfortunately, we have decided to move forward with other candidates."
+            },
+            {
+                id: 5, title: "Sorry for not selected", date: "1 month ago", type: "Rejection",
+                body: "Thank you for your interest. Unfortunately, we have decided to move forward with other candidates."
+            },
+            {
+                id: 6, title: "Joining Letter", date: "1 month ago", type: "Joining Letter",
+                body: "Welcome to the team! We are excited to have you on board."
+            },
+            {
+                id: 7, title: "Interview", date: "1 month ago", type: "Interview",
+                body: "Your technical round is scheduled."
+            },
+            {
+                id: 8, title: "Interview", date: "2 months ago", type: "Interview",
+                body: "Initial screening call schedule."
+            },
+            {
+                id: 9, title: "Joining Letter", date: "2 months ago", type: "Joining Letter",
+                body: "Here is your offer letter."
+            },
+            {
+                id: 10, title: "Sorry for not selected", date: "2 months ago", type: "Rejection",
+                body: "We regret to inform you that you were not selected."
+            }
+        ];
+
+        const tableBody = document.getElementById('notificationList');
+        const modalElement = new bootstrap.Modal(document.getElementById('messageModal'));
+
+        // Elements to update inside Modal
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBodyText = document.getElementById('modalBodyText');
+        const modalDate = document.getElementById('modalDate');
+
+        // Render Table
+        function renderTable() {
+            let html = '';
+            notifications.forEach((note, index) => {
+                html += `
+                <tr>
+                    <td>${note.title}</td>
+                    <td class="text-center">
+                        <button class="btn-show-message" onclick="openMessage(${index})">
+                            Show Message
+                        </button>
+                    </td>
+                    <td class="text-center">${note.date}</td>
+                    <td class="text-center">
+                        <i class="fa-solid fa-trash-can action-delete" onclick="deleteNote(${index})"></i>
+                    </td>
+                </tr>
+                `;
+            });
+            tableBody.innerHTML = html;
+        }
+
+        // Open Modal with specific data
+        window.openMessage = function (index) {
+            const note = notifications[index];
+
+            modalTitle.innerText = note.title;
+            modalBodyText.innerHTML = note.body; // Using innerHTML to allow <br> breaks
+            modalDate.innerText = note.date;
+
+            modalElement.show();
+        }
+
+        // Delete (visual only for demo)
+        window.deleteNote = function (index) {
+            if (confirm("Are you sure you want to delete this notification?")) {
+                notifications.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        // Initial Load
+        renderTable();
+    </script>
+</body>
+
+</html>
+
+{%endblock%}
