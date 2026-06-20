@@ -25,6 +25,14 @@ urlpatterns = [
     path('company/messenger/',      views.company_messenger,       name='company_messenger'),
     path('company/profile/',        views.company_my_profile,      name='company_my_profile'),
     path('company/settings/',       views.company_account_settings, name='company_account_settings'),
+
+
+    
+    # Job management
+    path("job/",                           views.manage_jobs,       name="manage_jobs"),
+    path("job/post/",                      views.company_job_post,        name="post_job"),
+    path("job/<int:job_id>/close/",        views.close_job,         name="close_job"),
+    path("job/<int:job_id>/delete/",       views.delete_job,        name="delete_job"),
     
 
 ]

@@ -210,7 +210,9 @@ def company_approved(request):
 
     if not user_id:
         if request.user.is_authenticated and request.user.role == "COMPANY":
-            return redirect("company:company_dashboard")
+            # return redirect("company:company_dashboard")
+            return render(request, "accounts/company_approved.html", {"user": user})
+
         return redirect("login")
 
     try:

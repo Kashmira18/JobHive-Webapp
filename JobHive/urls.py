@@ -37,5 +37,6 @@ urlpatterns = [
     path("admin/", include("custom_admin.urls")),
     path('accounts/', include('allauth.urls')),
     path('candidate/', include('candidate.urls')),
+    path("job/",    include("job.urls")),
     path('company/', include('company.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

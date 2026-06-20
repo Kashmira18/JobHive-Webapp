@@ -495,15 +495,20 @@ body {
 
 <!-- ── MAIN FORM (single POST form wrapping all steps) ── -->
 <div class="container pb-5" style="max-width:820px">
-<form method="POST" id="jobForm">
-{% csrf_token %}
+<!-- <form method="POST" id="jobForm"> -->
+<form
+  method="POST"
+  action="{% url 'company:job_post' %}"
+  id="jobForm"
+  novalidate>
+  {% csrf_token %}
 
 <!-- Hidden fields — JS se fill honge -->
-<input type="hidden" name="job_type"    id="jobTypeHidden" />
-<input type="hidden" name="skills"      id="skillsHidden" />
-<input type="hidden" name="perks"       id="perksHidden" />
+<input type="hidden" name="job_type" id="jobTypeHidden" />
+<input type="hidden" name="skills" id="skillsHidden" />
+<input type="hidden" name="perks" id="perksHidden" />
 <input type="hidden" name="description" id="descHidden" />
-<input type="hidden" name="action"      id="actionHidden" value="publish" />
+<input type="hidden" name="action" id="actionHidden" value="publish" />
 
 <!-- ════════════════════
   STEP 1 — JOB DETAILS
@@ -955,11 +960,12 @@ body {
       <i class="fas fa-arrow-left me-1"></i>Back
     </button>
     <div class="d-flex gap-2 flex-wrap">
-      <button type="button" class="btn btn-outline-brand" onclick="submitForm('draft')">
-        <i class="fas fa-floppy-disk me-1"></i>Save as Draft
+      <button type="button" class="btn btn-outline-brand"onclick="submitForm('draft')">
+          <i class="fas fa-floppy-disk me-1"></i>Save as Draft
       </button>
-      <button type="button" class="btn btn-brand" onclick="submitForm('publish')">
-        <i class="fas fa-rocket me-1"></i>Publish Job
+
+      <button type="button" class="btn btn-brand"onclick="submitForm('publish')">
+          <i class="fas fa-rocket me-1"></i>Publish Job
       </button>
     </div>
   </div>
@@ -980,8 +986,11 @@ body {
     <a href="{% url 'company:company_job_post' %}" class="btn btn-brand px-4">
       <i class="fas fa-plus me-1"></i> Post Another Job
     </a>
-    <a href="{% url 'company:company_dashboard' %}" class="btn btn-outline-brand px-4">
+    <!-- <a href="{% url 'company:company_dashboard' %}" class="btn btn-outline-brand px-4">
       <i class="fas fa-th-large me-1"></i> Go to Dashboard
+    </a> -->
+    <a href="{% url 'company:manage_jobs' %}" class="btn btn-outline-brand px-4">
+      <i class="fas fa-list me-1"></i> View My Jobs
     </a>
   </div>
   <div class="mt-4 p-3 rounded" style="background:#F0FDF4; border:1px solid #BBF7D0; max-width:400px;">
@@ -1209,13 +1218,13 @@ body {
 
   /* SUBMIT — fill hidden fields then submit */
   function submitForm(action) {
-    document.getElementById('jobTypeHidden').value = pickedType;
-    document.getElementById('skillsHidden').value  = tags.join(',');
-    document.getElementById('perksHidden').value   = perks.join(',');
-    document.getElementById('descHidden').value    = document.getElementById('jobDesc').innerHTML;
-    document.getElementById('actionHidden').value  = action;
-    document.getElementById('jobForm').submit();
-  }
+  document.getElementById('jobTypeHidden').value = pickedType;
+  document.getElementById('skillsHidden').value  = tags.join(',');
+  document.getElementById('perksHidden').value   = perks.join(',');
+  document.getElementById('descHidden').value    = document.getElementById('jobDesc').innerHTML;
+  document.getElementById('actionHidden').value  = action;
+  document.getElementById('jobForm').submit();
+}
 </script>
 
 {% endblock %}
