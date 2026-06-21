@@ -96,7 +96,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"  # Google uses email
 ACCOUNT_EMAIL_VERIFICATION = "none"  # Google already verified with email
 LOGIN_REDIRECT_URL = "candidate_dashboard"  # Redirect after login
-LOGOUT_REDIRECT_URL            = "signin"
+LOGOUT_REDIRECT_URL            = "login"
 
 
 

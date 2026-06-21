@@ -536,17 +536,22 @@
         <!-- Header Section -->
         <div class="header-section">
             <div class="company-info">
-                <div class="company-logo">Jooble.</div>
+                {% if profile.logo %}
+                <img src="{{ profile.logo.url }}" alt="Logo" class="company-logo" style="object-fit: cover;">
+                {% else %}
+                <div class="company-logo">
+                    {% if profile.trade_name %}{{ profile.trade_name|slice:":2" }}{% else %}{{ request.user.username|slice:":2" }}{% endif %}
+                </div>
+                {% endif %}
                 <div>
                     <div class="company-name">Hello,</div>
-                    <div class="company-domain">Jooble.az</div>
+                    <div class="company-domain">{% if profile.trade_name %}{{ profile.trade_name }}{% else %}{{ request.user.username }}{% endif %}</div>
                 </div>
             </div>
-            <button  class="btn-edit-profile" onclick="editProfile()" style="cursor: pointer;">
-                <a href="#" style="text-decoration: none; color: inherit; display: inline-block;">
-                <i class="fas fa-edit me-2"></i>Edit Profile
+            <button  class="btn-edit-profile" style="cursor: pointer;">
+                <a href="{% url 'company:company_my_profile' %}" style="text-decoration: none; color: inherit; display: inline-block;">
+                <i class="fas fa-eye me-2"></i>View Profile
             </a></button>
-        
         </div>
 
         <!-- Stats Grid -->
@@ -668,12 +673,12 @@
     <script>
         // Dashboard Statistics
         const dashboardStats = {
-            totalJobs: 56,
-            liveJobs: 6,
-            pendingJobs: 22,
-            featuredJobs: 480,
-            totalApplied: 50,
-            profileViews: 947,
+            totalJobs: {{ total_jobs|default:0 }},
+            liveJobs: {{ live_jobs|default:0 }},
+            pendingJobs: {{ pending_jobs|default:0 }},
+            featuredJobs: 0,
+            totalApplied: 0,
+            profileViews: 0,
             availableJobPosts: 0,
             availableFeaturedPosts: 0
         };

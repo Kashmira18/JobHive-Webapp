@@ -443,7 +443,6 @@ body {
 }
 </style>
 
-<!-- Django messages -->
 {% if messages %}
 <div class="container mt-3" style="max-width:820px">
   {% for message in messages %}
@@ -462,7 +461,7 @@ body {
     style="background:#E3F3FA; color:#31C2EF; border:1px solid #BAE6FD; font-size:.75rem;">
     <i class="fas fa-building me-1"></i> COMPANY PORTAL
   </span>
-  <h1 class="fw-bold fs-2">Post a <span class="text-brand">New Job</span></h1>
+  <h1 class="fw-bold fs-2">{% if job %}Edit <span class="text-brand">Job</span>{% else %}Post a <span class="text-brand">New Job</span>{% endif %}</h1>
   <p class="text-secondary mt-1 small">Fill in all steps below to publish your job opening on JobHive.</p>
 </div>
 
@@ -495,10 +494,9 @@ body {
 
 <!-- ── MAIN FORM (single POST form wrapping all steps) ── -->
 <div class="container pb-5" style="max-width:820px">
-<!-- <form method="POST" id="jobForm"> -->
 <form
   method="POST"
-  action="{% url 'company:job_post' %}"
+  action="{% if job %}{% url 'company:company_job_edit' job.id %}{% else %}{% url 'company:company_job_post' %}{% endif %}"
   id="jobForm"
   novalidate>
   {% csrf_token %}
@@ -555,14 +553,14 @@ body {
     <!-- Experience Level -->
     <div class="col-md-6">
       <label class="form-label">Experience Level <span class="text-danger">*</span></label>
-      <select class="form-select" id="expLevel" name="exp_level">
+      <select class="form-select" id="expLevel" name="experience_level">
         <option value="" disabled selected>Select level</option>
-        <option {% if post_data.exp_level == "Internship" %}selected{% endif %}>Internship</option>
-        <option {% if post_data.exp_level == "Entry Level (0–2 yrs)" %}selected{% endif %}>Entry Level (0–2 yrs)</option>
-        <option {% if post_data.exp_level == "Mid Level (2–5 yrs)" %}selected{% endif %}>Mid Level (2–5 yrs)</option>
-        <option {% if post_data.exp_level == "Senior Level (5–10 yrs)" %}selected{% endif %}>Senior Level (5–10 yrs)</option>
-        <option {% if post_data.exp_level == "Lead / Manager" %}selected{% endif %}>Lead / Manager</option>
-        <option {% if post_data.exp_level == "Executive / Director" %}selected{% endif %}>Executive / Director</option>
+        <option {% if post_data.experience_level == "Internship" %}selected{% endif %}>Internship</option>
+        <option {% if post_data.experience_level == "Entry Level (0–2 yrs)" %}selected{% endif %}>Entry Level (0–2 yrs)</option>
+        <option {% if post_data.experience_level == "Mid Level (2–5 yrs)" %}selected{% endif %}>Mid Level (2–5 yrs)</option>
+        <option {% if post_data.experience_level == "Senior Level (5–10 yrs)" %}selected{% endif %}>Senior Level (5–10 yrs)</option>
+        <option {% if post_data.experience_level == "Lead / Manager" %}selected{% endif %}>Lead / Manager</option>
+        <option {% if post_data.experience_level == "Executive / Director" %}selected{% endif %}>Executive / Director</option>
       </select>
       <div class="text-danger small mt-1 d-none" id="errExpLevel">Please select experience level.</div>
     </div>
@@ -692,29 +690,29 @@ body {
     <!-- Education -->
     <div class="col-md-6">
       <label class="form-label">Minimum Education</label>
-      <select class="form-select" id="education" name="education">
+      <select class="form-select" id="education" name="minimum_education">
         <option value="" disabled selected>Select education</option>
-        <option {% if post_data.education == "High School / Matric" %}selected{% endif %}>High School / Matric</option>
-        <option {% if post_data.education == "Intermediate (FA/FSc)" %}selected{% endif %}>Intermediate (FA/FSc)</option>
-        <option {% if post_data.education == "Bachelor's Degree" %}selected{% endif %}>Bachelor's Degree</option>
-        <option {% if post_data.education == "Master's Degree" %}selected{% endif %}>Master's Degree</option>
-        <option {% if post_data.education == "PhD / Doctorate" %}selected{% endif %}>PhD / Doctorate</option>
-        <option {% if post_data.education == "No Requirement" %}selected{% endif %}>No Requirement</option>
+        <option {% if post_data.minimum_education == "High School / Matric" %}selected{% endif %}>High School / Matric</option>
+        <option {% if post_data.minimum_education == "Intermediate (FA/FSc)" %}selected{% endif %}>Intermediate (FA/FSc)</option>
+        <option {% if post_data.minimum_education == "Bachelor's Degree" %}selected{% endif %}>Bachelor's Degree</option>
+        <option {% if post_data.minimum_education == "Master's Degree" %}selected{% endif %}>Master's Degree</option>
+        <option {% if post_data.minimum_education == "PhD / Doctorate" %}selected{% endif %}>PhD / Doctorate</option>
+        <option {% if post_data.minimum_education == "No Requirement" %}selected{% endif %}>No Requirement</option>
       </select>
     </div>
 
     <!-- Years Experience -->
     <div class="col-md-6">
       <label class="form-label">Years of Experience</label>
-      <select class="form-select" id="yearsExp" name="years_exp">
+      <select class="form-select" id="yearsExp" name="years_of_experience">
         <option value="" disabled selected>Select years</option>
-        <option {% if post_data.years_exp == "No experience needed" %}selected{% endif %}>No experience needed</option>
-        <option {% if post_data.years_exp == "Less than 1 year" %}selected{% endif %}>Less than 1 year</option>
-        <option {% if post_data.years_exp == "1–2 years" %}selected{% endif %}>1–2 years</option>
-        <option {% if post_data.years_exp == "2–4 years" %}selected{% endif %}>2–4 years</option>
-        <option {% if post_data.years_exp == "4–6 years" %}selected{% endif %}>4–6 years</option>
-        <option {% if post_data.years_exp == "6–10 years" %}selected{% endif %}>6–10 years</option>
-        <option {% if post_data.years_exp == "10+ years" %}selected{% endif %}>10+ years</option>
+        <option {% if post_data.years_of_experience == "No experience needed" %}selected{% endif %}>No experience needed</option>
+        <option {% if post_data.years_of_experience == "Less than 1 year" %}selected{% endif %}>Less than 1 year</option>
+        <option {% if post_data.years_of_experience == "1–2 years" %}selected{% endif %}>1–2 years</option>
+        <option {% if post_data.years_of_experience == "2–4 years" %}selected{% endif %}>2–4 years</option>
+        <option {% if post_data.years_of_experience == "4–6 years" %}selected{% endif %}>4–6 years</option>
+        <option {% if post_data.years_of_experience == "6–10 years" %}selected{% endif %}>6–10 years</option>
+        <option {% if post_data.years_of_experience == "10+ years" %}selected{% endif %}>10+ years</option>
       </select>
     </div>
 
@@ -767,10 +765,10 @@ body {
     <div class="col-md-6">
       <label class="form-label">Salary Type</label>
       <select class="form-select" id="salaryType" name="salary_type" onchange="toggleSalary()">
-        <option value="range">Salary Range</option>
-        <option value="fixed">Fixed Amount</option>
-        <option value="negotiable">Negotiable</option>
-        <option value="unpaid">Unpaid (Internship)</option>
+        <option value="range" {% if post_data.salary_type == "range" %}selected{% endif %}>Salary Range</option>
+        <option value="fixed" {% if post_data.salary_type == "fixed" %}selected{% endif %}>Fixed Amount</option>
+        <option value="negotiable" {% if post_data.salary_type == "negotiable" %}selected{% endif %}>Negotiable</option>
+        <option value="unpaid" {% if post_data.salary_type == "unpaid" %}selected{% endif %}>Unpaid (Internship)</option>
       </select>
     </div>
 
@@ -778,12 +776,12 @@ body {
     <div class="col-md-6" id="currencyWrap">
       <label class="form-label">Currency</label>
       <select class="form-select" id="currency" name="currency">
-        <option value="PKR">PKR – Pakistani Rupee</option>
-        <option value="USD">USD – US Dollar</option>
-        <option value="EUR">EUR – Euro</option>
-        <option value="GBP">GBP – British Pound</option>
-        <option value="AED">AED – UAE Dirham</option>
-        <option value="SAR">SAR – Saudi Riyal</option>
+        <option value="PKR" {% if not post_data.currency or post_data.currency == "PKR" %}selected{% endif %}>PKR – Pakistani Rupee</option>
+        <option value="USD" {% if post_data.currency == "USD" %}selected{% endif %}>USD – US Dollar</option>
+        <option value="EUR" {% if post_data.currency == "EUR" %}selected{% endif %}>EUR – Euro</option>
+        <option value="GBP" {% if post_data.currency == "GBP" %}selected{% endif %}>GBP – British Pound</option>
+        <option value="AED" {% if post_data.currency == "AED" %}selected{% endif %}>AED – UAE Dirham</option>
+        <option value="SAR" {% if post_data.currency == "SAR" %}selected{% endif %}>SAR – Saudi Riyal</option>
       </select>
     </div>
 
@@ -833,8 +831,8 @@ body {
     <!-- Notes -->
     <div class="col-12">
       <label class="form-label">Additional Notes for Candidates</label>
-      <textarea class="form-control" id="notes" name="notes" rows="3"
-        placeholder="Any extra info or instructions for applicants...">{{ post_data.notes|default:'' }}</textarea>
+      <textarea class="form-control" id="notes" name="additional_notes" rows="3"
+        placeholder="Any extra info or instructions for applicants...">{{ post_data.additional_notes|default:'' }}</textarea>
     </div>
 
   </div>
@@ -943,12 +941,12 @@ body {
     <label class="form-label">Listing Visibility</label>
     <div class="d-flex gap-3 flex-wrap">
       <label class="form-check border rounded-3 p-3 flex-fill" style="cursor:pointer;border-color:#E4E6F0 !important;">
-        <input class="form-check-input me-2" type="radio" name="visibility" value="public" checked />
+        <input class="form-check-input me-2" type="radio" name="visibility" value="public" {% if not post_data.visibility or post_data.visibility == "public" %}checked{% endif %} />
         <strong>Public</strong><br>
         <small class="text-muted">Visible to all job seekers</small>
       </label>
       <label class="form-check border rounded-3 p-3 flex-fill" style="cursor:pointer;border-color:#E4E6F0 !important;">
-        <input class="form-check-input me-2" type="radio" name="visibility" value="private" />
+        <input class="form-check-input me-2" type="radio" name="visibility" value="private" {% if post_data.visibility == "private" %}checked{% endif %} />
         <strong>Private</strong><br>
         <small class="text-muted">Share via direct link only</small>
       </label>
@@ -986,9 +984,6 @@ body {
     <a href="{% url 'company:company_job_post' %}" class="btn btn-brand px-4">
       <i class="fas fa-plus me-1"></i> Post Another Job
     </a>
-    <!-- <a href="{% url 'company:company_dashboard' %}" class="btn btn-outline-brand px-4">
-      <i class="fas fa-th-large me-1"></i> Go to Dashboard
-    </a> -->
     <a href="{% url 'company:manage_jobs' %}" class="btn btn-outline-brand px-4">
       <i class="fas fa-list me-1"></i> View My Jobs
     </a>
@@ -1017,6 +1012,27 @@ body {
         c.classList.add('active');
       }
     });
+  }
+
+  // ── Edit mode: pre-fill description, skills, perks ──
+  var existingDescription = "{{ job.description|escapejs|default:'' }}";
+  var existingSkills = [{% if job %}{% for s in job.get_skills_list %}"{{ s|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}];
+  var existingPerks   = [{% if job %}{% for p in job.get_perks_list %}"{{ p|escapejs }}"{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}];
+
+  if (existingDescription) {
+    document.getElementById('jobDesc').innerHTML = existingDescription;
+  }
+  if (existingSkills.length) {
+    tags = existingSkills;
+    renderTags();
+  }
+  if (existingPerks.length) {
+    perks = existingPerks;
+    document.querySelectorAll('.perk-item').forEach(function(el) {
+      var name = el.querySelector('span').textContent.trim();
+      if (perks.includes(name)) el.classList.add('active');
+    });
+    document.getElementById('perksHidden').value = perks.join(',');
   }
 
   /* STEP NAVIGATION */

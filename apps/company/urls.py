@@ -20,11 +20,15 @@ urlpatterns = [
 
     path('company/active-jobs/',    views.company_active_jobs,     name='company_active_jobs'),
     path('company/draft-jobs/',     views.company_draft_jobs,      name='company_draft_jobs'),
-    path('company/job-list/',       views.company_job_list,        name='company_job_list'),
-    path('company/post-job/',       views.company_job_post,        name='company_job_post'),
+    # path('company/job-list/',       views.company_job_list,        name='company_job_list'),
+    # path('company/job-post/',       views.company_job_post,        name='company_job_post'),
+    path('job-list/', views.company_job_list, name='company_job_list'),
+    path('job-post/', views.company_job_post, name='company_job_post'),
+
     path('company/messenger/',      views.company_messenger,       name='company_messenger'),
     path('company/profile/',        views.company_my_profile,      name='company_my_profile'),
     path('company/settings/',       views.company_account_settings, name='company_account_settings'),
+    path('company/job/<int:job_id>/publish/', views.publish_job_view, name='publish_job'),
 
 
     
@@ -33,6 +37,12 @@ urlpatterns = [
     path("job/post/",                      views.company_job_post,        name="post_job"),
     path("job/<int:job_id>/close/",        views.close_job,         name="close_job"),
     path("job/<int:job_id>/delete/",       views.delete_job,        name="delete_job"),
+    # Job detail (View)
+    path('job/<int:pk>/', views.company_job_detail, name='company_job_detail'),
+    
+
+    # Job edit
+    path('job-post/<int:job_id>/edit/', views.company_job_post, name='company_job_edit'),
     
 
 ]

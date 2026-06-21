@@ -265,40 +265,41 @@
             <div class="col-md-1 text-end">Action</div>
         </div>
 
-        <!-- Job 1 -->
+        {% for job in jobs %}
         <div class="job-card">
             <div class="row align-items-center g-0">
                 <div class="col-md-5 col-12 mb-2 mb-md-0">
                     <div class="d-flex align-items-center gap-3">
                         <div class="job-icon"><i
                                 class="bi bi-briefcase"></i></div>
-                        <div><p class="job-title">Senior UI/UX Designer</p><p
-                                class="job-meta">Creative Studio &bull; Full
-                                Time</p></div>
+                        <div>
+                            <p class="job-title">{{ job.title }}</p>
+                            <p class="job-meta">{{ job.category }} &bull; {{
+                                job.job_type }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2 col-4 text-center"><span
-                        class="stat-badge">45 Applicants</span></div>
+                        class="stat-badge">0 Applicants</span></div>
+                <div class="col-md-2 col-4 text-center">
+                    <span class="dot dot-active"></span>
+                    <span style="font-size:12px;font-weight:600;">Active</span>
+                </div>
                 <div class="col-md-2 col-4 text-center"><span
-                        class="dot dot-active"></span><span
-                        style="font-size:12px;font-weight:600;">Active</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        style="font-size:11px;color:#636e72;">24 Dec
-                        2025</span></div>
+                        style="font-size:11px;color:#636e72;">{{
+                        job.created_at|date:"d M Y" }}</span></div>
                 <div class="col-md-1 text-end">
                     <div class="dropdown">
                         <button class="action-btn" data-bs-toggle="dropdown"><i
                                 class="bi bi-three-dots-vertical"></i></button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item"
-                                    onclick="goToApplicants('job1')"><i
+                                    onclick="goToApplicants('job_{{ job.id }}')"><i
                                         class="bi bi-eye me-2"></i>View
                                     Apps</a></li>
-                            <li><a class="dropdown-item" href="#"><i
-                                        class="bi bi-pencil me-2"></i>Edit
-                                    Job</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i
+                            <li><a class="dropdown-item text-danger"
+                                    href="{% url 'company:close_job' job.id %}"><i
                                         class="bi bi-trash me-2"></i>Close
                                     Job</a></li>
                         </ul>
@@ -306,132 +307,13 @@
                 </div>
             </div>
         </div>
-
-        <!-- Job 2 -->
-        <div class="job-card">
-            <div class="row align-items-center g-0">
-                <div class="col-md-5 col-12 mb-2 mb-md-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="job-icon"><i
-                                class="bi bi-briefcase"></i></div>
-                        <div><p class="job-title">Full Stack Developer
-                                (Node.js)</p><p class="job-meta">Tech Solutions
-                                &bull; Remote</p></div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="stat-badge">128 Applicants</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="dot dot-active"></span><span
-                        style="font-size:12px;font-weight:600;">Active</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        style="font-size:11px;color:#636e72;">20 Dec
-                        2025</span></div>
-                <div class="col-md-1 text-end">
-                    <div class="dropdown">
-                        <button class="action-btn" data-bs-toggle="dropdown"><i
-                                class="bi bi-three-dots-vertical"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item"
-                                    onclick="goToApplicants('job2')"><i
-                                        class="bi bi-eye me-2"></i>View
-                                    Apps</a></li>
-                            <li><a class="dropdown-item" href="#"><i
-                                        class="bi bi-pencil me-2"></i>Edit
-                                    Job</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i
-                                        class="bi bi-trash me-2"></i>Close
-                                    Job</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        {% empty %}
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-briefcase"
+                style="font-size: 3rem; opacity: 0.3;"></i>
+            <p class="mt-2">No active jobs found.</p>
         </div>
-
-        <!-- Job 3 -->
-        <div class="job-card">
-            <div class="row align-items-center g-0">
-                <div class="col-md-5 col-12 mb-2 mb-md-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="job-icon"><i
-                                class="bi bi-briefcase"></i></div>
-                        <div><p class="job-title">Marketing Manager</p><p
-                                class="job-meta">Global Brands &bull;
-                                Contract</p></div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="stat-badge">12 Applicants</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="dot dot-pending"></span><span
-                        style="font-size:12px;font-weight:600;">Pending</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        style="font-size:11px;color:#636e72;">28 Dec
-                        2025</span></div>
-                <div class="col-md-1 text-end">
-                    <div class="dropdown">
-                        <button class="action-btn" data-bs-toggle="dropdown"><i
-                                class="bi bi-three-dots-vertical"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item"
-                                    onclick="goToApplicants('job3')"><i
-                                        class="bi bi-eye me-2"></i>View
-                                    Apps</a></li>
-                            <li><a class="dropdown-item" href="#"><i
-                                        class="bi bi-pencil me-2"></i>Edit
-                                    Job</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i
-                                        class="bi bi-trash me-2"></i>Close
-                                    Job</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Job 4 -->
-        <div class="job-card">
-            <div class="row align-items-center g-0">
-                <div class="col-md-5 col-12 mb-2 mb-md-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="job-icon"><i
-                                class="bi bi-briefcase"></i></div>
-                        <div><p class="job-title">Backend Engineer
-                                (Python)</p><p class="job-meta">Data Systems
-                                &bull; Full Time</p></div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="stat-badge">67 Applicants</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        class="dot dot-active"></span><span
-                        style="font-size:12px;font-weight:600;">Active</span></div>
-                <div class="col-md-2 col-4 text-center"><span
-                        style="font-size:11px;color:#636e72;">15 Dec
-                        2025</span></div>
-                <div class="col-md-1 text-end">
-                    <div class="dropdown">
-                        <button class="action-btn" data-bs-toggle="dropdown"><i
-                                class="bi bi-three-dots-vertical"></i></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item"
-                                    onclick="goToApplicants('job4')"><i
-                                        class="bi bi-eye me-2"></i>View
-                                    Apps</a></li>
-                            <li><a class="dropdown-item" href="#"><i
-                                        class="bi bi-pencil me-2"></i>Edit
-                                    Job</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#"><i
-                                        class="bi bi-trash me-2"></i>Close
-                                    Job</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
 
     </div>
 </div>
@@ -473,48 +355,13 @@ const avColors = ['av-teal','av-blue','av-purple','av-amber','av-coral','av-pink
 const pillMap = { 'Under Review':'pill-review', 'Shortlisted':'pill-shortlisted', 'Rejected':'pill-rejected', 'Hired':'pill-hired' };
 
 const jobData = {
-  job1: {
-    title: 'Senior UI/UX Designer',
-    meta: 'Creative Studio &bull; Full Time &bull; Posted: 24 Dec 2025',
-    applicants: [
-      {name:'Ayesha Tariq',   role:'UI Designer',       applied:'26 Dec 2025', status:'Shortlisted'},
-      {name:'Bilal Raza',     role:'UX Researcher',     applied:'25 Dec 2025', status:'Under Review'},
-      {name:'Sana Mirza',     role:'Product Designer',  applied:'27 Dec 2025', status:'Hired'},
-      {name:'Kamran Ali',     role:'Visual Designer',   applied:'24 Dec 2025', status:'Rejected'},
-      {name:'Hina Baig',      role:'Interaction Designer',applied:'26 Dec 2025',status:'Under Review'},
-    ]
-  },
-  job2: {
-    title: 'Full Stack Developer (Node.js)',
-    meta: 'Tech Solutions &bull; Remote &bull; Posted: 20 Dec 2025',
-    applicants: [
-      {name:'Usman Ahmed',    role:'MERN Developer',    applied:'21 Dec 2025', status:'Shortlisted'},
-      {name:'Hamza Malik',    role:'Node.js Engineer',  applied:'22 Dec 2025', status:'Under Review'},
-      {name:'Zara Khan',      role:'Frontend Developer',applied:'23 Dec 2025', status:'Rejected'},
-      {name:'Ali Hassan',     role:'Backend Developer', applied:'21 Dec 2025', status:'Under Review'},
-      {name:'Noman Farooq',   role:'Full Stack Dev',    applied:'20 Dec 2025', status:'Shortlisted'},
-      {name:'Sara Javed',     role:'React Developer',   applied:'22 Dec 2025', status:'Hired'},
-      {name:'Imran Shah',     role:'DevOps Engineer',   applied:'23 Dec 2025', status:'Under Review'},
-    ]
-  },
-  job3: {
-    title: 'Marketing Manager',
-    meta: 'Global Brands &bull; Contract &bull; Posted: 28 Dec 2025',
-    applicants: [
-      {name:'Nadia Qureshi',  role:'Digital Marketer',  applied:'29 Dec 2025', status:'Under Review'},
-      {name:'Asad Mehmood',   role:'Brand Manager',     applied:'30 Dec 2025', status:'Shortlisted'},
-    ]
-  },
-  job4: {
-    title: 'Backend Engineer (Python)',
-    meta: 'Data Systems &bull; Full Time &bull; Posted: 15 Dec 2025',
-    applicants: [
-      {name:'Saad Iqbal',     role:'Python Developer',  applied:'16 Dec 2025', status:'Shortlisted'},
-      {name:'Maryam Farooq',  role:'Django Engineer',   applied:'17 Dec 2025', status:'Hired'},
-      {name:'Tariq Hussain',  role:'Data Engineer',     applied:'16 Dec 2025', status:'Under Review'},
-      {name:'Rabia Noor',     role:'Flask Developer',   applied:'18 Dec 2025', status:'Rejected'},
-    ]
-  }
+  {% for job in jobs %}
+  'job_{{ job.id }}': {
+    title: '{{ job.title|escapejs }}',
+    meta: '{{ job.category|escapejs }} &bull; {{ job.job_type|escapejs }} &bull; Posted: {{ job.created_at|date:"d M Y" }}',
+    applicants: []
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
 };
 
 function initials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }

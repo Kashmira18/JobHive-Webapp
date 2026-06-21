@@ -232,7 +232,7 @@
     <div class="container-custom">
         <div class="header-section">
             <h4>Job List :</h4>
-            <button class="btn-create">Create Job Post</button>
+            <a href="{% url 'company:company_job_post' %}" class="btn-create text-decoration-none d-inline-block">Create Job Post</a>
         </div>
 
         <div class="search-filter-section">
@@ -288,234 +288,144 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const jobs = [
-            {
-                title: 'CSIT',
-                deadline: '22 Nov, 0034',
-                status: 'Live',
-                applicants: 0,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'CSIT',
-                deadline: '22 Dec, 2025',
-                status: 'Live',
-                applicants: 0,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'Work permit Receiver (WPR) Aramci Approve need',
-                deadline: '31 Dec, 2026',
-                status: 'Live',
-                applicants: 0,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'Work permit Receiver (WPR) Aramci Approve need',
-                deadline: '31 Dec, 2026',
-                status: 'Live',
-                applicants: 0,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'Hiring HR Manager',
-                deadline: '30 Sep, 2027',
-                status: 'Live',
-                applicants: 1,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'Hiring Assistant Manager',
-                deadline: '28 Feb, 2026',
-                status: 'Live',
-                applicants: 1,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 1,
-                hired: 1
-            },
-            {
-                title: 'Ready to Join as a Lecturer',
-                deadline: '28 Feb, 2026',
-                status: 'Live',
-                applicants: 0,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            },
-            {
-                title: 'Looking For Experinced Architecture',
-                deadline: '01 Mar, 2026',
-                status: 'Live',
-                applicants: 1,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 1,
-                hired: 1
-            },
-            {
-                title: 'Looking for Delovery Driver',
-                deadline: '28 Feb, 2026',
-                status: 'Live',
-                applicants: 1,
-                rejected: 0,
-                viewed: 0,
-                shortlisted: 1,
-                hired: 1
-            },
-            {
-                title: 'We Hiring Sales Executive',
-                deadline: '05 Mar, 2026',
-                status: 'Live',
-                applicants: 1,
-                rejected: 1,
-                viewed: 0,
-                shortlisted: 0,
-                hired: 0
-            }
-        ];
+    {% for job in jobs %}
+    {
+        id: {{ job.id }},
+        title: '{{ job.title|escapejs }}',
+        deadline: '{{ job.deadline|date:"d M, Y" }}',
+        status: '{% if job.status == "PUBLISHED" %}Live{% elif job.status == "PENDING_REVIEW" %}Pending{% elif job.status == "DRAFT" %}Draft{% else %}{{ job.status|title }}{% endif %}',
+        applicants: 0,
+        rejected: 0,
+        viewed: 0,
+        shortlisted: 0,
+        hired: 0,
+        detailUrl: '{% url "company:company_job_detail" job.id %}',
+        editUrl: '{% url "company:company_job_edit" job.id %}',
+        deleteUrl: '{% url "company:delete_job" job.id %}'
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
 
-        let filteredJobs = [...jobs];
+let filteredJobs = [...jobs];
 
-        function renderJobs(jobsToRender) {
-            const tbody = document.getElementById('jobTableBody');
-            tbody.innerHTML = '';
+function renderJobs(jobsToRender) {
+    const tbody = document.getElementById('jobTableBody');
+    tbody.innerHTML = '';
 
-            jobsToRender.forEach((job, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="job-title-cell">
-                        <div class="job-title">${job.title}</div>
-                        <div class="deadline">
-                            <i class="far fa-calendar"></i>
-                            <span>Deadline: ${job.deadline}</span>
-                        </div>
-                        <div class="status-toggle">
-                            <div class="toggle-switch" onclick="toggleStatus(this)"></div>
-                            <span class="status-text">${job.status}</span>
-                        </div>
-                    </td>
-                    <td><span class="count-badge badge-primary">${job.applicants}</span></td>
-                    <td><span class="count-badge badge-warning">${job.rejected}</span></td>
-                    <td><span class="count-badge badge-info">${job.viewed}</span></td>
-                    <td><span class="count-badge badge-secondary">${job.shortlisted}</span></td>
-                    <td><span class="count-badge badge-danger">${job.hired}</span></td>
-                    <td>
-                        <div class="action-dropdown" style="display: inline-block;">
-                            <button class="action-btn" onclick="toggleDropdown(event, ${index})">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-menu-custom" id="dropdown-${index}">
-                                <a class="dropdown-item-custom" onclick="viewJob(${index})">
-                                    <i class="fas fa-eye"></i> View
-                                </a>
-                                <a class="dropdown-item-custom" onclick="editJob(${index})">
-                                    <i class="fas fa-edit"></i> Edit
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
+    jobsToRender.forEach((job, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="job-title-cell">
+                <div class="job-title">${job.title}</div>
+                <div class="deadline">
+                    <i class="far fa-calendar"></i>
+                    <span>Deadline: ${job.deadline}</span>
+                </div>
+                <div class="status-toggle">
+                    <div class="toggle-switch" onclick="toggleStatus(this)"></div>
+                    <span class="status-text">${job.status}</span>
+                </div>
+            </td>
+            <td><span class="count-badge badge-primary">${job.applicants}</span></td>
+            <td><span class="count-badge badge-warning">${job.rejected}</span></td>
+            <td><span class="count-badge badge-info">${job.viewed}</span></td>
+            <td><span class="count-badge badge-secondary">${job.shortlisted}</span></td>
+            <td><span class="count-badge badge-danger">${job.hired}</span></td>
+            <td>
+                <div class="action-dropdown" style="display: inline-block;">
+                    <button class="action-btn" onclick="toggleJobActionDropdown(event, ${index})">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-menu-custom" id="dropdown-${index}">
+                        <a class="dropdown-item-custom" href="${job.detailUrl}">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a class="dropdown-item-custom" href="${job.editUrl}">
+                            <i class="fas fa-pen"></i> Edit
+                        </a>
+                        <a class="dropdown-item-custom text-danger" href="${job.deleteUrl}" onclick="return confirm('Are you sure you want to delete this job?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
 
-            updateResultsInfo(jobsToRender.length);
+    updateResultsInfo(jobsToRender.length);
+}
+
+function updateResultsInfo(count) {
+    const resultsInfo = document.getElementById('resultsInfo');
+    resultsInfo.textContent = `${count} Results Showing In ${jobs.length} Jobs`;
+}
+
+function toggleJobActionDropdown(event, index) {
+    event.stopPropagation();
+    const dropdown = document.getElementById(`dropdown-${index}`);
+
+    document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
+        if (d.id !== `dropdown-${index}`) {
+            d.classList.remove('show');
+        }
+    });
+
+    dropdown.classList.toggle('show');
+}
+
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
+        d.classList.remove('show');
+    });
+}
+
+function toggleStatus(element) {
+    element.classList.toggle('inactive');
+}
+
+function searchJobs() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const dateValue = document.getElementById('dateInput').value;
+
+    filteredJobs = jobs.filter(job => {
+        const matchesSearch = job.title.toLowerCase().includes(searchTerm);
+        let matchesDate = true;
+
+        if (dateValue) {
+            const jobDate = new Date(job.deadline);
+            const searchDate = new Date(dateValue);
+            matchesDate = jobDate.toDateString() === searchDate.toDateString();
         }
 
-        function updateResultsInfo(count) {
-            const resultsInfo = document.getElementById('resultsInfo');
-            resultsInfo.textContent = `${count} Results Showing In ${jobs.length} Jobs`;
-        }
+        return matchesSearch && matchesDate;
+    });
 
-        function toggleDropdown(event, index) {
-            event.stopPropagation();
-            const dropdown = document.getElementById(`dropdown-${index}`);
-            
-            // Close all other dropdowns
-            document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
-                if (d.id !== `dropdown-${index}`) {
-                    d.classList.remove('show');
-                }
-            });
-            
-            dropdown.classList.toggle('show');
-        }
+    renderJobs(filteredJobs);
+}
 
-        function viewJob(index) {
-            alert(`Viewing job: ${filteredJobs[index].title}`);
-            closeAllDropdowns();
-        }
+// Event listeners
+document.getElementById('searchBtn').addEventListener('click', searchJobs);
 
-        function editJob(index) {
-            alert(`Editing job: ${filteredJobs[index].title}`);
-            closeAllDropdowns();
-        }
+document.getElementById('searchInput').addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') {
+        searchJobs();
+    }
+});
 
-        function closeAllDropdowns() {
-            document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
-                d.classList.remove('show');
-            });
-        }
+document.getElementById('dateInput').addEventListener('change', searchJobs);
 
-        function toggleStatus(element) {
-            element.classList.toggle('inactive');
-        }
+// Close dropdowns when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.action-dropdown')) {
+        closeAllDropdowns();
+    }
+});
 
-        function searchJobs() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const dateValue = document.getElementById('dateInput').value;
+// Initial render
+renderJobs(filteredJobs);
 
-            filteredJobs = jobs.filter(job => {
-                const matchesSearch = job.title.toLowerCase().includes(searchTerm);''
-                let matchesDate = true;
-
-                if (dateValue) {
-                    const jobDate = new Date(job.deadline);
-                    const searchDate = new Date(dateValue);
-                    matchesDate = jobDate.toDateString() === searchDate.toDateString();
-                }
-
-                return matchesSearch && matchesDate;
-            });
-
-            renderJobs(filteredJobs);
-        }
-
-        // Event listeners
-        document.getElementById('searchBtn').addEventListener('click', searchJobs);
-
-        document.getElementById('searchInput').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                searchJobs();
-            }
-        });
-
-        document.getElementById('dateInput').addEventListener('change', searchJobs);
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.action-dropdown')) {
-                closeAllDropdowns();
-            }
-        });
-
-        // Initial render
-        renderJobs(filteredJobs);
+        
 
     </script>
 </body>

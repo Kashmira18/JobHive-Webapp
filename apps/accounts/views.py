@@ -120,6 +120,7 @@ def login_view(request):
                     status = "PENDING"
 
                 # ── APPROVED ──
+                # if True:
                 if user.is_approved and status == "APPROVED":
                     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
                     return redirect("company:company_dashboard")
@@ -234,7 +235,7 @@ def company_approved(request):
         del request.session["pending_user_id"]
 
     # Login execute karein
-    login(request, user, backend="django.contrib.auth.backends.EmailOrUsernameBackend")
+    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
     # Congrats template render hoga jahan 5 sec ka JS laga hai
     return render(request, "accounts/company_approved.html", {"user": user})
@@ -303,55 +304,6 @@ def company_documents_review(request):
         "rejected_docs": rejected_docs,
     }
     return render(request, "accounts/company_documents_review.html", context)
-
-
-# __________________________________________
-# def company_approved(request):
-
-#     # Session --> user
-#     user_id = request.session.get('pending_user_id')
-
-#     if not user_id:
-#         messages.error(request, "Session expired. Please login again.")
-#         return redirect("login")
-
-#     try:
-#         user = CustomUser.objects.get(pk=user_id)
-#     except CustomUser.DoesNotExist:
-#         messages.error(request, "User not found. Please login again.")
-#         return redirect("login")
-
-#     # Agar approved nahi hai then
-#     if not user.is_approved:
-#         return redirect("company_pending")
-
-#     # Session clear karo
-#     del request.session['pending_user_id']
-
-#     return render(request, "accounts/company_approved.html", {"user": user})
-# __________________________________________
-
-
-def company_approved(request):
-    user_id = request.session.get("pending_user_id")
-    if not user_id:
-        return redirect("login")
-    try:
-        user = CustomUser.objects.get(pk=user_id)
-    except CustomUser.DoesNotExist:
-        return redirect("login")
-    if not user.is_approved:
-        return redirect("company_pending")
-
-    # Session clear karo
-    del request.session["pending_user_id"]
-
-    # Ab login karo
-    # login(request, user)
-    login(request, user, backend='apps.accounts.backends.EmailOrUsernameBackend')
-
-
-    return render(request, "accounts/company_approved.html", {"user": user})
 
 
 # ── FORGOT PASSWORD ──

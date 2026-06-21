@@ -99,7 +99,9 @@ class CompanyProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.company_name
+        # return self.company_name
+        return self.trade_name or self.legal_name or f"Profile #{self.pk}"
+
 
     class Meta:
         verbose_name        = "Company Profile"

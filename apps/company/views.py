@@ -12,6 +12,7 @@ from accounts.models import CompanyProfile
 from .forms import JobPostForm
 from custom_admin.decorators import admin_login_required
 from .decorators import approved_company_required
+from job.models import JobPost
 
 # Create your views here.
 
@@ -22,12 +23,17 @@ from .decorators import approved_company_required
 # def company_dashboard(request):
 #     return render(request, "company/company_dashboard.html")
 
-
+def publish_job_view(request, job_id):
+    job = get_object_or_404(JobPost, id=job_id)
+    
+    job.is_draft = False  # Ya jo bhi aapne field rakhi hai (e.g., status="PUBLISHED")
+    job.save()
+    
+    return redirect('company:company_active_jobs')
 
 
 def base(request):
     return render(request, "company/company_base.html")
-
 
 
 # ════════════════════════════════
@@ -39,7 +45,16 @@ def base(request):
 @login_required(login_url='login')
 def company_dashboard(request):
     profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
-    return render(request, 'company/company_dashboard.html', {'profile': profile})
+    jobs = JobPost.objects.filter(company=profile)
+    total_jobs = jobs.count()
+    live_jobs = jobs.filter(status="PUBLISHED").count()
+    pending_jobs = jobs.filter(status="PENDING_REVIEW").count()
+    return render(request, 'company/company_dashboard.html', {
+        'profile': profile,
+        'total_jobs': total_jobs,
+        'live_jobs': live_jobs,
+        'pending_jobs': pending_jobs,
+    })
 
 
 # ════════════════════════════════
@@ -48,7 +63,12 @@ def company_dashboard(request):
 # @company_required
 @login_required
 def company_active_jobs(request):
-    return render(request, "company/company_active_jobs.html")
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+    jobs = JobPost.objects.filter(company=profile, status="PUBLISHED")
+    return render(request, "company/company_active_jobs.html", {
+        "jobs": jobs,
+        "profile": profile,
+    })
 
  
 # ════════════════════════════════
@@ -57,7 +77,12 @@ def company_active_jobs(request):
 # @company_required
 @login_required
 def company_draft_jobs(request):
-    return render(request, "company/company_drafts_jobs.html")
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+    jobs = JobPost.objects.filter(company=profile, status="DRAFT")
+    return render(request, "company/company_drafts_jobs.html", {
+        "jobs": jobs,
+        "profile": profile,
+    })
 
 
 # ════════════════════════════════
@@ -66,7 +91,12 @@ def company_draft_jobs(request):
 # @company_required
 @login_required
 def company_job_list(request):
-    return render(request, "company/company_job_list.html")
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+    jobs = JobPost.objects.filter(company=profile)
+    return render(request, "company/company_job_list.html", {
+        "jobs": jobs,
+        "profile": profile,
+    })
 
 def company_job_detail(request, pk):
     job = get_object_or_404(JobPost, pk=pk)
@@ -115,7 +145,7 @@ def company_account_settings(request):
 # ─────────────────────────────────────────────────────────
 @approved_company_required
 # def create_job(request):
-def company_job_post(request):
+def company_job_post(request, job_id=None):
     """
     Multi-step job posting form.
     All 4 steps submit as a single POST to this view.
@@ -128,13 +158,49 @@ def company_job_post(request):
       - action       ← "publish" or "draft"
     """
     profile = request.user.company_profile
- 
+
+    job = None
+    if job_id:
+        job = get_object_or_404(JobPost, pk=job_id, company=profile)
+
     if request.method == "GET":
-        form = JobPostForm()
-        return render(request, "company/job_post.html", {"form": form})
+        form = JobPostForm(instance=job)
+        post_data = None
+        if job:
+            post_data = {
+                "title": job.title,
+                "category": job.category,
+                "experience_level": job.experience_level,
+                "job_type": job.job_type,
+                "location": job.location,
+                "work_mode": job.work_mode,
+                "deadline": job.deadline.isoformat() if job.deadline else "",
+                "vacancies": job.vacancies,
+                "qualifications": job.qualifications,
+                "minimum_education": job.minimum_education,
+                "years_of_experience": job.years_of_experience,
+                "responsibilities": job.responsibilities,
+                "salary_type": job.salary_type,
+                "currency": job.currency,
+                "salary_min": job.salary_min,
+                "salary_max": job.salary_max,
+                "salary_fixed": job.salary_fixed,
+                "additional_notes": job.additional_notes,
+                "visibility": job.visibility,
+            }
+
+        return render(request, "company/company_job_post.html", {
+            "form": form,
+            "job": job,
+            "post_data": post_data,
+        })
+
+        # return render(request, "company/company_job_post.html", {"form": form, "job": job})
+    
+
  
     # ── POST ──
-    form   = JobPostForm(request.POST)
+    form   = JobPostForm(request.POST, instance=job)
     action = request.POST.get("action", "publish")
  
     if form.is_valid():
@@ -145,9 +211,9 @@ def company_job_post(request):
  
         # Set status based on action
         job.status = "PENDING_REVIEW" if action == "publish" else "DRAFT"
- 
+
         job.save()
- 
+
         # ── Success response ──
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             # AJAX request — return JSON
@@ -157,33 +223,34 @@ def company_job_post(request):
                 "job_id":       job.pk,
                 "redirect_url": "/company/jobs/",
             })
- 
+
         # Normal form submit
         if action == "publish":
             messages.success(request, f'"{job.title}" submitted for review. It will go live within 24 hours.')
         else:
             messages.success(request, f'"{job.title}" saved as draft.')
- 
-        return redirect("company:manage_jobs")
- 
+
+        return redirect("company:company_job_list")
+
     # ── Form invalid — re-render with errors ──
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return JsonResponse({
             "success": False,
             "errors":  form.errors,
         }, status=400)
- 
+
     # Collect error messages for template toast
     for field, errs in form.errors.items():
         for err in errs:
             messages.error(request, f"{field}: {err}")
- 
-    return render(request, "company/post_job.html", {
-        "form":      form,
-        "post_data": request.POST,   # repopulate form on error
-    })
- 
- 
+
+    return render(request, "company/company_job_post.html", {
+    "form": form,
+    "job": job,
+    "post_data": request.POST,
+})
+
+
 # ─────────────────────────────────────────────────────────
 #  MANAGE JOBS (company's own job list)
 # ─────────────────────────────────────────────────────────
@@ -195,12 +262,12 @@ def manage_jobs(request):
     """
     profile     = request.user.company_profile
     status_filter = request.GET.get("status", "")
- 
+
     jobs = JobPost.objects.filter(company=profile)
- 
+
     if status_filter:
         jobs = jobs.filter(status=status_filter)
- 
+
     # Stats
     stats = {
         "total":          jobs.count(),
@@ -209,15 +276,15 @@ def manage_jobs(request):
         "draft":          JobPost.objects.filter(company=profile, status="DRAFT").count(),
         "closed":         JobPost.objects.filter(company=profile, status="CLOSED").count(),
     }
- 
-    return render(request, "company/manage_jobs.html", {
+
+    return render(request, "company/company_job_list.html", {
         "jobs":          jobs,
         "stats":         stats,
         "status_filter": status_filter,
         "profile":       profile,
     })
- 
- 
+
+
 # ─────────────────────────────────────────────────────────
 #  CLOSE / DELETE JOB
 # ─────────────────────────────────────────────────────────
@@ -228,9 +295,9 @@ def close_job(request, job_id):
     job.status = "CLOSED"
     job.save()
     messages.success(request, f'"{job.title}" has been closed.')
-    return redirect("company:manage_jobs")
- 
- 
+    return redirect("company:company_job_list")
+
+
 @approved_company_required
 def delete_job(request, job_id):
     profile = request.user.company_profile
@@ -238,4 +305,14 @@ def delete_job(request, job_id):
     title   = job.title
     job.delete()
     messages.success(request, f'"{title}" has been deleted.')
-    return redirect("company:manage_jobs")
+    return redirect("company:company_job_list")
+
+
+@approved_company_required
+def publish_job(request, job_id):
+    profile = request.user.company_profile
+    job     = get_object_or_404(JobPost, pk=job_id, company=profile)
+    job.status = "PUBLISHED"
+    job.save()
+    messages.success(request, f'"{job.title}" has been published successfully.')
+    return redirect("company:company_job_list")
