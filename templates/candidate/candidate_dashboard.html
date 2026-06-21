@@ -194,38 +194,52 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="text-primary fw-bold">Featured Jobs:</h3>
-            <a href="#" class="text-danger text-decoration-none fw-bold">Explore More</a>
+            <a href="{% url 'job_list' %}" class="text-danger text-decoration-none fw-bold">Explore More</a>
         </div>
 
-        <div class="featured-card">
+        {% if featured_jobs %}
+          {% for job in featured_jobs %}
+        <div class="featured-card mb-3">
             <div class="d-flex justify-content-between">
                 <div class="d-flex">
                     <div class="me-3">
-                        <i class="fas fa-user-tie fa-2x border p-3 rounded"></i>
+                        {% if job.company.logo %}
+                        <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }}" style="width:50px;height:50px;object-fit:contain;border:1px solid #eee;border-radius:6px;">
+                        {% else %}
+                        <div style="width:50px;height:50px;background:#e0e8ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:#4f7cff;">
+                            {{ job.company.trade_name|slice:':2'|upper }}
+                        </div>
+                        {% endif %}
                     </div>
                     <div>
-                        <h5 class="featured-title mb-1">Ready to Explore Travel Agent <i
-                                class="far fa-heart text-muted ms-2"></i></h5>
-                        <p class="text-dark mb-2 small fw-bold">By Golden Life</p>
+                        <h5 class="featured-title mb-1">{{ job.title }} <i class="far fa-heart text-muted ms-2"></i></h5>
+                        <p class="text-dark mb-2 small fw-bold">By {{ job.company.trade_name }}</p>
 
                         <div class="mt-3">
-                            <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> Brandon,
-                                Canada</span>
-                            <span class="tag-badge bg-tag-pink">R$15k - R$25k</span>
-                            <span class="tag-badge bg-tag-green">Full Time</span>
+                            <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                            <span class="tag-badge bg-tag-pink">{{ job.salary_display }}</span>
+                            <span class="tag-badge bg-tag-green">{{ job.job_type }}</span>
                         </div>
                         <div class="mt-2">
-                            <span class="tag-badge bg-tag-purple">Vacancy: 5</span>
+                            <span class="tag-badge bg-tag-purple">Vacancy: {{ job.vacancies }}</span>
+                            {% if job.work_mode %}<span class="tag-badge" style="background:#e8f4fd;color:#1a73e8;">{{ job.work_mode }}</span>{% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-end mt-3">
-                <div class="text-muted small">Deadline: 31 Dec, 2025</div>
-                <a href="#" class="apply-link small">Apply Now <i class="fas fa-external-link-alt small"></i></a>
+                <div class="text-muted small">Deadline: {{ job.deadline|date:"d M, Y" }}</div>
+                <a href="{% url 'job_details' %}" class="apply-link small">Apply Now <i class="fas fa-external-link-alt small"></i></a>
             </div>
         </div>
+          {% endfor %}
+        {% else %}
+        <div class="featured-card text-center py-4">
+            <p class="text-muted mb-2">No featured jobs available right now.</p>
+            <a href="{% url 'job_list' %}" class="btn btn-sm btn-outline-primary">Browse All Jobs</a>
+        </div>
+        {% endif %}
 
     </div>
 </body>

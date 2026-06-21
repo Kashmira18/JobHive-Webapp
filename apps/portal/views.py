@@ -1,9 +1,22 @@
 # from django.shortcuts import render
 from django.shortcuts import render, redirect
+from job.models import JobPost
 # Create your views here.
 
 def home(request):
-    return render(request, "portal/home.html")
+    published_jobs = JobPost.objects.filter(
+        status="PUBLISHED",
+        visibility="public"
+    ).select_related("company").order_by("-created_at")
+    total_jobs = published_jobs.count()
+    recent_jobs = published_jobs[:6]   # up to 6 for the "Recent Job Circulars" section
+    trending_jobs = published_jobs[:3]  # up to 3 for the trending bar
+    return render(request, "portal/home.html", {
+        "published_jobs": published_jobs,
+        "recent_jobs": recent_jobs,
+        "trending_jobs": trending_jobs,
+        "total_jobs": total_jobs,
+    })
 
 def selector(request):
     return render(request, "portal/selector.html")

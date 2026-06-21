@@ -134,7 +134,7 @@
         <!-- <img src="{% static 'images/slider-bg.webp' %}" /> -->
         <div class="container">
           <div class="slider-content">
-            <h2><span class="counter">2,568</span> Jobs
+            <h2><span class="counter">{{ total_jobs }}</span> Job{% if total_jobs != 1 %}s{% endif %}
               Available<br>Choose Your Dream Job</h2>
             <p>Find great jobs to build your bright career —
               thousands of opportunities await!</p>
@@ -183,66 +183,40 @@
             </a>
           </div>
 
-        </section>
-        <div class="container job-section">
+        </section>        <div class="container job-section">
           <div class="row g-0 job-row">
 
             <div class="col-3 col-md-3 col-lg-2 p-0">
               <div
                 class="tranding-jobs-box d-flex align-items-center justify-content-center h-100 p-3">
                 <span
-                  class="text-white text-center fw-bold">TRANDING<br>JOBS</span>
+                  class="text-white text-center fw-bold">TRENDING<br>JOBS</span>
               </div>
             </div>
 
-            <div
-              class="col-9 col-md-3 col-lg-3 d-flex align-items-center job-card p-3 p-md-4">
-              <a href="{% url 'job_details'%}"
-                class="stretched-link job-link">
-                <div class="d-flex align-items-center">
-                  <img src="{% static 'images/paywait.png' %}"
-                    alt="Pay Wait Logo" class="job-logo me-3">
-                  <div>
-                    <div class="job-title">Senior Health and
-                      Food</div>
-                    <div class="job-company">Pay Wait</div>
+            {% if trending_jobs %}
+              {% for job in trending_jobs %}
+              <div class="col-12 col-md-3 col-lg-{% if forloop.first %}3{% else %}4{% endif %} d-flex align-items-center job-card p-3 p-md-4">
+                <a href="{% url 'job_details' %}" class="stretched-link job-link">
+                  <div class="d-flex align-items-center">
+                    {% if job.company.logo %}
+                    <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }} Logo" class="job-logo me-3">
+                    {% else %}
+                    <div class="job-logo me-3 d-flex align-items-center justify-content-center bg-light rounded-circle" style="width:35px;height:35px;font-size:0.6rem;font-weight:700;color:#555;">{{ job.company.trade_name|slice:':2'|upper }}</div>
+                    {% endif %}
+                    <div>
+                      <div class="job-title">{{ job.title|truncatechars:30 }}</div>
+                      <div class="job-company">{{ job.company.trade_name }}</div>
+                    </div>
                   </div>
-                </div>
-              </a>
-            </div>
-
-            <div
-              class="col-12 col-md-3 col-lg-4 d-flex align-items-center job-card p-3 p-md-4">
-              <a href="{% url 'job_details'%}" class="stretched-link job-link">
-                <div class="d-flex align-items-center">
-                  <img src="{% static 'images/apusinc.png' %}"
-                    alt="Apus Inc. Logo" class="job-logo me-3">
-                  <div>
-                    <div class="job-title">iOS Developer – iOS, Git,
-                      API</div>
-                    <div class="job-company">Apus Inc.</div>
-                  </div>
-                </div>
-              </a>
-            </div>
-
-            <div
-              class="col-12 col-md-3 col-lg-3 d-flex align-items-center job-card p-3 p-md-4">
-              <a href="{% url 'job_details'%}"
-                class="stretched-link job-link">
-                <div class="d-flex align-items-center">
-                  <img src="{% static 'images/frontend.png' %}"
-                    alt="jobhive Inc. Logo" class="job-logo me-3">
-                  <div>
-                    <div class="job-title">Front-End Web
-                      Developer</div>
-                    <div
-                      class="job-company job-company-orange">Envato
-                      Inc.</div>
-                  </div>
-                </div>
-              </a>
-            </div>
+                </a>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="col-9 col-md-9 col-lg-10 d-flex align-items-center p-3 text-muted">
+                No trending jobs at the moment. Check back soon!
+              </div>
+            {% endif %}
 
           </div>
         </div>
@@ -646,390 +620,57 @@
                 <h3 class="title">Recent Job
                   Circulars</h3>
                 <div class="desc">
-                  <p>Many desktop publishing packages
-                    and web page editors</p>
+                  <p>Latest published opportunities from top companies</p>
                 </div>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\1.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
+            {% if recent_jobs %}
+              {% for job in recent_jobs %}
+              <div class="col-md-6 col-lg-4">
+                <!--== Start Recent Job Item ==-->
+                <div class="recent-job-item">
+                  <div class="company-info">
+                    <div class="logo">
+                      {% if job.company.logo %}
+                      <a href="#"><img src="{{ job.company.logo.url }}" width="100" height="100" alt="{{ job.company.trade_name }}"></a>
+                      {% else %}
+                      <a href="#"><div style="width:100px;height:100px;background:#e0e8ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;color:#4f7cff;">{{ job.company.trade_name|slice:':2'|upper }}</div></a>
+                      {% endif %}
+                    </div>
+                    <div class="content-recent-job">
+                      <h4 class="name"><a href="{% url 'job_details' %}">{{ job.company.trade_name }}</a></h4>
+                      <p class="address">{{ job.location }}</p>
+                    </div>
                   </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Darkento
-                        Ltd.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
+                  <div class="main-content">
+                    <h3 class="title"><a href="{% url 'job_details' %}">{{ job.title }}</a></h3>
+                    <h5 class="work-type">{{ job.job_type }}</h5>
+                    <p class="desc">{{ job.get_skills_list|join:', '|truncatechars:60 }}</p>
+                  </div>
+                  <div class="recent-job-info">
+                    <div class="salary">
+                      <h4 style="font-size:0.95rem;">{{ job.salary_display }}</h4>
+                    </div>
+                    <a class="btn-theme btn-sm" href="{% url 'job_details' %}">Apply Now</a>
                   </div>
                 </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Front-end
-                      Developer</a></h3>
-                  <h5 class="work-type">Full-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
+                <!--== End Recent Job Item ==-->
               </div>
-              <!--== End Recent Job Item ==-->
+              {% endfor %}
+            {% else %}
+              <div class="col-12 text-center py-5">
+                <p class="text-muted">No published jobs yet. Check back soon!</p>
+                <a href="{% url 'job_list' %}" class="btn-theme btn-sm">Browse All Jobs</a>
+              </div>
+            {% endif %}
 
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\2.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Inspire
-                        Fitness Co.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Senior
-                      UI Designer</a></h3>
-                  <h5 class="work-type">part-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\3.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Cogent
-                        Data</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Graphic
-                      Designer</a></h3>
-                  <h5 class="work-type">Remote</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-            <!-- _______________________2nd row
-                    _________________________________ -->
-
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\4.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Darkento
-                        Ltd.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Front-end
-                      Developer</a></h3>
-                  <h5 class="work-type">Full-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-            <!-- ____________________ -->
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\5.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Inspire
-                        Fitness Co.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Senior
-                      UI Designer</a></h3>
-                  <h5 class="work-type">part-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-
-            <!-- ____________________ -->
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\6.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Cogent
-                        Data</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Graphic
-                      Designer</a></h3>
-                  <h5 class="work-type">Remote</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-
-            <!-- _______________________3rd row_________________________________ -->
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\7.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Darkento
-                        Ltd.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Front-end
-                      Developer</a></h3>
-                  <h5 class="work-type">Full-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-            <!-- ____________________ -->
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\8.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Inspire
-                        Fitness Co.</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Senior
-                      UI Designer</a></h3>
-                  <h5 class="work-type">part-time</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-            </div>
-            <!-- ____________________ -->
-            <div class="col-md-6 col-lg-4">
-              <!--== Start Recent Job Item ==-->
-              <div class="recent-job-item">
-                <div class="company-info">
-                  <div class="logo">
-                    <a
-                      href="#"><img
-                        src="{% static 'images\9.webp' %}"
-                        width="100" height="100"
-                        alt="Image-HasTech"></a>
-                  </div>
-                  <div class="content-recent-job">
-                    <h4 class="name"><a
-                        href="{% url 'job_details'%}">Cogent
-                        Data</a></h4>
-                    <p class="address">New York,
-                      USA</p>
-                  </div>
-                </div>
-                <div class="main-content">
-                  <h3 class="title"><a
-                      href="{% url 'job_details'%}">Graphic
-                      Designer</a></h3>
-                  <h5 class="work-type">Remote</h5>
-                  <p class="desc">CSS3, HTML5,
-                    Javascript, Bootstrap,
-                    Jquery</p>
-                </div>
-                <div class="recent-job-info">
-                  <div class="salary">
-                    <h4>$5000</h4>
-                    <p>/monthly</p>
-                  </div>
-                  <a class="btn-theme btn-sm"
-                    href="{% url 'job_details'%}">Apply
-                    Now</a>
-                </div>
-              </div>
-              <!--== End Recent Job Item ==-->
-
-            </section>
-            <!-- ______registration cards start_______ -->
-            <section class="registration-cards">
+          </div><!-- /.row -->
+        </div><!-- /.container -->
+      </section><!-- /.recent-job-area -->
+      <!-- ______registration cards start_______ -->
+      <section class="registration-cards">
               <div class="container">
                 <div class="row justify-content-center position-relative">
 

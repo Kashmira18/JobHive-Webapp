@@ -14,6 +14,7 @@ from .forms import AdminLoginForm, AdminForgotPasswordForm, AdminResetPasswordFo
 from .decorators import admin_login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from accounts.models import CompanyProfile, CustomUser, CompanyRejection
+from job.models import JobPost
 
 User = get_user_model()
 
@@ -153,6 +154,11 @@ def admin_dashboard(request):
     # Recent registrations
     recent_users = User.objects.order_by("-date_joined")[:10]
 
+    # Published jobs
+    published_jobs = JobPost.objects.filter(status="PUBLISHED").select_related("company").order_by("-created_at")
+    total_published_jobs = published_jobs.count()
+    recent_published_jobs = published_jobs[:10]
+
     context = {
         "total_users": total_users,
         "total_candidates": total_candidates,
@@ -164,6 +170,8 @@ def admin_dashboard(request):
         "rollback_companies": rollback_companies,
         "recent_users": recent_users,
         "admin_user": request.user,
+        "total_published_jobs": total_published_jobs,
+        "recent_published_jobs": recent_published_jobs,
     }
     return render(request, "custom_admin/admin_dashboard.html", context)
 

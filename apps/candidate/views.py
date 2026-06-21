@@ -1,10 +1,17 @@
 from django.shortcuts import render
+from job.models import JobPost
 # from .decorators import candidate_login_required
 
 
 # @candidate_login_required
 def candidate_dashboard(request):
-    return render(request, 'candidate/candidate_dashboard.html')
+    featured_jobs = JobPost.objects.filter(
+        status="PUBLISHED",
+        visibility="public"
+    ).select_related("company").order_by("-created_at")[:6]
+    return render(request, 'candidate/candidate_dashboard.html', {
+        "featured_jobs": featured_jobs,
+    })
 
 
 # @candidate_login_required
