@@ -8,12 +8,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from job.models import JobPost
-from accounts.models import CompanyProfile
 from .forms import JobPostForm
 from custom_admin.decorators import admin_login_required
 from .decorators import approved_company_required
-from job.models import JobPost
-
+from applications.models import Applications
 # Create your views here.
 
 # from .decorators import candidate_login_required
@@ -46,14 +44,23 @@ def base(request):
 def company_dashboard(request):
     profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
     jobs = JobPost.objects.filter(company=profile)
+    # applications
+    applications = Applications.objects.filter(
+        job__company=profile
+    ).select_related('candidate__user', 'job').order_by('-applied_at')
+    
     total_jobs = jobs.count()
     live_jobs = jobs.filter(status="PUBLISHED").count()
     pending_jobs = jobs.filter(status="PENDING_REVIEW").count()
+    total_applied = applications.count()
     return render(request, 'company/company_dashboard.html', {
         'profile': profile,
         'total_jobs': total_jobs,
         'live_jobs': live_jobs,
         'pending_jobs': pending_jobs,
+        'total_applied': total_applied,                   
+        'recent_applicants': applications[:10],           
+
     })
 
 
@@ -210,7 +217,7 @@ def company_job_post(request, job_id=None):
         job.company = profile
  
         # Set status based on action
-        job.status = "PENDING_REVIEW" if action == "publish" else "DRAFT"
+        job.status = "PUBLISHED" if action == "publish" else "DRAFT"
 
         job.save()
 
@@ -316,3 +323,25 @@ def publish_job(request, job_id):
     job.save()
     messages.success(request, f'"{job.title}" has been published successfully.')
     return redirect("company:company_job_list")
+
+# @login_required
+def job_applications(request, job_id):
+
+    job = get_object_or_404(
+        JobPost,
+        id=job_id,
+        company=request.user.company_profile
+    )
+
+    applications = job.applications.select_related(
+        "candidate"
+    )
+
+    return render(
+        request,
+        "company/job_applications.html",
+        {
+            "job": job,
+            "applications": applications
+        }
+    )

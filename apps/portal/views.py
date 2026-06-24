@@ -1,5 +1,5 @@
 # from django.shortcuts import render
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from job.models import JobPost
 # Create your views here.
 
@@ -37,10 +37,20 @@ def find_jobs(request):
     return render(request, "portal/find_jobs.html")
 # ____________
 def job_list(request):
-    return render(request, "portal/job_list.html")
+    jobs = JobPost.objects.filter(
+        status="PUBLISHED",
+        visibility="public"
+    ).select_related("company").order_by("-created_at")
+    
+    return render(request, "portal/job_list.html", {
+        "jobs": jobs,
+    })
 
-def job_details(request):
-    return render(request, "portal/job_details.html")
+def job_details(request,job_id):
+    job = get_object_or_404(JobPost, id=job_id, status="PUBLISHED")
+    return render(request, "portal/job_details.html", {
+        "job": job,
+    })
 
 def blog(request):
     return render(request, "portal/blog.html")

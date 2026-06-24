@@ -4,231 +4,156 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Job-Details Page</title>
-        <!-- Custom CSS -->
-        {%load static%}
-        <link rel="stylesheet"
-            href="{% static 'css/job-details.css' %}">
-        <!-- Bootstrap 5 CSS -->
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css" />
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-            rel="stylesheet" />
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-            rel="stylesheet" />
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-            rel="stylesheet" />
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet" />
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job-Details Page</title>
+    <!-- Custom CSS -->
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/job-details.css' %}">
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
 
-    <body>
-        <!-- ===== Hero Banner Start ===== -->
-        <section
-            class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
-            <div class="container">
-                <h1 class="text-white fw-bold mb-2">Job Details</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb justify-content-center">
-                        <li class="breadcrumb-item"><a
-                                href="{% url 'home'%}">Home</a></li>
-                        <li class="breadcrumb-item active"
-                            aria-current="page">Job details</Details></li>
-                    </ol>
-                </nav>
-            </div>
-        </section>
-        <!-- ===== Hero Banner End ===== -->
-
-        <div class="container my-5">
-            <div class="job-card">
-                <!-- Left section: Logo and Info -->
-                <div class="job-info">
-                    <div class="job-logo">
-                        <img
-                            src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png"
-                            alt="Company Logo" />
-                    </div>
-                    <div class="job-details">
-                        <h5>Senior Web Developer</h5>
-                        <p class="text-green mb-1">Obelus Concepts Ltd.</p>
-                        <div class="job-meta">
-                            <i class="bi bi-geo-alt"></i> New York, USA &nbsp;
-                            <i class="bi bi-telephone"></i> +88 456 796 457
-                        </div>
-                    </div>
-                </div>
-                <!-- Right section: Salary and Button -->
-                <div class="salary">
-                    <h5>$5000/monthly</h5>
-                    <a href="#" class="btn btn-success px-4">Apply Now</a>
-                </div>
-            </div>
-        </div>
+<body>
+    <!-- ===== Hero Banner Start ===== -->
+    <section class="candidate-hero breadcrumb-card d-flex align-items-center text-center">
         <div class="container">
-            <div class="container my-5">
-                <div class="row g-4">
-                    <!-- Left Content -->
-                    <div class="col-lg-8">
-                        <div class="card p-4 shadow-sm">
-                            <h4 class="mb-3">Description</h4>
-                            <p>
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting
-                                industry... Lorem ipsum dolor sit amet
-                                consectetur adipisicing
-                                elit. Voluptas facilis, cupiditate praesentium
-                                eos delectus eius
-                                excepturi distinctio nemo minima si t
-                                repudiandae laudantium i
-                                ste perspiciatis nobis tempore asperiores,
-                                aspernatur tempora
-                                ab!
-                            </p>
+            <h1 class="text-white fw-bold mb-2">Job Details</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="{% url 'home'%}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Job details</Details>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+    <!-- ===== Hero Banner End ===== -->
 
-                            <h4 class="mt-4 mb-3">Responsibilities</h4>
-                            <ul>
-                                <li>Developing custom themes.</li>
-                                <li>Creating modern website designs.</li>
-                                <li>Writing clean and reusable code.</li>
-                                <li>Debugging code and updating themes.</li>
-                            </ul>
+    <div class="container my-5">
+        <div class="job-card">
+            <!-- Left section: Logo and Info -->
+            <div class="job-info">
+                <div class="job-logo">
+                    {% if job.company.logo %}
+                    <img src="{{ job.company.logo.url }}" alt="Company Logo">
+                    {% endif %}
+                </div>
+                <div class="job-details">
+                    <h5>{{ job.title }}</h5>
+                    <p class="text-green mb-1">{{ job.company.trade_name }}</p>
+                    <div class="job-meta"><i class="bi bi-geo-alt"></i> {{ job.location }}
+                    </div>
+                </div>
+            </div>
+            <!-- Right section: Salary and Button -->
+            <div class="salary">
+                <h5>{{ job.salary_display }}</h5>
+                <a href="{% url 'applications:apply_job' job.id %}" class="btn btn-success px-4">Apply Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="container my-5">
+            <div class="row g-4">
+                <!-- Left Content -->
+                <!-- Left Content -->
+                <div class="col-lg-8">
+                    <div class="card p-4 shadow-sm">
 
-                            <h4 class="mt-4 mb-3">Requirements</h4>
-                            <ul>
-                                <li>
-                                    Strong knowledge of WordPress and
-                                    ThemeForest Standards.
-                                </li>
-                                <li>Good skills in HTML, CSS, JS, and PHP.</li>
-                                <li>Ability to debug and fix plugin/theme
-                                    issues.</li>
-                                <li>Team player and good communication
-                                    skills.</li>
-                            </ul>
+                        {% if job.description %}
+                        <h4 class="mb-3">Description</h4>
+                        <p>{{ job.description }}</p>
+                        {% endif %}
 
-                            <h4 class="mt-4 mb-3">Educational Requirements</h4>
-                            <p>
-                                No strict requirements — your skills and
-                                creativity matter most.
-                            </p>
+                        {% if job.responsibilities %}
+                        <h4 class="mt-4 mb-3">Responsibilities</h4>
+                        <p>{{ job.responsibilities }}</p>
+                        {% endif %}
 
-                            <h4 class="mt-4 mb-3">Working Hours</h4>
-                            <p>
-                                <strong>8:00 AM - 5:00 PM</strong><br />Weekend:
-                                Saturday,
-                                Sunday
-                            </p>
+                        {% if job.qualifications %}
+                        <h4 class="mt-4 mb-3">Requirements</h4>
+                        <p>{{ job.qualifications }}</p>
+                        {% endif %}
 
-                            <h4 class="mt-4 mb-3">Benefits</h4>
-                            <ul>
-                                <li>Work in a fast-growing organization.</li>
-                                <li>Medical and yearly bonuses.</li>
-                                <li>Flexible hours and friendly
-                                    environment.</li>
-                                <li>Recreational tours and family leaves.</li>
-                            </ul>
+                        {% if job.minimum_education %}
+                        <h4 class="mt-4 mb-3">Educational Requirements</h4>
+                        <p>{{ job.minimum_education }}</p>
+                        {% endif %}
 
-                            <h4 class="mt-4 mb-3">Statement</h4>
-                            <p>
-                                JobHive is committed to creating the happiest
-                                company working
-                                for and is proud to provide equal opportunity to
-                                all. All the
-                                qualified applicants will receive consideration
-                                for employment
-                                without regard to race, color, ancestry,
-                                religion, sex, sexual
-                                orientation, age, citizenship,marital status,
-                                disability, gender
-                                identity, or any other basis protected by
-                                federal, state, or
-                                local law.
-                            </p>
-                            <div class="text-center mt-4">
-                                <a href="#" class="apply-btn">Apply Now</a>
-                            </div>
+                        {% if job.get_perks_list %}
+                        <h4 class="mt-4 mb-3">Benefits</h4>
+                        <ul>
+                            {% for perk in job.get_perks_list %}
+                            <li>{{ perk }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        {% if job.additional_notes %}
+                        <h4 class="mt-4 mb-3">Additional Notes</h4>
+                        <p>{{ job.additional_notes }}</p>
+                        {% endif %}
+
+                        <div class="text-center mt-4">
+                            <a href="{% url 'applications:apply_job' job.id %}" class="btn btn-success px-5">Apply
+                                Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card p-4 shadow-sm mb-4">
+                        <h5 class="mb-3">Summary</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>Job Type:</strong> {{ job.job_type }}</li>
+                            <li><strong>Category:</strong> {{ job.category }}</li>
+                            <li><strong>Experience:</strong> {{ job.years_of_experience }}</li>
+                            <li><strong>Qualification:</strong> {{ job.minimum_education }}</li>
+                            <li><strong>Posted:</strong> {{ job.created_at|date:"d M Y" }}</li>
+                            <li><strong>Deadline:</strong> {{ job.deadline|date:"d M Y" }}</li>
+                        </ul>
+                    </div>
+                    <div class="card p-4 shadow-sm mb-4">
+                        <h5>Share With</h5>
+                        <div class="d-flex gap-3 mt-3">
+                            <a href="#" class="btn btn-outline-primary btn-sm"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="btn btn-outline-info btn-sm"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="btn btn-outline-danger btn-sm"><i class="bi bi-pinterest"></i></a>
+                            <a href="#" class="btn btn-outline-primary btn-sm"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="btn btn-outline-info btn-sm"><i class="bi bi-linkedin"></i></a>
                         </div>
                     </div>
 
-                    <!-- Right Sidebar -->
-                    <div class="col-lg-4">
-                        <div class="card p-4 shadow-sm mb-4">
-                            <h5 class="mb-3">Summary</h5>
-                            <ul class="list-unstyled mb-0">
-                                <li><strong>Job Type:</strong> Full-time</li>
-                                <li><strong>Category:</strong> Developer</li>
-                                <li><strong>Experience:</strong> 0-3 Years</li>
-                                <li><strong>Gender:</strong> Any</li>
-                                <li><strong>Qualification:</strong> BS, MSC</li>
-                                <li><strong>Posted:</strong> 30 October
-                                    2025</li>
-                                <li><strong>Deadline:</strong> 10 November
-                                    2025</li>
-                            </ul>
-                        </div>
-                        <div class="card p-4 shadow-sm mb-4">
-                            <h5>Share With</h5>
-                            <div class="d-flex gap-3 mt-3">
-                                <a href="#"
-                                    class="btn btn-outline-primary btn-sm"><i
-                                        class="bi bi-facebook"></i></a>
-                                <a href="#"
-                                    class="btn btn-outline-info btn-sm"><i
-                                        class="bi bi-twitter"></i></a>
-                                <a href="#"
-                                    class="btn btn-outline-danger btn-sm"><i
-                                        class="bi bi-pinterest"></i></a>
-                                <a href="#"
-                                    class="btn btn-outline-primary btn-sm"><i
-                                        class="bi bi-instagram"></i></a>
-                                <a href="#"
-                                    class="btn btn-outline-info btn-sm"><i
-                                        class="bi bi-linkedin"></i></a>
-                            </div>
-                        </div>
-
-                        <div class="card p-4 shadow-sm">
-                            <h5>Tags</h5>
-                            <div class="d-flex flex-wrap gap-2 mt-3">
-                                <span
-                                    class="badge bg-light text-dark border">HTML</span>
-                                <span
-                                    class="badge bg-light text-dark border">CSS</span>
-                                <span
-                                    class="badge bg-light text-dark border">Bootstrap</span>
-                                <span
-                                    class="badge bg-light text-dark border">Developer</span>
-                                <span
-                                    class="badge bg-light text-dark border">WordPress</span>
-                            </div>
+                    <div class="card p-4 shadow-sm">
+                        <h5>Tags</h5>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            {% for skill in job.get_skills_list %}
+                            <span class="badge bg-light text-dark border">{{ skill }}</span>
+                            {% empty %}
+                            <span class="text-muted">No tags</span>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        {% include 'portal/footer.html' %}
+    </div>
+    {% include 'portal/footer.html' %}
 
-        <!-- Bootstrap JS -->
-        <!-- Bootstrap Icons + JS -->
-        <script
-            src="https://kit.fontawesome.com/a076d05399.js"
-            crossorigin="anonymous"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+    <!-- Bootstrap JS -->
+    <!-- Bootstrap Icons + JS -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
 </html>
 
 {%endblock%}
-

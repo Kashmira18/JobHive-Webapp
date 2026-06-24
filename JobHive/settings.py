@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'candidate',
     'company',
     'job',
+    'applications',
+    'notifications',
 
     #All-Auth
     "allauth",

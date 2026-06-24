@@ -504,6 +504,15 @@
             <h4><i class="bi bi-person-vcard me-2"></i>Your Profile</h4>
             <p>Complete your profile to get more oppurtunities</p>
         </div>
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}success{% endif %} 
+             alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
 
         <!-- ── 1. PROFILE PHOTO ── -->
         <div class="form-card">
@@ -526,51 +535,53 @@
                 </div>
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Photo</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Photo</button>
             </div>
         </div>
 
         <!-- ── 2. PERSONAL INFORMATION ── -->
-        <div class="form-card">
+        <form method="POST" action="{% url 'candidate:save_personal_info' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+            <div class="form-card">
             <div class="section-title"><i class="bi bi-person-fill"></i> Personal Information</div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">First Name </label>
-                    <input type="text" class="form-control" placeholder="Enter first name" required />
+                    <input type="text" name="first_name" class="form-control" value="{{ candidate.first_name }}" placeholder="Enter first name"   />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Last Name *</label>
-                    <input type="text" class="form-control" placeholder="Enter last name" required />
+                    <input type="text" name="last_name" class="form-control" placeholder="Enter last name" value="{{ candidate.last_name }}"   />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Username *</label>
-                    <input type="text" class="form-control" placeholder="Enter username" required />
+                    <input type="text" name="username" class="form-control" placeholder="Enter username" value="{{ candidate.username }}"   />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Phone Number *</label>
-                    <input type="tel" class="form-control" placeholder="+92 300 1234567" required />
+                    <input type="tel" name="phone_number" class="form-control" placeholder="+92 300 1234567" value="{{ candidate.phone_number }}"   />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Email Address *</label>
-                    <input type="email" class="form-control" placeholder="candidate@example.com" required />
+                    <input type="email" name="email" class="form-control" placeholder="candidate@example.com" value="{{ candidate.email }}"   />
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control" />
+                    <input type="date" class="form-control" name="date_of_birth" value="{{ candidate.date_of_birth|date:'Y-m-d' }}"/>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Gender</label>
-                    <select class="form-select">
+                    <select name="gender" class="form-select">
                         <option value="">Select gender</option>
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Prefer not to say</option>
+                        <option value="MALE" {% if candidate.gender == 'MALE'%}selected{% endif %}>Male</option>
+                        <option value="FEMALE" {% if candidate.gender == 'FEMALE' %}selected{% endif %}>Female</option>
+                        <option value="OTHER" {% if candidate.gender == 'OTHER' %}selected{% endif %}>Prefer not to say</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">CNIC Number *</label>
-                    <input type="text" class="form-control" id="cnicInput" placeholder="35202-1234567-1" maxlength="15"
-                        required />
+                    <input type="text" name="cnic_number" class="form-control" id="cnicInput" placeholder="35202-1234567-1" value="{{ candidate.cnic_number }}" maxlength="15"
+                          />
                 </div>
                 <!-- ID Card Upload -->
                 <div class="col-md-6">
@@ -581,7 +592,7 @@
                             <p id="idFrontLabel">Upload Front Side</p><small>JPG, PNG or PDF · Max 2MB</small>
                         </div>
                     </div>
-                    <input type="file" id="idFront" accept="image/*,.pdf" style="display:none"
+                    <input type="file" id="idFront" name="id_card_front" accept="image/*,.pdf" style="display:none"
                         onchange="updateFileLabel('idFront','idFrontLabel')" />
                 </div>
                 <div class="col-md-6">
@@ -592,26 +603,28 @@
                             <p id="idBackLabel">Upload Back Side</p><small>JPG, PNG or PDF · Max 2MB</small>
                         </div>
                     </div>
-                    <input type="file" id="idBack" accept="image/*,.pdf" style="display:none"
+                    <input type="file" id="idBack" name="id_card_back" accept="image/*,.pdf" style="display:none"
                         onchange="updateFileLabel('idBack','idBackLabel')" />
                 </div>
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Personal Info</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Personal Info</button>
             </div>
-        </div>
-
+            </div>
+        </form>
         <!-- ── 3. PROFESSIONAL INFORMATION ── -->
+           <form method="POST" action="{% url 'candidate:save_professional_info' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-briefcase-fill"></i> Professional Information</div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Job Title / Designation *</label>
-                    <input type="text" class="form-control" placeholder="e.g., Full Stack Developer" />
+                    <input type="text" name="job_title" value="{{ professional.job_title }}" class="form-control" placeholder="e.g., Full Stack Developer" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Industry *</label>
-                    <select class="form-select">
+                    <select class="form-select" name="industry">
                         <option value="">Select industry</option>
                         <option>Information Technology</option>
                         <option>Finance</option>
@@ -624,7 +637,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Years of Experience</label>
-                    <input type="number" class="form-control" placeholder="e.g., 3" />
+                    <input type="number" name="years_of_experience"  value="{{ professional.years_of_experience }}" class="form-control" placeholder="e.g., 3" />
                 </div>
                 <!-- <div class="col-md-4">
                     <label class="form-label">Expected Salary (PKR)</label>
@@ -633,7 +646,7 @@
                 <div class="col-md-4">
                     <label class="form-label">Job Type Preference</label>
                     <select class="form-select">
-                        <option value="">Select type</option>
+                        <option value="" name="job_type_preference" >Select type</option>
                         <option>Full-time</option>
                         <option>Part-time</option>
                         <option>Remote</option>
@@ -643,68 +656,64 @@
 
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Professional Info</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Professional Info</button>
             </div>
         </div>
-
+</form>
         <!-- ── 4. LOCATION ── -->
+           <form method="POST" action="{% url 'candidate:save_location' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-geo-alt-fill"></i> Location Information</div>
             <div class="row g-3">
-                <!-- <div class="col-md-6">
-                    <label class="form-label">Country *</label>
-                    <select class="form-select">
-                        <option value="">Select country</option>
-                        <option selected>Pakistan</option>
-                        <option>UAE</option>
-                        <option>United Kingdom</option>
-                        <option>United States</option>
-                    </select>
-                </div> -->
                 <div class="col-md-6">
                     <label class="form-label">Province *</label>
-                    <input type="text" class="form-control" placeholder="Enter state or province" />
+                    <input type="text" class="form-control" name="province" value="{{ location.province }}" placeholder="Enter state or province" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">City *</label>
-                    <input type="text" class="form-control" placeholder="Enter city" />
+                    <input type="text" class="form-control" name="city" value="{{ location.city }}" placeholder="Enter city" />
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Postal Code</label>
-                    <input type="text" class="form-control" placeholder="Enter postal code" />
+                    <input type="text" class="form-control" name="postal_code"  value="{{ location.postal_code }}" placeholder="Enter postal code" />
                 </div>
                 <div class="col-12">
                     <label class="form-label">Full Address</label>
-                    <textarea class="form-control" rows="3"
-                        placeholder="Enter complete address including street, area, and landmarks"></textarea>
+                    <textarea class="form-control" rows="3" name="full_address"
+                        placeholder="Enter complete address including street, area, and landmarks">{{ location.full_address }}</textarea>
                 </div>
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Location</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Location</button>
             </div>
         </div>
-
+</form>
         <!-- ── 5. ABOUT ME ── -->
+           <form method="POST" action="{% url 'candidate:save_about_me' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-file-person-fill"></i> About Me</div>
             <div class="row g-3">
                 <div class="col-12">
                     <label class="form-label">Professional Summary</label>
-                    <textarea class="form-control" rows="4"
-                        placeholder="Describe yourself, your experience, and what makes you stand out..."></textarea>
+                    <textarea class="form-control" rows="4" name="professional_summary"
+                        placeholder="Describe yourself, your experience, and what makes you stand out...">{{ about.professional_summary }}</textarea>
                 </div>
                 <div class="col-12">
                     <label class="form-label">Career Objective</label>
-                    <textarea class="form-control" rows="3"
-                        placeholder="Share your career goals and the kind of role you're looking for..."></textarea>
+                    <textarea class="form-control" rows="3" name="career_objective"
+                        placeholder="Share your career goals and the kind of role you're looking for...">{{ about.career_objective }}</textarea>
                 </div>
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save About Me</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save About Me</button>
             </div>
         </div>
-
+</form>
         <!-- ── 6. RESUME ── -->
+           <form method="POST" action="{% url 'candidate:save_resume' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-file-earmark-text-fill"></i> Resume / CV</div>
             <div class="resume-box" onclick="document.getElementById('resumeFile').click()">
@@ -712,83 +721,90 @@
                 <p id="resumeLabel">Upload your Resume / CV</p>
                 <small>PDF or DOCX · Max 5MB</small>
             </div>
-            <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none"
+            <input type="file" name="resume_file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none"
                 onchange="updateFileLabel('resumeFile','resumeLabel')" />
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Resume</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Resume</button>
             </div>
         </div>
-
+           </form>
         <!-- ── 7. SKILLS ── -->
+           <form method="POST" action="{% url 'candidate:save_skills' %}" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-stars"></i> Skills</div>
             <div class="d-flex gap-2 mb-3">
-                <input type="text" class="form-control" id="skillInput"
+                <input type="hidden" name="skills_data" class="form-control" id="skillInput"
                     placeholder="Type a skill and press Enter or click +" />
-                <button class="btn-sec-save px-3" style="border-radius:7px" onclick="addSkill()"><i
+                <button type="submit" class="btn-sec-save px-3" style="border-radius:7px" onclick="addSkill()"><i
                         class="bi bi-plus-lg"></i></button>
             </div>
             <div id="skillTags">
-                <span class="skill-tag">HTML/CSS <span class="remove" onclick="this.parentElement.remove()"><i
+                {% for skill in skills %}
+                <span class="skill-tag">{{ skill.skill_name }} <span class="remove" onclick="this.parentElement.remove()"><i
                             class="bi bi-x"></i></span></span>
-                <span class="skill-tag">JavaScript <span class="remove" onclick="this.parentElement.remove()"><i
-                            class="bi bi-x"></i></span></span>
-                <span class="skill-tag">React.js <span class="remove" onclick="this.parentElement.remove()"><i
-                            class="bi bi-x"></i></span></span>
-                <span class="skill-tag">Node.js <span class="remove" onclick="this.parentElement.remove()"><i
-                            class="bi bi-x"></i></span></span>
+                            {% endfor %}
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Skills</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Skills</button>
             </div>
         </div>
-
+           </form>
         <!-- ── 8. EDUCATION ── -->
+           <form method="POST" action="{% url 'candidate:save_education' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-mortarboard-fill"></i> Education</div>
             <div id="educationContainer">
+                {% for edu in educations %}
                 <div class="entry-card">
                     <button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
                     <div class="row g-3">
                         <div class="col-md-6"><label class="form-label">Degree / Qualification *</label><input
-                                type="text" class="form-control" placeholder="e.g., Bachelor of Computer Science" />
+                                type="text"name="degree" value="{{ edu.degree }}" class="form-control" placeholder="e.g., Bachelor of Computer Science" />
                         </div>
                         <div class="col-md-6"><label class="form-label">Institution Name *</label><input type="text"
-                                class="form-control" placeholder="e.g., FAST-NUCES" /></div>
+                                class="form-control" name="institution_name" value="{{ edu.institution_name }}" placeholder="e.g., FAST-NUCES" /></div>
                         <div class="col-md-4"><label class="form-label">Start Year</label><input type="number"
-                                class="form-control" placeholder="e.g., 2018" /></div>
+                                class="form-control" name="start_year" value="{{ edu.start_year }}" placeholder="e.g., 2018" /></div>
                         <div class="col-md-4"><label class="form-label">End Year</label><input type="number"
-                                class="form-control" placeholder="e.g., 2022" /></div>
+                                class="form-control" name="end_year" value="{{ edu.end_year }}" placeholder="e.g., 2022" /></div>
                         <div class="col-md-4"><label class="form-label">Grade / CGPA</label><input type="text"
-                                class="form-control" placeholder="e.g., 3.5 / 4.0" /></div>
+                                class="form-control" name="grade_cgpa" value="{{ edu.grade_cgpa }}" placeholder="e.g., 3.5 / 4.0" /></div>
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <!-- Default empty entry agar koi education nahi -->
             <button class="btn-add-entry mt-1" onclick="addEducation()"><i class="bi bi-plus me-1"></i>Add
                 Education</button>
+                {% endfor %}
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Education</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Education</button>
             </div>
         </div>
-
+           </form>
         <!-- ── 9. WORK EXPERIENCE ── -->
+           <form method="POST" action="{% url 'candidate:save_experience' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-building-fill"></i> Work Experience</div>
             <div id="expContainer">
+                {% for exp in experiences %}
                 <div class="entry-card">
                     <button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
                     <div class="row g-3">
                         <div class="col-md-6"><label class="form-label">Job Title *</label><input type="text"
-                                class="form-control" placeholder="e.g., Frontend Developer" /></div>
+                                class="form-control" name="job_title" value="{{ exp.job_title }}" placeholder="e.g., Frontend Developer" /></div>
                         <div class="col-md-6"><label class="form-label">Company Name *</label><input type="text"
-                                class="form-control" placeholder="e.g., Systems Limited" /></div>
+                                class="form-control" name="company_name" value="{{ exp.company_name }}" placeholder="e.g., Systems Limited" /></div>
                         <div class="col-md-4"><label class="form-label">Start Date</label><input type="month"
-                                class="form-control" /></div>
+                                class="form-control" name="start_date" value="{{ exp.start_date|date:'Y-m' }}" /></div>
                         <div class="col-md-4"><label class="form-label">End Date</label><input type="month"
-                                class="form-control" /></div>
-                        <div class="col-md-4"><label class="form-label">Employment Type</label>
+                                class="form-control" name="end_date" value="{{ exp.end_date|date:'Y-m' }}" /></div>
+                        <div class="col-md-4"><label class="form-label" >Employment Type</label>
                             <select class="form-select">
-                                <option value="">Select</option>
+                                <option value="" name="employment_type">Select</option>
                                 <option>Full-time</option>
                                 <option>Part-time</option>
                                 <option>Freelance</option>
@@ -801,70 +817,45 @@
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
             <button class="btn-add-entry mt-1" onclick="addExperience()"><i class="bi bi-plus me-1"></i>Add
                 Experience</button>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Experience</button>
+                <button class="btn-sec-save" type="submit"><i class="bi bi-save2"></i> Save Experience</button>
             </div>
         </div>
-
+           </form>
         <!-- ── 10. SOCIAL LINKS ── -->
+           <form method="POST" action="{% url 'candidate:save_social_links' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-share-fill"></i> Social & Portfolio Links</div>
             <div class="row g-3">
-                <!-- <div class="col-md-6">
-                    <label class="form-label">LinkedIn</label>
-                    <div class="social-input">
-                        <i class="bi bi-linkedin s-icon" style="color:#0a66c2"></i>
-                        <input type="url" class="form-control" placeholder="https://linkedin.com/in/yourprofile" />
-                    </div>
-                </div> -->
                 <div class="col-md-6">
                     <label class="form-label">GitHub</label>
                     <div class="social-input">
                         <i class="bi bi-github s-icon" style="color:#333"></i>
-                        <input type="url" class="form-control" placeholder="https://github.com/yourusername" />
+                        <input type="url" class="form-control" name="github" value="{{ social.github }}" placeholder="https://github.com/yourusername" />
                     </div>
                 </div>
-                <!-- <div class="col-md-6">
-                    <label class="form-label">Portfolio / Website</label>
-                    <div class="social-input">
-                        <i class="bi bi-globe2 s-icon" style="color:var(--primary)"></i>
-                        <input type="url" class="form-control" placeholder="https://yourportfolio.com" />
-                    </div>
-                </div> -->
                 <div class="col-md-6">
                     <label class="form-label">Twitter / X</label>
                     <div class="social-input">
                         <i class="bi bi-twitter-x s-icon" style="color:#1da1f2"></i>
-                        <input type="url" class="form-control" placeholder="https://twitter.com/yourusername" />
+                        <input type="url" class="form-control" name="twitter_x" value="{{ social.twitter_x }}" placeholder="https://twitter.com/yourusername" />
                     </div>
                 </div>
-                <!-- <div class="col-md-6">
-                    <label class="form-label">Behance</label>
-                    <div class="social-input">
-                        <i class="bi bi-behance s-icon" style="color:#053eff"></i>
-                        <input type="url" class="form-control" placeholder="https://behance.net/yourprofile" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Dribbble</label>
-                    <div class="social-input">
-                        <i class="bi bi-dribbble s-icon" style="color:#ea4c89"></i>
-                        <input type="url" class="form-control" placeholder="https://dribbble.com/yourusername" />
-                    </div>
-                </div> -->
             </div>
             <div class="section-footer">
-                <button class="btn-sec-save"><i class="bi bi-save2"></i> Save Links</button>
+                <button class="btn-sec-save" type="submit"><i class="bi bi-save2"></i> Save Links</button>
             </div>
         </div>
-
+           </form>
         <!-- FINAL FOOTER -->
         <div class="form-footer">
             <button class="btn-cancel"><i class="bi bi-x me-1"></i> Cancel</button>
-            <button class="btn-save-all"><i class="bi bi-save-fill"></i> Save Complete Profile</button>
+            <button class="btn-save-all" type="submit"><i class="bi bi-save-fill"></i> Save Complete Profile</button>
         </div>
 
     </div>
@@ -917,7 +908,12 @@
             input.value = ''; input.focus();
         }
         document.getElementById('skillInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); } });
-
+        // Form submit hone se pehle skills collect karo
+        document.querySelector('[action*="save_skills"]').addEventListener('submit', function() {
+        const tags = document.querySelectorAll('#skillTags .skill-tag');
+        const skillNames = [...tags].map(t => t.childNodes[0].textContent.trim());
+        document.getElementById('skillsData').value = skillNames.join(',');
+        });
         // Education
         function addEducation() {
             const c = document.getElementById('educationContainer');
@@ -950,6 +946,7 @@
       </div>`;
             c.appendChild(d);
         }
+        
     </script>
 </body>
 

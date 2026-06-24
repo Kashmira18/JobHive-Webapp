@@ -1,11 +1,11 @@
 from django.db import models
 from accounts.models import CompanyProfile
-
+from candidate.models import CandidateProfile
 
 class JobPost(models.Model):
 
     STATUS_CHOICES = [
-        ("PENDING_REVIEW", "Pending Review"),
+        # ("PENDING_REVIEW", "Pending Review"),
         ("PUBLISHED",      "Published"),
         ("DRAFT",          "Draft"),
         ("CLOSED",         "Closed"),
@@ -58,7 +58,7 @@ class JobPost(models.Model):
 
     # ── Meta ──
     visibility        = models.CharField(max_length=20, choices=VISIBILITY_CHOICES, default="public")
-    status            = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING_REVIEW")
+    status            = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PUBLISHED")
     created_at        = models.DateTimeField(auto_now_add=True)
     updated_at        = models.DateTimeField(auto_now=True)
 

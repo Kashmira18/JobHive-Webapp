@@ -1,0 +1,104 @@
+{% extends 'candidate/candidate_base.html' %}
+{% load static %}
+<style>
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+}
+
+.note.success {
+    color: green;
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.note.warning {
+    color: #f57c00;
+    background: #fff3e0;
+    padding: 10px;
+    border-radius: 4px;
+}
+</style>
+{% block content %}
+
+<div class="container">
+    <div class="apply-card">
+        
+        <h2>Apply: {{ job.title }}</h2>
+        <p class="job-info">
+            <strong>{{ job.company.trade_name }}</strong> | 
+            Deadline: {{ job.deadline|date:"d M, Y" }}
+        </p>
+
+        <!-- Show any error/success messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Cover Letter -->
+            <div class="form-group">
+                <label>Cover Letter (Optional)</label>
+                {{ form.cover_letter }}
+                {% if form.cover_letter.errors %}
+                    <small class="error">{{ form.cover_letter.errors.0 }}</small>
+                {% endif %}
+            </div>
+
+            <!-- Resume -->
+            <div class="form-group">
+                <label>CV / Resume</label>
+                
+                <div class="file-box">
+                    {% if has_saved_resume %}
+                        <p class="note success">✅ Saved CV available</p>
+                    {% else %}
+                        <p class="note warning">⚠️ No saved CV. Upload one.</p>
+                    {% endif %}
+
+                    {{ form.resume_snapshot }}
+                    
+                    {% if form.resume_snapshot.errors %}
+                        <small class="error">{{ form.resume_snapshot.errors.0 }}</small>
+                    {% endif %}
+
+                    <div id="file-name" class="file-name"></div>
+                </div>
+            </div>
+
+            <button class="btn-submit" type="submit">Submit Application</button>
+        </form>
+
+    </div>
+</div>
+
+<script src="{% static 'js/candidate/apply_job.js' %}"></script>
+
+{% endblock %}

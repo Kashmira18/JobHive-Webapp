@@ -17,16 +17,29 @@
 <body>
     <div class="col-md-12 p-4">
 
-        <div class="profile-section d-flex align-items-center mb-5">
-            <img src="{% static 'images/blog-detal5.jpeg'%}" alt="Profile" class="me-3 shadow-sm">
-            <div>
-                <div class="text-muted small">Hello I'm
-                    <!-- <span class="border-top border-danger border-2"
-                                style="width: 30px; display:inline-block; margin-left:10px; vertical-align:middle;"></span> -->
-                </div>
-                <div class="user-name">Khandaker Raufur Rahman</div>
-            </div>
+<div class="profile-section d-flex align-items-center mb-5">
+    <!-- Dynamic photo -->
+    {% if candidate.profile_photo %}
+        <img src="{{ candidate.profile_photo.url }}" alt="Profile" class="me-3 shadow-sm">
+    {% else %}
+        <!-- Default donut/avatar -->
+        <div class="me-3 shadow-sm d-flex align-items-center justify-content-center rounded-circle"
+             style="width:60px;height:60px;background:#e0e8ff;font-size:1.5rem;font-weight:700;color:#4f7cff;">
+            {{ candidate.username|slice:':1'|upper }}
         </div>
+    {% endif %}
+
+    <div>
+        <!-- Username k jagah first_name + last_name dikhao -->
+        <p class="user-name" style="color:#0f0c2e; font-weight:700; font-size:1.5rem;">
+            {% if candidate.first_name %}
+                {{ candidate.first_name }} {{ candidate.last_name }}
+            {% else %}
+                {{ candidate.username }}
+            {% endif %}
+        </p>
+    </div>
+</div>
 
         <div class="row g-4 mb-5">
             <div class="col-md-3">
@@ -37,7 +50,7 @@
                         </div>
                         <div>
                             <p class="stat-label">Total Applied</p>
-                            <div class="stat-number">20</div>
+                            <div class="stat-number">{{ total_applied }}</div>
                         </div>
                     </div>
                 </div>
@@ -95,153 +108,118 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                {% if applications %}
+                    {% for app in applications %}
+                        <tr>
                         <td>
                             <div class="d-flex align-items-start">
                                 <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white me-3"
                                     style="width:50px; height:50px; font-size: 0.8rem;">
-                                    LOGO
+                                    {% if app.job.company.logo %}
+                                    <img src="{{ app.job.company.logo.url }}"
+                                        style="width:50px;height:50px;object-fit:contain;border-radius:50%;">
+                                    {% else %}
+                                    {{ app.job.company.trade_name|slice:':2'|upper }}
+                                    {% endif %}
                                 </div>
                                 <div>
-                                    <div class="job-title">Looking for Delivery Driver</div>
+                                    <div class="job-title">{{ app.job.title }}</div>
                                     <div><a href="#" class="company-name"><i class="fas fa-briefcase small"></i>
-                                            Jooble.az</a></div>
-                                    <div class="text-muted small"><i class="fas fa-map-marker-alt"></i> Mirpur,
-                                        Bangladesh</div>
-                                    <div class="text-muted small mt-1 text-primary">Salary: R$60000- R$70000
-                                        /Per Month</div>
+                                            {{ app.job.company.trade_name }}</a></div>
+                                    <div class="text-muted small"><i class="fas fa-map-marker-alt"></i> {{app.job.location }}</div>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div>28 November,</div>
-                            <div>2025</div>
+                            <div>{{ app.applied_at|date:"d M," }}</div>
+                            <div>{{ app.applied_at|date:"Y" }}</div>
                         </td>
                         <td>
-                            <div class="small fw-bold">Experience: <span class="fw-normal">3 Years</span></div>
-                            <div class="small fw-bold">Expected Salary: <span class="fw-normal">0 Per
-                                    Month</span></div>
+                            <div class="small fw-bold">Job Type:
+                                <span class="fw-normal">{{ app.job.job_type }}</span>
+                            </div>
+                            <div class="small fw-bold">Salary:
+                                <span class="fw-normal">{{ app.job.salary_display }}</span>
+                            </div>
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-hired status-btn">HIRED</button>
+                                        <button class="btn status-btn"
+                {% if app.status == 'HIRED' %}btn-hired
+                {% elif app.status == 'REJECTED' %}btn-danger
+                {% elif app.status == 'INTERVIEW' %}btn-warning
+                {% else %}btn-applied{% endif %}">
+                {{ app.status }}
+            </button>
                         </td>
-                    </tr>
-
+                        </tr>
+                    {% endfor %}
+                {% else %}
                     <tr>
-                        <td>
-                            <div class="d-flex align-items-start">
-                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white me-3"
-                                    style="width:50px; height:50px; font-size: 0.8rem;">
-                                    LOGO
-                                </div>
-                                <div>
-                                    <div class="job-title">Creative UI/UX Designer</div>
-                                    <div><a href="#" class="company-name"><i class="fas fa-briefcase small"></i>
-                                            New Desire Solution</a></div>
-                                    <div class="text-muted small"><i class="fas fa-map-marker-alt"></i> Mirpur,
-                                        Bangladesh</div>
-                                    <div class="text-muted small mt-1 text-primary">Salary: Negotiable</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>16 November,</div>
-                            <div>2025</div>
-                        </td>
-                        <td>
-                            <div class="small fw-bold">Experience: <span class="fw-normal">3 Years</span></div>
-                            <div class="small fw-bold">Expected Salary: <span class="fw-normal">50000 Per
-                                    Month</span></div>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-applied status-btn">APPLIED</button>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Abhi koi application nahi hai!
                         </td>
                     </tr>
+                {% endif %}
+                </tbody>       
+            </table>        
+        </div> 
 
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-start">
-                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white me-3"
-                                    style="width:50px; height:50px; font-size: 0.8rem;">
-                                    LOGO
-                                </div>
-                                <div>
-                                    <div class="job-title">Hiring Laravel Developer</div>
-                                    <div><a href="#" class="company-name"><i class="fas fa-briefcase small"></i>
-                                            New Desire Solution</a></div>
-                                    <div class="text-muted small"><i class="fas fa-map-marker-alt"></i> Mirpur,
-                                        Bangladesh</div>
-                                    <div class="text-muted small mt-1 text-primary">Salary: Negotiable</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>16 November,</div>
-                            <div>2025</div>
-                        </td>
-                        <td>
-                            <div class="small fw-bold">Experience: <span class="fw-normal">3 Years</span></div>
-                            <div class="small fw-bold">Expected Salary: <span class="fw-normal">50000 Per
-                                    Month</span></div>
-                        </td>
-                        <td class="text-center">
-                            <button class="btn btn-applied status-btn">APPLIED</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="text-primary fw-bold">Featured Jobs:</h3>
-            <a href="{% url 'job_list' %}" class="text-danger text-decoration-none fw-bold">Explore More</a>
-        </div>
-
-        {% if featured_jobs %}
-          {% for job in featured_jobs %}
-        <div class="featured-card mb-3">
-            <div class="d-flex justify-content-between">
-                <div class="d-flex">
-                    <div class="me-3">
-                        {% if job.company.logo %}
-                        <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }}" style="width:50px;height:50px;object-fit:contain;border:1px solid #eee;border-radius:6px;">
-                        {% else %}
-                        <div style="width:50px;height:50px;background:#e0e8ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:#4f7cff;">
-                            {{ job.company.trade_name|slice:':2'|upper }}
-                        </div>
-                        {% endif %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="text-primary fw-bold">Featured Jobs:</h3>
+                        <a href="{% url 'job_list' %}" class="text-danger text-decoration-none fw-bold">Explore More</a>
                     </div>
-                    <div>
-                        <h5 class="featured-title mb-1">{{ job.title }} <i class="far fa-heart text-muted ms-2"></i></h5>
-                        <p class="text-dark mb-2 small fw-bold">By {{ job.company.trade_name }}</p>
 
-                        <div class="mt-3">
-                            <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
-                            <span class="tag-badge bg-tag-pink">{{ job.salary_display }}</span>
-                            <span class="tag-badge bg-tag-green">{{ job.job_type }}</span>
+                {% if featured_jobs %}
+                    {% for job in featured_jobs %}
+                        <div class="featured-card mb-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    {% if job.company.logo %}
+                                    <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }}"
+                                        style="width:50px;height:50px;object-fit:contain;border:1px solid #eee;border-radius:6px;">
+                                    {% else %}
+                                    <div
+                                        style="width:50px;height:50px;background:#e0e8ff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:#4f7cff;">
+                                        {{ job.company.trade_name|slice:':2'|upper }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h5 class="featured-title mb-1">{{ job.title }} <i
+                                            class="far fa-heart text-muted ms-2"></i></h5>
+                                    <p class="text-dark mb-2 small fw-bold">By {{ job.company.trade_name }}</p>
+
+                                    <div class="mt-3">
+                                        <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> {{
+                                            job.location }}</span>
+                                        <span class="tag-badge bg-tag-pink">{{ job.salary_display }}</span>
+                                        <span class="tag-badge bg-tag-green">{{ job.job_type }}</span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span class="tag-badge bg-tag-purple">Vacancy: {{ job.vacancies }}</span>
+                                        {% if job.work_mode %}<span class="tag-badge"
+                                            style="background:#e8f4fd;color:#1a73e8;">{{ job.work_mode }}</span>{% endif%}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mt-2">
-                            <span class="tag-badge bg-tag-purple">Vacancy: {{ job.vacancies }}</span>
-                            {% if job.work_mode %}<span class="tag-badge" style="background:#e8f4fd;color:#1a73e8;">{{ job.work_mode }}</span>{% endif %}
+
+                        <div class="d-flex justify-content-between align-items-end mt-3">
+                            <div class="text-muted small">Deadline: {{ job.deadline|date:"d M, Y" }}</div>
+                            <a href="{% url 'applications:apply_job' job.id %}" class="apply-link small">Apply Now <i
+                                    class="fas fa-external-link-alt small"></i></a>
                         </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="featured-card text-center py-4">
+                        <p class="text-muted mb-2">No featured jobs available right now.</p>
+                        <a href="{% url 'job_list' %}" class="btn btn-sm btn-outline-primary">Browse All Jobs</a>
                     </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-end mt-3">
-                <div class="text-muted small">Deadline: {{ job.deadline|date:"d M, Y" }}</div>
-                <a href="{% url 'job_details' %}" class="apply-link small">Apply Now <i class="fas fa-external-link-alt small"></i></a>
+                {% endif %}
             </div>
         </div>
-          {% endfor %}
-        {% else %}
-        <div class="featured-card text-center py-4">
-            <p class="text-muted mb-2">No featured jobs available right now.</p>
-            <a href="{% url 'job_list' %}" class="btn btn-sm btn-outline-primary">Browse All Jobs</a>
-        </div>
-        {% endif %}
-
-    </div>
 </body>
 
 </html>

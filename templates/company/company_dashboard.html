@@ -642,416 +642,145 @@
                 <div style="text-align: center;">ACTION</div>
             </div>
 
-            <div id="applicantContainer"></div>
+            <div id="applicantContainer">
+    {% for app in recent_applicants %}
+    <div class="applicant-row">
+        
+        <!-- Applicant Info -->
+        <div class="applicant-info-cell">
+            {% if app.candidate.profile_picture %}
+                <img src="{{ app.candidate.profile_picture.url }}" 
+                     class="applicant-avatar" alt="{{ app.candidate.user.get_full_name }}">
+            {% else %}
+                <div class="applicant-avatar" 
+                     style="background:#31C2EF; color:white; display:flex; 
+                            align-items:center; justify-content:center; 
+                            font-weight:bold; border-radius:50%;">
+                    {{ app.candidate.user.get_full_name|slice:":1"|upper }}
+                </div>
+            {% endif %}
+            <div class="applicant-details">
+                <div class="applicant-name">
+                    {{ app.candidate.user.get_full_name|default:app.candidate.user.username }}
+                </div>
+                <div class="applicant-email">{{ app.candidate.user.email }}</div>
+                <div style="font-size:0.8rem; color:#6b7280;">
+                    Applied: {{ app.applied_at|date:"d M, Y" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Details -->
+        <div class="job-details-cell">
+            <div class="company-name-cell">{{ app.job.title }}</div>
+            <div style="font-size:0.85rem; color:#6b7280;">
+                {{ app.job.job_type }} · {{ app.job.work_mode }}
+            </div>
+            <div style="font-size:0.85rem; color:#6b7280;">
+                {{ app.job.salary_display }}
+            </div>
+        </div>
+
+        <!-- Status Badge -->
+        <div class="status-cell">
+            {% if app.status == "APPLIED" %}
+                <span style="background:#DBEAFE; color:#3B82F6; 
+                             padding:4px 12px; border-radius:20px; font-size:0.8rem;">
+                    Applied
+                </span>
+            {% elif app.status == "SHORTLISTED" %}
+                <span style="background:#D1FAE5; color:#10B981; 
+                             padding:4px 12px; border-radius:20px; font-size:0.8rem;">
+                    Shortlisted
+                </span>
+            {% elif app.status == "REJECTED" %}
+                <span style="background:#FEE2E2; color:#EF4444; 
+                             padding:4px 12px; border-radius:20px; font-size:0.8rem;">
+                    Rejected
+                </span>
+            {% elif app.status == "INTERVIEW" %}
+                <span style="background:#FEF3C7; color:#F59E0B; 
+                             padding:4px 12px; border-radius:20px; font-size:0.8rem;">
+                    Interview
+                </span>
+            {% else %}
+                <span style="background:#F3F4F6; color:#6b7280; 
+                             padding:4px 12px; border-radius:20px; font-size:0.8rem;">
+                    {{ app.get_status_display }}
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- Action -->
+        <div class="action-cell">
+            <a href="{% url 'company:job_applications' app.job.id %}" 
+               style="background:#31C2EF; color:white; padding:7px 16px; 
+                      border-radius:6px; font-size:0.85rem; text-decoration:none;">
+                <i class="fas fa-eye"></i> View
+            </a>
+        </div>
+
+    </div>
+    {% empty %}
+    <div style="text-align:center; padding:50px; color:#6b7280;">
+        <i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
+        Koi application nahi aayi abhi tak.
+    </div>
+    {% endfor %}
+</div>
 
             <div class="pagination-container">
                 <div class="pagination" id="paginationContainer"></div>
             </div>
         </div>
 
-        <!-- Detail View -->
-        <div class="applicant-section detail-view" id="detailView">
-            <div class="detail-header">
-                <button class="btn-back" onclick="backToList()">
-                    <i class="fas fa-arrow-left"></i> Back to List
-                </button>
-            </div>
-
-            <div class="detail-profile">
-                <img id="detailAvatar" class="detail-avatar" src="" alt="Applicant">
-                <div style="flex: 1;">
-                    <h2 id="detailName" style="color: var(--secondary-color); margin-bottom: 10px;"></h2>
-                    <p id="detailEmail" style="color: #6b7280; font-size: 1.1rem;"></p>
-                </div>
-            </div>
-
-            <div class="detail-info-grid" id="detailInfoGrid"></div>
-        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Dashboard Statistics
-        const dashboardStats = {
-            totalJobs: {{ total_jobs|default:0 }},
-            liveJobs: {{ live_jobs|default:0 }},
-            pendingJobs: {{ pending_jobs|default:0 }},
-            featuredJobs: 0,
-            totalApplied: 0,
-            profileViews: 0,
-            availableJobPosts: 0,
-            availableFeaturedPosts: 0
-        };
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const dashboardStats = {
+        totalJobs: {{ total_jobs|default:0 }},
+        liveJobs: {{ live_jobs|default:0 }},
+        pendingJobs: {{ pending_jobs|default:0 }},
+        totalApplied: {{ total_applied|default:0 }},
+    };
 
-        // Counter Animation Function
-        function animateCounter(elementId, targetValue, duration = 1000) {
-            const element = document.getElementById(elementId);
-            const startValue = 0;
-            const increment = targetValue / (duration / 16); // 60 FPS
-            let currentValue = startValue;
-
-            const updateCounter = () => {
-                currentValue += increment;
-                if (currentValue < targetValue) {
-                    element.textContent = Math.floor(currentValue);
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    element.textContent = targetValue;
-                }
-            };
-
-            updateCounter();
-        }
-
-        // Initialize counters with animation
-        function initializeCounters() {
-            animateCounter('totalJobs', dashboardStats.totalJobs, 800);
-            animateCounter('liveJobs', dashboardStats.liveJobs, 800);
-            animateCounter('pendingJobs', dashboardStats.pendingJobs, 800);
-            animateCounter('featuredJobs', dashboardStats.featuredJobs, 800);
-            animateCounter('totalApplied', dashboardStats.totalApplied, 1200);
-            animateCounter('profileViews', dashboardStats.profileViews, 1000);
-            animateCounter('availableJobPosts', dashboardStats.availableJobPosts, 800);
-            animateCounter('availableFeaturedPosts', dashboardStats.availableFeaturedPosts, 800);
-        }
-
-        // Update specific counter
-        function updateCounter(counterId, newValue) {
-            const element = document.getElementById(counterId);
-            const currentValue = parseInt(element.textContent);
-            
-            if (newValue > currentValue) {
-                animateCounter(counterId, newValue, 500);
+    function animateCounter(elementId, targetValue, duration = 1000) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        let currentValue = 0;
+        const increment = targetValue / (duration / 16);
+        const updateCounter = () => {
+            currentValue += increment;
+            if (currentValue < targetValue) {
+                element.textContent = Math.floor(currentValue);
+                requestAnimationFrame(updateCounter);
             } else {
-                element.textContent = newValue;
+                element.textContent = targetValue;
             }
-            
-            // Update stats object
-            const statKey = counterId.replace(/([A-Z])/g, (match) => match);
-            dashboardStats[statKey] = newValue;
-        }
+        };
+        updateCounter();
+    }
 
-        // Edit Profile Function
-        function editProfile() {
-            // Show notification
-            showNotification('Opening profile editor...', 'info');
-            
-            // You can redirect to profile page or open a modal
-            // window.location.href = '/profile/edit';
-            // Or open a modal if you have one
-            
-            console.log('Edit Profile clicked');
-        }
+    function initializeCounters() {
+        animateCounter('totalJobs', dashboardStats.totalJobs, 800);
+        animateCounter('liveJobs', dashboardStats.liveJobs, 800);
+        animateCounter('pendingJobs', dashboardStats.pendingJobs, 800);
+        animateCounter('totalApplied', dashboardStats.totalApplied, 1200);
+    }
 
-        // Notification System
-        function showNotification(message, type = 'success') {
-            const existing = document.querySelector('.custom-notification');
-            if (existing) existing.remove();
-
-            const notification = document.createElement('div');
-            notification.className = 'custom-notification';
-            
-            const bgColor = type === 'success' ? '#10B981' : 
-                           type === 'error' ? '#EF4444' : 
-                           type === 'info' ? '#3B82F6' : '#F59E0B';
-            
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${bgColor};
-                color: white;
-                padding: 15px 25px;
-                border-radius: 8px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-weight: 500;
-                max-width: 400px;
-                animation: slideIn 0.3s ease-out;
-            `;
-            
-            const icons = {
-                success: 'check-circle',
-                error: 'exclamation-circle',
-                info: 'info-circle',
-                warning: 'exclamation-triangle'
-            };
-            
-            notification.innerHTML = `
-                <i class="fas fa-${icons[type] || icons.info}" style="font-size: 1.2rem;"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateX(400px)';
-                notification.style.transition = 'all 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Add animation keyframes
-        const animStyle = document.createElement('style');
-        animStyle.textContent = `
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translateX(400px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-        `;
-        document.head.appendChild(animStyle);
-
-        // Sample applicant data with different names and avatars
-        const applicantNames = [
-            "Sarah Johnson", "Michael Chen", "Emily Rodriguez", "David Kim", 
-            "Jessica Taylor", "Robert Anderson", "Maria Garcia", "James Wilson",
-            "Linda Martinez", "Christopher Lee", "Patricia Brown", "Daniel Thomas",
-            "Jennifer Davis", "Matthew Miller", "Elizabeth Moore", "Anthony Jackson",
-            "Lisa White", "Mark Harris", "Nancy Martin", "Steven Thompson",
-            "Karen Garcia", "Paul Martinez", "Betty Robinson", "Donald Clark",
-            "Sandra Lewis", "Kenneth Walker", "Ashley Hall", "Kevin Allen",
-            "Donna Young", "Brian King", "Carol Wright", "George Lopez",
-            "Michelle Hill", "Edward Scott", "Laura Green", "Jason Adams",
-            "Sharon Baker", "Ronald Nelson", "Deborah Carter", "Timothy Mitchell",
-            "Kimberly Perez", "Jeffrey Roberts", "Helen Turner", "Ryan Phillips",
-            "Cynthia Campbell", "Jacob Parker", "Angela Evans", "Gary Edwards",
-            "Melissa Collins", "Nicholas Stewart"
-        ];
-
-        const applicants = [];
-        for (let i = 1; i <= 50; i++) {
-            const name = applicantNames[i - 1];
-            const firstName = name.split(' ')[0];
-            applicants.push({
-                id: i,
-                name: name,
-                email: `user${i}@example.com`,
-                company: "Egens Lab Limited",
-                position: "Developer",
-                avatar: `https://i.pravatar.cc/150?img=${i}`,
-                active: i % 3 !== 0,
-                phone: `+92 300 ${1000000 + i}`,
-                location: "Karachi, Pakistan",
-                experience: "3 Years",
-                appliedDate: `${(i % 28) + 1} Nov, 2025`,
-                expectedSalary: i % 2 === 0 ? "50000 Per Month" : "0 Per Month",
-                skills: "JavaScript, React, Node.js"
-            });
-        }
-
-        let currentPage = 1;
-        let perPage = 5;
-
-        function renderApplicants() {
-            const container = document.getElementById('applicantContainer');
-            const start = (currentPage - 1) * perPage;
-            const end = start + perPage;
-            const pageApplicants = applicants.slice(start, end);
-
-            container.innerHTML = pageApplicants.map(applicant => `
-                <div class="applicant-row">
-                    <div class="applicant-info-cell" data-label="Applicant Info">
-                        <img src="${applicant.avatar}" alt="${applicant.name}" class="applicant-avatar">
-                        <div class="applicant-details">
-                            <div class="applicant-name">${applicant.name}</div>
-                            <div class="applicant-degree"><i class="fas fa-graduation-cap"></i> MBA</div>
-                            <div class="applicant-applied-date">Applied On: ${applicant.appliedDate}</div>
-                        </div>
-                    </div>
-
-                    <div class="job-details-cell" data-label="Job Details">
-                        <div class="company-name-cell">${applicant.company} <span class="manager-badge">(Manager)</span></div>
-                        <div class="job-meta-item">Experience: ${applicant.experience}</div>
-                        <div class="job-meta-item">Expected Salary: ${applicant.expectedSalary}</div>
-                    </div>
-
-                    <div class="status-cell" data-label="Status">
-                        <label class="toggle-switch">
-                            <input type="checkbox" ${applicant.active ? 'checked' : ''} onchange="toggleStatus(${applicant.id})">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="action-cell" data-label="Action">
-                        <button class="action-btn" onclick="toggleActionMenu(${applicant.id})">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div class="action-menu" id="actionMenu${applicant.id}">
-                            <div class="action-menu-item" onclick="viewDetails(${applicant.id})">
-                                <i class="fas fa-eye"></i> View Details
-                            </div>
-                            <div class="action-menu-item delete" onclick="deleteApplicant(${applicant.id})">
-                                <i class="fas fa-trash"></i> Delete
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            renderPagination();
-        }
-
-        function renderPagination() {
-            const totalPages = Math.ceil(applicants.length / perPage);
-            const paginationContainer = document.getElementById('paginationContainer');
-            
-            let pages = [];
-            for (let i = 1; i <= Math.min(5, totalPages); i++) {
-                pages.push(i);
-            }
-
-            paginationContainer.innerHTML = pages.map(page => `
-                <div class="page-item ${page === currentPage ? 'active' : ''}" onclick="goToPage(${page})">
-                    ${page}
-                </div>
-            `).join('');
-        }
-
-        function goToPage(page) {
-            currentPage = page;
-            renderApplicants();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleActionMenu(id) {
-            document.querySelectorAll('.action-menu').forEach(menu => {
-                if (menu.id !== `actionMenu${id}`) {
-                    menu.classList.remove('show');
-                }
-            });
-            
-            const menu = document.getElementById(`actionMenu${id}`);
-            menu.classList.toggle('show');
-        }
-
-        function toggleStatus(id) {
-            const applicant = applicants.find(a => a.id === id);
-            if (applicant) {
-                applicant.active = !applicant.active;
-                showNotification(`Status updated for ${applicant.name}`, 'success');
-            }
-        }
-
-        function viewDetails(id) {
-            const applicant = applicants.find(a => a.id === id);
-            
-            document.getElementById('detailAvatar').src = applicant.avatar;
-            document.getElementById('detailName').textContent = applicant.name;
-            document.getElementById('detailEmail').textContent = applicant.email;
-            
-            const detailInfo = `
-                <div class="info-box">
-                    <div class="info-label">Company</div>
-                    <div class="info-value">${applicant.company}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Position</div>
-                    <div class="info-value">${applicant.position}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Experience</div>
-                    <div class="info-value">${applicant.experience}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Applied Date</div>
-                    <div class="info-value">${applicant.appliedDate}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Email</div>
-                    <div class="info-value">${applicant.email}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Phone</div>
-                    <div class="info-value">${applicant.phone}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Location</div>
-                    <div class="info-value">${applicant.location}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Skills</div>
-                    <div class="info-value">${applicant.skills}</div>
-                </div>
-                <div class="info-box">
-                    <div class="info-label">Status</div>
-                    <div class="info-value">${applicant.active ? '✓ Active' : '✗ Inactive'}</div>
-                </div>
-            `;
-            
-            document.getElementById('detailInfoGrid').innerHTML = detailInfo;
-            
-            document.getElementById('listView').style.display = 'none';
-            document.getElementById('detailView').classList.add('active');
-            
-            // Close action menu
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.action-cell')) {
             document.querySelectorAll('.action-menu').forEach(menu => {
                 menu.classList.remove('show');
             });
         }
+    });
 
-        function backToList() {
-            document.getElementById('listView').style.display = 'block';
-            document.getElementById('detailView').classList.remove('active');
-        }
-
-        function deleteApplicant(id) {
-            const applicant = applicants.find(a => a.id === id);
-            
-            if (confirm(`Are you sure you want to delete ${applicant.name}?`)) {
-                const index = applicants.findIndex(a => a.id === id);
-                if (index > -1) {
-                    applicants.splice(index, 1);
-                    
-                    // Update counter with animation
-                    updateCounter('totalApplied', applicants.length);
-                    
-                    const totalPages = Math.ceil(applicants.length / perPage);
-                    if (currentPage > totalPages && totalPages > 0) {
-                        currentPage = totalPages;
-                    }
-                    
-                    renderApplicants();
-                    showNotification(`${applicant.name} has been deleted successfully`, 'success');
-                }
-            }
-            
-            // Close action menu
-            document.querySelectorAll('.action-menu').forEach(menu => {
-                menu.classList.remove('show');
-            });
-        }
-
-        document.getElementById('perPageSelect').addEventListener('change', function(e) {
-            perPage = parseInt(e.target.value);
-            currentPage = 1;
-            renderApplicants();
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.action-cell')) {
-                document.querySelectorAll('.action-menu').forEach(menu => {
-                    menu.classList.remove('show');
-                });
-            }
-        });
-
-        // Initialize dashboard on page load
-        window.addEventListener('load', function() {
-            initializeCounters();
-            renderApplicants();
-            showNotification('Dashboard loaded successfully!', 'success');
-        });
-    </script>
+    window.addEventListener('load', function() {
+        initializeCounters();
+    });
+</script>
 </body>
 </html>
 {% endblock %}
