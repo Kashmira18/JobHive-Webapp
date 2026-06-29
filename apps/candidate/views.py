@@ -51,7 +51,7 @@ def candidate_base(request):
 @login_required
 def candidate_edit_profile(request):
     # Profile exist kare ya create ho
-    candidate, created = CandidateProfile.objects.get_or_create(
+    candidate, _ = CandidateProfile.objects.get_or_create(
         user=request.user,
         defaults={
             "first_name": request.user.first_name,
