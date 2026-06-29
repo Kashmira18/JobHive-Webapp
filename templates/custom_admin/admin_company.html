@@ -1,0 +1,519 @@
+{% extends "custom_admin/admin_layout.html" %}
+
+{% block content %}
+<style>
+/* PAGE STYLE */
+body{
+  background:#f4f6f9;
+  font-family:Segoe UI, sans-serif;
+}
+.card{
+  border:none;
+  border-radius:10px;
+}
+
+.table thead{
+  background:#0aa06e;
+  color:#fff;
+}
+.company-info img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+}
+.company-info small{
+  display:block;
+  color:#6c757d;
+}
+.box {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    }
+
+/* TABLE RESPONSIVE */
+.table-responsive{
+  overflow-x:auto;
+}
+.table th,
+.table td{
+  vertical-align:middle;
+  white-space:nowrap;
+  padding:14px 12px;
+}
+.table th{
+  font-size:14px;
+}
+
+/* SWITCH */
+.switch{
+  width:34px;
+  height:18px;
+  background:#dcdcdc;
+  border-radius:20px;
+  position:relative;
+  cursor:pointer;
+}
+.switch::after{
+  content:"";
+  width:14px;
+  height:14px;
+  background:#fff;
+  border-radius:50%;
+  position:absolute;
+  top:2px;
+  left:2px;
+  transition:.3s;
+}
+.switch.active{
+  background:#0aa06e;
+}
+.switch.active::after{
+  left:18px;
+}
+
+/* ACTION BUTTONS */
+.action-btns{
+  display:flex;
+  gap:6px;
+}
+.action-btns button{
+  border:none;
+  padding:6px 8px;
+  border-radius:4px;
+  color:#fff;
+  font-size:13px;
+}
+.btn-view{background:#0d6efd;}
+.btn-edit{background:#198754;}
+.btn-update{background:#fd7e14;}
+.btn-del{background:#dc3545;}
+
+/* POPUP FORM */
+.overlay {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.popup-form {
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 10px;
+  z-index: 1010;
+  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Form sections */
+.popup-form .section {
+  margin-bottom: 20px;
+}
+
+.popup-form .section h6 {
+  font-weight: 600;
+  border-bottom: 2px solid #0aa06e;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+/* Input styling */
+.popup-form input, .popup-form select {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+/* Image upload */
+.popup-form .image-upload {
+  border: 1px dashed #ced4da;
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* FIXED CLOSE BUTTON */
+.popup-form .btn-close {
+  position:absolute;
+  top:15px;
+  right:15px;
+  background:#dc3545;
+  color:#fff;
+  border:none;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  font-size:20px;
+  line-height:1;
+  opacity:1;
+}
+
+/* Buttons */
+.popup-form .btn-submit {
+  background: #0aa06e;
+  color:#fff;
+  border:none;
+  padding: 8px 15px;
+  border-radius:5px;
+}
+
+/* Dim main content when form is active */
+body.dimmed .container-fluid {
+  filter: blur(2px) brightness(0.7);
+  pointer-events: none;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .action-btns{
+    flex-wrap:wrap;
+  }
+
+  .popup-form{
+    width:95%;
+    padding:15px;
+  }
+
+  .table th,
+  .table td{
+    font-size:13px;
+  }
+
+  .company-info{
+    min-width:250px;
+  }
+}
+</style>
+
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h5 class="fw-bold mb-0">Company List</h5>
+    <button id="btnCreate" class="btn btn-success btn-sm">
+      <i class="bi bi-plus"></i> Create Company
+    </button>
+  </div>
+
+  
+<!-- ── COMPANY MANAGEMENT TABLE ── -->
+<div class="box mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs section-tabs mb-3" id="companyTabs">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pendingTab">
+                Pending
+                {% if pending_companies %}
+                <span class="badge bg-warning text-dark ms-1">{{ pending_companies|length }}</span>
+                {% endif %}
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#approvedTab">
+                Approved
+                {% if approved_companies %}
+                <span class="badge bg-success ms-1">{{ approved_companies|length }}</span>
+                {% endif %}
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rejectedTab">
+                Rejected
+                {% if rejected_companies %}
+                <span class="badge bg-danger ms-1">{{ rejected_companies|length }}</span>
+                {% endif %}
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rollbackTab">
+                Rollback
+                {% if rollback_companies %}
+                <span class="badge bg-secondary ms-1">{{ rollback_companies|length }}</span>
+                {% endif %}
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+
+        <!-- PENDING TAB -->
+        <div class="tab-pane fade show active {% if active_tab == 'pending' %}show active{% endif %}" id="pendingTab">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Trade Name</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in pending_companies %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ company.username }}</td>
+                        <td>{{ company.email }}</td>
+                        <td>
+                            {% if company.company_profile.trade_name %}
+                            {{ company.company_profile.trade_name }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td>{{ company.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            <!-- View Details -->
+                            <a href="{% url 'custom_admin:view_company_details' company.pk %}"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <!-- Approve -->
+                            <a href="{% url 'custom_admin:approve_company' company.pk %}"
+                                class="btn btn-sm btn-success me-1"
+                                onclick="return confirm('Approve {{ company.email }}?')">
+                                <i class="bi bi-check-lg"></i> Approve
+                            </a>
+                            <!-- Reject -->
+                            <a href="{% url 'custom_admin:reject_company' company.pk %}"
+                                class="btn btn-sm btn-danger me-1">
+                                <i class="bi bi-x-lg"></i> Reject
+                            </a>
+                            <!-- Rollback -->
+                            <a href="{% url 'custom_admin:rollback_company' company.pk %}"
+                                class="btn btn-sm btn-secondary">
+                                <i class="bi bi-arrow-counterclockwise"></i> Rollback
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No pending companies</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- APPROVED TAB -->
+        <div class="tab-pane fade {% if active_tab == 'approved' %}show active{% endif %}" id="approvedTab">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Trade Name</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in approved_companies %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ company.username }}</td>
+                        <td>{{ company.email }}</td>
+                        <td>{% if company.company_profile.trade_name %}{{ company.company_profile.trade_name }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}</td>
+                        <td>{{ company.date_joined|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'custom_admin:view_company_details' company.pk %}"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'custom_admin:rollback_company' company.pk %}"
+                                class="btn btn-sm btn-secondary">
+                                <i class="bi bi-arrow-counterclockwise"></i> Rollback
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">No approved companies</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- REJECTED TAB -->
+        <div class="tab-pane fade {% if active_tab == 'rejected' %}show active{% endif %}" id="rejectedTab">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Rejection Reason</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in rejected_companies %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ company.username }}</td>
+                        <td>{{ company.email }}</td>
+                        <td>
+                            {% if company.company_profile.rejection_reason %}
+                            {{ company.company_profile.rejection_reason|truncatechars:50 }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'custom_admin:view_company_details' company.pk %}"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <!-- <a href="{% url 'custom_admin:approve_company' company.pk %}"
+                                class="btn btn-sm btn-success me-1">
+                                <i class="bi bi-check-lg"></i> Approve
+                            </a> -->
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">No rejected companies</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ROLLBACK TAB -->
+        <div class="tab-pane fade {% if active_tab == 'rollback' %}show active{% endif %}" id="rollbackTab">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Admin Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in rollback_companies %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ company.username }}</td>
+                        <td>{{ company.email }}</td>
+                        <td>
+                            {% if company.company_profile.admin_message %}
+                            {{ company.company_profile.admin_message|truncatechars:50 }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'custom_admin:view_company_details' company.pk %}"
+                                class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a href="{% url 'custom_admin:approve_company' company.pk %}"
+                                class="btn btn-sm btn-success me-1" onclick="return confirm('Approve this company?')">
+                                <i class="bi bi-check-lg"></i> Approve
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">No rollback companies</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Popup Overlay -->
+<div class="overlay"></div>
+
+<!-- Popup Form -->
+<div class="popup-form">
+  <button class="btn-close">×</button>
+  <h5 class="mb-3">Create Company</h5>
+
+  <div class="section">
+    <h6>Owner Information</h6>
+    <div class="row g-2">
+      <div class="col-md-4"><input type="text" placeholder="First Name *"></div>
+      <div class="col-md-4"><input type="text" placeholder="Last Name *"></div>
+      <div class="col-md-4"><input type="text" placeholder="Phone"></div>
+      <div class="col-md-4"><input type="email" placeholder="Email *"></div>
+      <div class="col-md-4"><input type="password" placeholder="Password *"></div>
+      <div class="col-md-4"><input type="password" placeholder="Confirm Password *"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h6>Company Info</h6>
+    <div class="row g-2">
+      <div class="col-md-4"><input type="text" placeholder="Company Name *"></div>
+      <div class="col-md-4"><input type="email" placeholder="Email *"></div>
+      <div class="col-md-4"><input type="text" placeholder="Phone *"></div>
+      <div class="col-md-4"><input type="text" placeholder="Total Employees *"></div>
+
+      <div class="col-md-4">
+        <select>
+          <option selected disabled>Category Type *</option>
+          <option>Software Agency</option>
+          <option>IT Company</option>
+          <option>Startup</option>
+        </select>
+      </div>
+
+      <div class="col-md-4"><input type="text" placeholder="Website"></div>
+
+      <div class="col-md-6">
+        <div class="image-upload">Logo (60x60px)<br>Choose file or drag it here</div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="image-upload">Image Gallery (900x600px)<br>Choose files or drag here</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-end">
+    <button class="btn-submit">Submit</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('btnCreate').addEventListener('click', function() {
+  document.querySelector('.popup-form').style.display = 'block';
+  document.querySelector('.overlay').style.display = 'block';
+  document.body.classList.add('dimmed');
+});
+
+document.querySelector('.btn-close').addEventListener('click', closePopup);
+document.querySelector('.overlay').addEventListener('click', closePopup);
+
+function closePopup() {
+  document.querySelector('.popup-form').style.display = 'none';
+  document.querySelector('.overlay').style.display = 'none';
+  document.body.classList.remove('dimmed');
+}
+
+document.querySelectorAll('.switch').forEach(sw=>{
+  sw.addEventListener('click',()=>sw.classList.toggle('active'));
+});
+</script>
+
+{% endblock %}

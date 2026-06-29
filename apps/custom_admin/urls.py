@@ -15,6 +15,12 @@ urlpatterns = [
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("admin_layout/", views.admin_layout, name="layout"),
     path("company_type/", views.company_type, name="company_type"),
+    path("admin_company", views.admin_company, name="admin_company"),
+    path("admin_jobs", views.admin_jobs, name="admin_jobs"),
+    path("job_type", views.job_type, name="job_type"),
+    path("admin_users", views.admin_users, name="admin_users"),
+    path("job_categories", views.job_categories, name="job_categories"),
+    path("candidate_list", views.candidate_list, name="candidate_list"),
     path('companies/', views.admin_company_list, name='admin_company_list'),
     path('company/<int:user_id>/approve', views.approve_company, name='approve_company'),
     

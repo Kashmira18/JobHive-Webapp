@@ -654,8 +654,27 @@ def admin_layout(request):
 def company_type(request):
     return render(request, "custom_admin/company_type.html")
 
+def admin_company(request):
+    return render(request, "custom_admin/admin_company.html")
 
-# # @admin_login_required 
+def admin_jobs(request):
+    return render(request, "custom_admin/admin_jobs.html")
+
+def candidate_list(request):
+    return render(request, "custom_admin/candidate_list.html")
+
+def job_type(request):  
+    return render(request, "custom_admin/job_type.html")
+
+def job_categories(request):
+    return render(request, "custom_admin/job_categories.html")
+
+def admin_users(request):
+    return render(request, "custom_admin/admin_users.html")
+
+ 
+
+# # @admin_login_required
 # def admin_company_list(request):
 #     companies = CustomUser.objects.filter(role="COMPANY")
 #     return render(request, "custom_admin/admin_dashboard.html", {"companies": companies})

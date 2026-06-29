@@ -610,7 +610,7 @@
                     <a href="{% url 'company:company_account_settings' %}">
                         <i class="fas fa-cog"></i> Settings
                     </a>
-                    <a href="{{% url 'logout' %}" style="color: #dc3545;">
+                    <a href="{% url 'accounts:logout' %}" style="color: #dc3545;">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
@@ -638,7 +638,7 @@
             <li><a href="{% url 'company:company_account_settings' %}"><i class="fas fa-gear"></i> <span class="menu-text">Settings</span></a></li>
             <li><a href="{% url 'company:company_job_post' %}"><i class="fa-solid fa-plus-square"></i> <span class="menu-text">Post a Job</span></a></li>
             <li><a href="{% url 'company:company_messenger' %}"><i class="fas fa-paper-plane"></i> <span class="menu-text">Messenger</span></a></li>
-            <a class="sidebar-link text-danger" href="{% url 'logout' %}">
+            <a class="sidebar-link text-danger" href="{% url 'accounts:logout' %}">
     <i class="fas fa-right-from-bracket"></i> Logout
 </a>
 

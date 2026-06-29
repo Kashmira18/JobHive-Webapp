@@ -1,0 +1,189 @@
+{% extends "custom_admin/admin_layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Top Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card green">
+                <div class="card-title">Active Jobs</div>
+                <div class="card-number">0</div>
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card red">
+                <div class="card-title">Pending Jobs</div>
+                <div class="card-number">0</div>
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card orange">
+                <div class="card-title">Featured Jobs</div>
+                <div class="card-number">0</div>
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card green">
+                <div class="card-title">Total Jobs</div>
+                <div class="card-number">0</div>
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Job Button -->
+    <div class="d-flex justify-content-end mb-3">
+        <button id="btnCreate" class="btn btn-success"><i class="bi bi-plus"></i> Create Job</button>
+    </div>
+
+    <!-- ── PUBLISHED JOBS ── -->
+<div class="box mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0">Published Jobs <span class="badge bg-success ms-1">{{ total_published_jobs }}</span></h6>
+    </div>
+    <table class="table table-sm table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th>Deadline</th>
+                <th>Posted</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in recent_published_jobs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>{{ job.title }}</strong></td>
+                <td>{{ job.company.trade_name|default:job.company.user.username }}</td>
+                <td><span class="badge bg-info text-dark">{{ job.job_type }}</span></td>
+                <td>{{ job.location }}</td>
+                <td style="font-size:12px;">{{ job.salary_display }}</td>
+                <td>{{ job.deadline|date:"d M Y" }}</td>
+                <td>{{ job.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-muted py-3">No published jobs yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Overlay & Create Job Popup -->
+<div class="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:1000;"></div>
+
+<div class="popup-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; width:95%; max-width:900px; border-radius:10px; z-index:1010; padding:20px; max-height:95vh; overflow-y:auto;">
+    <button class="btn-close" style="float:right; border:none; background:#dc3545; color:#fff; border-radius:5px; padding:5px 10px;">×</button>
+    <h5 class="mb-3">Create Job</h5>
+
+    <!-- Job Form -->
+    <div class="row g-3">
+        <div class="col-md-6"><input type="text" class="form-control" placeholder="Job Title *"></div>
+        <div class="col-md-6"><input type="text" class="form-control" placeholder="Salary Range *"></div>
+        <div class="col-md-6"><input type="number" class="form-control" placeholder="Vacancy *"></div>
+        <div class="col-md-6"><input type="date" class="form-control" placeholder="Expire Date *"></div>
+        <div class="col-md-6">
+            
+        </div>
+        <div class="col-md-6">
+            <select class="form-select">
+                <option selected disabled>Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+        
+    </div>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-success">Save</button>
+    </div>
+</div>
+
+<style>
+.card 
+{ border-radius:10px; 
+    padding:20px; 
+    color:#fff;
+     position:relative; 
+     overflow:hidden; 
+     transition: transform 0.3s, box-shadow 0.3s; 
+    }
+.card:hover 
+{ transform: translateY(-5px);
+     box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+     }
+.card i
+ { position:absolute;
+     top:10px;
+      right:10px; 
+      font-size:2rem; 
+      opacity:0.2; 
+    }
+.card.green
+{background:#0d6efd;
+} .card.red
+{background:#dc3545;
+} .card.orange
+{background:#ffc107;
+     color:#000;
+    }
+    .box {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    }
+.table thead
+{background:#0d6efd;
+    color:#fff;
+} 
+.table td, .table th{
+    vertical-align:middle;}
+.switch{width:34px;height:18px;background:#dcdcdc;border-radius:20px;position:relative;cursor:pointer;}
+.switch::after{content:"";width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:0.3s;}
+.switch.active{background:#0d6efd;}
+.switch.active::after{left:18px;}
+.action-btns button{border:none;padding:4px 8px;border-radius:4px;font-size:14px;color:#fff;margin-right:3px;}
+.btn-view{background:#0d6efd;} .btn-edit{background:#198754;} .btn-del{background:#dc3545;}
+.pagination .page-item.active .page-link{background:#0d6efd;border-color:#0d6efd;}
+body.dimmed .container-fluid{filter: blur(2px) brightness(0.7); pointer-events:none;}
+</style>
+
+<script>
+document.querySelectorAll('.switch').forEach(sw=>{
+    sw.addEventListener('click',()=>sw.classList.toggle('active'));
+});
+
+// Popup open/close
+const btnCreate = document.getElementById('btnCreate');
+const popup = document.querySelector('.popup-form');
+const overlay = document.querySelector('.overlay');
+const btnClose = document.querySelector('.btn-close');
+
+btnCreate.addEventListener('click', ()=>{
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+    document.body.classList.add('dimmed');
+});
+btnClose.addEventListener('click', closePopup);
+overlay.addEventListener('click', closePopup);
+function closePopup(){
+    popup.style.display = 'none';
+    overlay.style.display = 'none';
+    document.body.classList.remove('dimmed');
+}
+</script>
+{% endblock %}
+

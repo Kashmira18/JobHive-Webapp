@@ -1,0 +1,220 @@
+{% extends "custom_admin/admin_layout.html" %}
+{% load static %}
+
+{% block title %}Staff List{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+}
+.staff-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto 20px auto;
+}
+.btn-add {
+    background-color: #008d68;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+thead {
+    background-color: #008d68;
+    color: white;
+}
+th, td {
+    padding: 15px 20px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+.action-cell {
+    display: flex;
+    gap: 8px;
+}
+.btn-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    border: none;
+    color: white;
+}
+.btn-edit { background: #008d68; }
+.btn-delete { background: #e74c3c; }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.modal-box {
+    background: white;
+    width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+}
+.modal-header {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.btn-cancel {
+    background: #ccc;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+.btn-save {
+    background: #008d68;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+}
+</style>
+
+<!-- ================= HEADER ================= -->
+<div class="staff-header">
+    <h2>Users</h2>
+    <button class="btn-add" onclick="openModal()">
+        <i class="fas fa-user-plus"></i> Add User
+    </button>
+</div>
+
+<!-- ================= TABLE ================= -->
+<div class="card">
+<table>
+<thead>
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody id="staffTableBody">
+<tr>
+    <td>Tushar Rahman</td>
+    <td>tushar@gmail.com</td>
+    <td>Staff</td>
+    <td>
+        <div class="action-cell">
+            <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
+            <button class="btn-action btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+        </div>
+    </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal-overlay" id="staffModal">
+<div class="modal-box">
+    <div class="modal-header">Add users</div>
+
+    <input type="text" id="staffName" class="form-control" placeholder="Name">
+    <input type="email" id="staffEmail" class="form-control" placeholder="Email">
+    <select id="staffRole" class="form-control">
+        <option>Staff</option>
+        <option>Admin</option>
+        <option>Super Admin</option>
+    </select>
+
+    <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveStaff()">Save</button>
+    </div>
+</div>
+</div>
+
+<script>
+function deleteRow(btn) {
+    if (confirm('Delete this staff?')) {
+        btn.closest('tr').remove();
+    }
+}
+
+function openModal() {
+    document.getElementById('staffModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('staffModal').style.display = 'none';
+}
+
+function saveStaff() {
+    const name = staffName.value;
+    const email = staffEmail.value;
+    const role = staffRole.value;
+
+    if (!name || !email) {
+        alert('All fields required');
+        return;
+    }
+
+    const row = `
+    <tr>
+        <td>${name}</td>
+        <td>${email}</td>
+        <td>${role}</td>
+        <td>
+            <div class="action-cell">
+                <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
+                <button class="btn-action btn-delete" onclick="deleteRow(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    `;
+    staffTableBody.insertAdjacentHTML('beforeend', row);
+    closeModal();
+}
+</script>
+
+{% endblock %}
+
