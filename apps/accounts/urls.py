@@ -1,7 +1,7 @@
 from django.urls import path
 # from django.contrib.auth import views as auth_views
 from . import views
-
+app_name = 'accounts'
 
 urlpatterns = [
         # ── Authentication ──
@@ -24,5 +24,8 @@ urlpatterns = [
     # path('company/approved/',          views.company_approved,           name='company_approved'),
     path('company/registration/',        views.company_registration,       name='company_registration'),
     path("company/resubmit/", views.company_resubmit, name="company_resubmit"),
+
+    path('admin_user_list/', views.admin_user_list, name='admin_user_list'),
+    path('admin/users/<int:user_id>/action/<str:action>/', views.update_user_status, name='update_user_status'),
 
 ]

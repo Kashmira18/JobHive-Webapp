@@ -649,7 +649,7 @@
               <input class="form-check-input" type="checkbox" id="remember" name="remember">
               <label class="remember" for="remember">Remember me</label>
             </div>
-            <a href="{% url 'forget_password' %}" class="forgot-link">Forgot password?</a>
+            <a href="{% url 'accounts:forget_password' %}" class="forgot-link">Forgot password?</a>
           </div>
 
           <!-- Submit -->
@@ -660,7 +660,7 @@
 
           <!-- Register link -->
           <div class="helper">
-            New here? <a href="{% url 'register' %}" class="signup-link">Create an account</a>
+            New here? <a href="{% url 'accounts:register' %}" class="signup-link">Create an account</a>
           </div>
 
         </form>

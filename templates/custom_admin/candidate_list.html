@@ -1,0 +1,197 @@
+{% extends "custom_admin/admin_layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">Candidate List</h4>
+        <button id="btnCreate" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Create Candidate
+        </button>
+    </div>
+
+    <div class="card p-3">
+        <!-- Table Controls -->
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <label>Show 
+                    <select class="form-select d-inline-block w-auto">
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select> Entries
+                </label>
+            </div>
+            <div class="col-md-6 text-end">
+                <label>Search: <input type="text" class="form-control d-inline-block w-auto"></label>
+            </div>
+        </div>
+
+        <!-- Candidate Table -->
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Candidate</th>
+                    <th>Profession</th>
+                    <th>Role/Position</th>
+                    <th>Experience</th>
+                    <th>Joined Date</th>
+                    <th>Verified</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Empty table -->
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>Showing 0 to 0 of 0 Entries</div>
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay & Popup Form -->
+<div class="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index:1000;"></div>
+
+<div class="popup-form" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; width:95%; max-width:1000px; border-radius:10px; z-index:1010; padding:20px; max-height:95vh; overflow-y:auto;">
+    <button class="btn-close" style="float:right; border:none; background:#dc3545; color:#fff; border-radius:5px; padding:5px 10px;">×</button>
+    <h5 class="mb-3">Create Candidate</h5>
+
+    <!-- Account Details -->
+    <div class="section mb-3">
+        <h6 style="border-bottom:2px solid #0aa06e; padding-bottom:5px;">Account Details</h6>
+        <div class="row g-3">
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your First Name *"></div>
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your Last Name *"></div>
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your Username *"></div>
+            <div class="col-md-4"><input type="email" class="form-control" placeholder="Enter Your Email *"></div>
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your Phone"></div>
+            <div class="col-md-4"><input type="password" class="form-control" placeholder="Enter Your Password *"></div>
+            <div class="col-md-4"><input type="password" class="form-control" placeholder="Confirm Your Password *"></div>
+        </div>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="section mb-3">
+        <h6 style="border-bottom:2px solid #0aa06e; padding-bottom:5px;">Profile Details</h6>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected disabled>Select Your Profession *</option>
+                    <option>Teacher</option>
+                    <option>Developer</option>
+                    <option>Designer</option>
+                </select>
+            </div>
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your Experience *"></div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected disabled>Select Your Job Role *</option>
+                    <option>Assistant Teacher</option>
+                    <option>Senior Developer</option>
+                </select>
+            </div>
+            <div class="col-md-4"><input type="text" class="form-control" placeholder="Enter Your Qualification *"></div>
+            <div class="col-md-4"><input type="date" class="form-control" placeholder="Date of Birth *"></div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected disabled>Select Your Marital Status</option>
+                    <option>Single</option>
+                    <option>Married</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected disabled>Select Your Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select">
+                    <option selected disabled>Select Your Religion</option>
+                    <option>Islam</option>
+                    <option>Christian</option>
+                    <option>Hindu</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills & Bio -->
+    <div class="section mb-3">
+        <h6 style="border-bottom:2px solid #0aa06e; padding-bottom:5px;">Skills & Bio</h6>
+        <div class="row g-3">
+            <div class="col-md-6"><input type="text" class="form-control" placeholder="Type Your Skill"></div>
+            <div class="col-md-6"><input type="text" class="form-control" placeholder="Type Your Language"></div>
+            <div class="col-12">
+                <textarea class="form-control" placeholder="Write your Bio" rows="5"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Photo & Toggles -->
+    <div class="row g-3 mt-2">
+        <div class="col-md-4">
+            <label class="image-upload border p-3 text-center" style="display:block; cursor:pointer; position:relative; height:200px;">
+                Photo <br> Choose file or drag here
+                <input type="file" accept="image/*" style="opacity:0; position:absolute; width:100%; height:100%; top:0; left:0; cursor:pointer;">
+            </label>
+        </div>
+        <div class="col-md-8">
+            <label class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox">
+                <span class="form-check-label">Available for hiring?</span>
+            </label>
+            <label class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox">
+                <span class="form-check-label">Public your profile?</span>
+            </label>
+            <label class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox">
+                <span class="form-check-label">Hide your CV?</span>
+            </label>
+            <div class="text-end mt-3">
+                <button class="btn btn-success">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.popup-form .section h6 { font-weight:600; }
+body.dimmed .container { filter: blur(2px) brightness(0.7); pointer-events:none; }
+</style>
+
+<script>
+const btnCreate = document.getElementById('btnCreate');
+const popup = document.querySelector('.popup-form');
+const overlay = document.querySelector('.overlay');
+const btnClose = document.querySelector('.btn-close');
+
+btnCreate.addEventListener('click', ()=>{
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+    document.body.classList.add('dimmed');
+});
+btnClose.addEventListener('click', closePopup);
+overlay.addEventListener('click', closePopup);
+function closePopup(){
+    popup.style.display = 'none';
+    overlay.style.display = 'none';
+    document.body.classList.remove('dimmed');
+}
+</script>
+{% endblock %}
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render,get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -7,6 +7,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Q
 from .models import CustomUser, CompanyProfile, CompanyRejection
 from .forms import (
     CustomUserRegistrationForm,
@@ -127,15 +130,15 @@ def login_view(request):
 
                 # ── REJECTED → resubmit form ──
                 elif status == "REJECTED":
-                    return redirect("company_resubmit")
+                    return redirect("accounts:company_resubmit")
 
                 # ── ROLLBACK → resubmit form ──
                 elif status == "ROLLBACK":
-                    return redirect("company_resubmit")
+                    return redirect("accounts:company_resubmit")
 
                 # ── PENDING ya kuch aur ──
                 else:
-                    return redirect("company_pending")
+                    return redirect("accounts:company_pending")
 
             else:
                 login(request, user, backend="django.contrib.auth.backends.ModelBackend")
@@ -682,3 +685,48 @@ def verify_email(request, token):
     except (BadSignature, SignatureExpired):
         messages.error(request, "Verification link is invalid or expired.")
     return redirect("accounts:login")
+    
+    
+User = get_user_model()
+@user_passes_test(lambda u: u.is_staff)
+
+def admin_user_list(request):
+    search_query = request.GET.get('search', '')
+    
+   
+    if search_query:
+        users = User.objects.filter(Q(email__icontains=search_query)).order_by('-date_joined')
+    else:
+        users = User.objects.all().order_by('-date_joined')
+        
+    context = {
+        'users': users,
+        'search_query': search_query,
+    }
+    return render(request, 'accounts/admin_user_list.html', context)
+
+@user_passes_test(lambda u: u.is_staff)
+def update_user_status(request, user_id, action):
+    user_to_mod = get_object_or_404(User, id=user_id)
+    
+    
+    if action == 'suspend':
+        user_to_mod.status = 'Suspended' 
+        user_to_mod.is_active = False
+        messages.success(request, f"{user_to_mod.email} has been suspended.")
+    elif action == 'deactivate':
+        user_to_mod.status = 'Deactivated'
+        user_to_mod.is_active = False
+        messages.success(request, f"{user_to_mod.email} has been deactivated.")
+    elif action == 'activate':
+        user_to_mod.status = 'Active'
+        user_to_mod.is_active = True
+        messages.success(request, f"{user_to_mod.email} has been activated.")
+    elif action == 'perm_suspend':
+        user_to_mod.status = 'Permanently Suspended'
+        user_to_mod.is_active = False
+        messages.danger(request, f"{user_to_mod.email} has been permanently suspended.")
+        
+    user_to_mod.save()
+    return redirect('accounts:admin_user_list')
+

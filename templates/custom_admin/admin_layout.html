@@ -411,7 +411,7 @@ body{
     <div class="section-title">MAIN</div>
     <ul>
         <li>
-            <a href="#" class="menu-link ">
+            <a href="{% url 'custom_admin:admin_dashboard' %}" class="menu-link ">
                 <i class="bi bi-house-fill"></i>
                 <span class="menu-text">Dashboard</span>
             </a>
@@ -425,14 +425,14 @@ body{
         </li>
 
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:admin_company' %}" class="menu-link">
                 <i class="bi bi-buildings"></i>
-                <span class="menu-text">Company</span>
+                <span class="menu-text">Company List</span>
             </a>
         </li>
 
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:candidate_list' %}" class="menu-link">
                 <i class="bi bi-people-fill"></i>
                 <span class="menu-text">Candidate</span>
             </a>
@@ -442,21 +442,21 @@ body{
     <div class="section-title">MANAGE JOB</div>
     <ul>
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:admin_jobs' %}" class="menu-link">
                 <i class="bi bi-briefcase-fill"></i>
                 <span class="menu-text">Jobs</span>
             </a>
         </li>
 
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:job_type' %}" class="menu-link">
                 <i class="bi bi-tags-fill"></i>
                 <span class="menu-text">Job Type</span>
             </a>
         </li>
 
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:job_categories' %}" class="menu-link">
                 <i class="bi bi-grid-fill"></i>
                 <span class="menu-text">Job Category</span>
             </a>
@@ -466,7 +466,13 @@ body{
     <div class="section-title">MANAGE STAFF</div>
     <ul>
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:admin_users' %}" class="menu-link">
+                <i class="bi bi-person-badge-fill"></i>
+                <span class="menu-text">Users</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'accounts:admin_user_list' %}" class="menu-link">
                 <i class="bi bi-person-badge-fill"></i>
                 <span class="menu-text">User List</span>
             </a>

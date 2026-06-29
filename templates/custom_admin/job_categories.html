@@ -1,0 +1,221 @@
+{% extends "custom_admin/admin_layout.html" %}
+
+{% block content %}
+
+<style>
+body{
+    background:#f4f6f9;
+}
+
+.card-custom{
+    border-top:4px solid #0a9f60;
+}
+
+.table thead th{
+    background:#0a9f60;
+    color:#fff;
+    font-weight:600;
+    vertical-align:middle;
+    text-align:center;
+}
+
+.table td{
+    vertical-align:middle;
+    text-align:center;
+}
+
+/* Toggle switch */
+.switch{
+    position:relative;
+    display:inline-block;
+    width:36px;
+    height:18px;
+}
+.switch input{
+    opacity:0;
+}
+.slider{
+    position:absolute;
+    cursor:pointer;
+    background:#ccc;
+    border-radius:20px;
+    top:0;left:0;right:0;bottom:0;
+    transition:.4s;
+}
+.slider:before{
+    position:absolute;
+    content:"";
+    height:14px;
+    width:14px;
+    left:2px;
+    bottom:2px;
+    background:white;
+    border-radius:50%;
+    transition:.4s;
+}
+input:checked + .slider{
+    background:#0a9f60;
+}
+input:checked + .slider:before{
+    transform:translateX(18px);
+}
+
+.category-icon{
+    font-size:22px;
+    color:#0a9f60;
+}
+
+.pagination .page-link{
+    border-radius:50%;
+    color:#0a9f60;
+    margin:0 3px;
+    cursor:pointer;
+}
+.pagination .active{
+    background:#0a9f60;
+    color:#fff;
+}
+</style>
+
+<div class="container-fluid mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold">Category List</h4>
+
+        <!-- BUTTON -->
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
+            <i class="bi bi-plus-circle"></i> Create Category
+        </button>
+    </div>
+
+    <!-- Card -->
+    <div class="card card-custom">
+        <div class="card-body">
+
+            <!-- Controls -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    Show
+                    <select class="form-select d-inline-block w-auto mx-2">
+                        <option>10</option>
+                        <option>25</option>
+                    </select>
+                    Entries
+                </div>
+
+                <div class="col-md-6 text-end">
+                    Search:
+                    <input type="text" id="searchInput" class="form-control d-inline-block w-auto ms-2">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered" id="categoryTable">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Category Name</th>
+                            
+                            <th>Status</th>
+                            
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- SAME DATA -->
+                        <tr>
+                            <td>1</td>
+                            <td><i class="bi bi-camera-video category-icon"></i></td>
+                            <td>Video Editor</td>
+                            <td><label class="switch"><input type="checkbox"><span class="slider"></span></label></td>
+                            
+                            <td>
+                                <button class="btn btn-sm btn-success"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="d-flex justify-content-between mt-3">
+                <div>Showing 1 to 6 of 16 Entries</div>
+                <div class="pagination">
+                    <span class="page-link">Previous</span>
+                    <span class="page-link active">1</span>
+                    <span class="page-link">Next</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="createCategoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Create Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category Name</label>
+                        <input type="text" class="form-control" placeholder="Enter category name">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category Icon</label>
+                        <input type="file" class="form-control">
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <label>Is Featured</label>
+                        <label class="switch">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <label>Status</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-success">Save Category</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function(){
+    let value = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#categoryTable tbody tr");
+    rows.forEach(row=>{
+        row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}
+
