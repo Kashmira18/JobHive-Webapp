@@ -199,7 +199,7 @@
         {% for job in trending_jobs %}
         <div
           class="col-12 col-md-3 col-lg-{% if forloop.first %}3{% else %}4{% endif %} d-flex align-items-center job-card p-3 p-md-4">
-          <a href="{% url 'job' %}" class="stretched-link job-link">
+          <a href="{% url 'job_details' job.id %}" class="stretched-link job-link">
             <div class="d-flex align-items-center">
               {% if job.company.logo %}
               <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }} Logo" class="job-logo me-3">
@@ -560,12 +560,12 @@
                 {% endif %}
               </div>
               <div class="content-recent-job">
-                <h4 class="name"><a href="{% url 'job' %}">{{ job.company.trade_name }}</a></h4>
+                <h4 class="name"><a href="{% url 'job_details' job.id %}">{{ job.company.trade_name }}</a></h4>
                 <p class="address">{{ job.location }}</p>
               </div>
             </div>
             <div class="main-content">
-              <h3 class="title"><a href="{% url 'job' %}">{{ job.title }}</a></h3>
+              <h3 class="title"><a href="{% url 'job_details' job.id %}">{{ job.title }}</a></h3>
               <h5 class="work-type">{{ job.job_type }}</h5>
               <p class="desc">{{ job.get_skills_list|join:', '|truncatechars:60 }}</p>
             </div>
@@ -573,7 +573,7 @@
               <div class="salary">
                 <h4 style="font-size:0.95rem;">{{ job.salary_display }}</h4>
               </div>
-              <a class="btn-theme btn-sm" href="{% url 'job' %}">Apply Now</a>
+              <a class="btn-theme btn-sm" href="{% url 'job_details' job.id %}">Apply Now</a>
             </div>
           </div>
           <!--== End Recent Job Item ==-->
