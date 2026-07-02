@@ -1,16 +1,15 @@
 from django.db import models
 from accounts.models import CustomUser
-# Create your models here.
 
 class Notification(models.Model):
     TYPES = (
-        ('SYSTEM','system'), #auto-generated
-        ('CHAT', 'Chat'), # real-time chat notifications
-        ('APPLIED', 'Job-Applied'), #candidate applied
-        ('INTERVIEW', 'Interview'), #interview scheduled/rescheduled/completed
-        ('OFFER', 'Offer'), #job offer created/accepted/rejected 
-        ('COMPANY',"Company"), #company profile updates
-        ('JOB',"Job"), #job updates
+        ('SYSTEM','system'), 
+        ('CHAT', 'Chat'), 
+        ('APPLIED', 'Job-Applied'), 
+        ('INTERVIEW', 'Interview'), 
+        ('OFFER', 'Offer'), 
+        ('COMPANY',"Company"), 
+        ('JOB',"Job"), 
         ('KYC_SUBMITTED', 'KYC_Submitted'), 
         ('KYC_APPROVED', 'KYC_Approved'),
         ('KYC_REJECTED', 'KYC_Rejected'), 
@@ -47,12 +46,18 @@ class Notification(models.Model):
         ('ACCOUNT_DEACTIVATED', 'Account_Deactivated'),
         ('ACCOUNT_BANNED', 'Account_Banned'), 
         ('ACCOUNT_UNBANNED', 'Account_Unbanned')
-        )
+    )
     
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name= "notifications")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="notifications")
     notification_type = models.CharField(max_length=30, choices=TYPES) 
-    title= models.CharField(max_length=255, blank=True) 
-    message= models.TextField()
-    link = models.URLField(null=True, blank=True)
-    is_read=models.BooleanField(default=False)
+    title = models.CharField(max_length=255, blank=True) 
+    message = models.TextField()
+    link = models.CharField(max_length=255, null=True, blank=True) # CharField kiya internal links ke liye
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at'] # Taake latest notifications top par aayein
+
+    def __str__(self):
+        return f"{self.user.username} - {self.title}"

@@ -1,5 +1,6 @@
 # from django.shortcuts import render
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 from job.models import JobPost
 # Create your views here.
 
@@ -9,13 +10,20 @@ def home(request):
         visibility="public"
     ).select_related("company").order_by("-created_at")
     total_jobs = published_jobs.count()
-    recent_jobs = published_jobs[:6]   # up to 6 for the "Recent Job Circulars" section
+    recent_jobs = published_jobs
     trending_jobs = published_jobs[:3]  # up to 3 for the trending bar
+    home_categories = list(
+        JobPost.objects.filter(status="PUBLISHED", visibility="public")
+        .values_list("category", flat=True)
+        .distinct()
+        .order_by("category")
+    )
     return render(request, "portal/home.html", {
         "published_jobs": published_jobs,
         "recent_jobs": recent_jobs,
         "trending_jobs": trending_jobs,
         "total_jobs": total_jobs,
+        "home_categories": home_categories,
     })
 
 def selector(request):
@@ -37,13 +45,50 @@ def find_jobs(request):
     return render(request, "portal/find_jobs.html")
 # ____________
 def job_list(request):
+    keyword = (request.GET.get("keyword") or "").strip()
+    location = (request.GET.get("location") or "").strip()
+    category = (request.GET.get("category") or "").strip()
+
     jobs = JobPost.objects.filter(
         status="PUBLISHED",
         visibility="public"
-    ).select_related("company").order_by("-created_at")
-    
+    ).select_related("company")
+
+    if keyword:
+        jobs = jobs.filter(
+            Q(title__icontains=keyword) |
+            Q(description__icontains=keyword) |
+            Q(skills__icontains=keyword)
+        )
+
+    if location:
+        jobs = jobs.filter(location__icontains=location)
+
+    if category:
+        jobs = jobs.filter(category__icontains=category)
+
+    jobs = jobs.order_by("-created_at")
+
+    categories = list(
+        JobPost.objects.filter(status="PUBLISHED", visibility="public")
+        .values_list("category", flat=True)
+        .distinct()
+        .order_by("category")
+    )
+    locations = list(
+        JobPost.objects.filter(status="PUBLISHED", visibility="public")
+        .values_list("location", flat=True)
+        .distinct()
+        .order_by("location")
+    )
+
     return render(request, "portal/job_list.html", {
         "jobs": jobs,
+        "keyword": keyword,
+        "location": location,
+        "category": category,
+        "categories": categories,
+        "locations": locations,
     })
 
 def job_details(request,job_id):

@@ -1,4 +1,4 @@
-{% extends 'portal/base.html'%}
+<!-- {% extends 'portal/base.html'%} -->
 
 {%block content%}
 <!DOCTYPE html>
@@ -31,6 +31,38 @@
   </section>
   <!-- ===== Hero Banner End ===== -->
   <div class="container py-5">
+    <form method="get" class="row g-3 align-items-end mb-4 p-4 bg-light rounded shadow-sm">
+      <div class="col-md-4">
+        <label for="keyword" class="form-label fw-semibold">Keyword</label>
+        <input type="text" class="form-control" id="keyword" name="keyword" value="{{ keyword }}" placeholder="Job title or skill">
+      </div>
+      <div class="col-md-3">
+        <label for="location" class="form-label fw-semibold">Location</label>
+        <input type="text" class="form-control" id="location" name="location" value="{{ location }}" placeholder="City or remote">
+      </div>
+      <div class="col-md-3">
+        <label for="category" class="form-label fw-semibold">Category</label>
+        <select class="form-select" id="category" name="category">
+          <option value="">All categories</option>
+          {% for item in categories %}
+          <option value="{{ item }}" {% if category == item %}selected{% endif %}>{{ item }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Filter Jobs</button>
+      </div>
+    </form>
+
+    {% if keyword or location or category %}
+    <div class="mb-4">
+      <strong>Active filters:</strong>
+      {% if keyword %}<span class="badge bg-info text-dark me-2">Keyword: {{ keyword }}</span>{% endif %}
+      {% if location %}<span class="badge bg-info text-dark me-2">Location: {{ location }}</span>{% endif %}
+      {% if category %}<span class="badge bg-info text-dark">Category: {{ category }}</span>{% endif %}
+    </div>
+    {% endif %}
+
     <!-- Tabs -->
     <ul class="nav nav-pills justify-content-center mb-4" id="jobTabs">
       <li class="nav-item">

@@ -15,8 +15,20 @@ from applications.models import Applications
 
 @login_required
 def candidate_dashboard(request):
-    candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
-        # Applications
+    # ── FIX: defaults dictionary add ki — warna username/email/phone
+    # empty "" string se create hote the aur dusre candidate pe clash karte the ──
+    candidate, _ = CandidateProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "username":     request.user.username,
+            "email":        request.user.email,
+            "first_name":   request.user.first_name or request.user.username,
+            "last_name":    request.user.last_name or "",
+            "phone_number": "",
+        }
+    )
+
+    # Applications
     applications = Applications.objects.filter(
         candidate=candidate
     ).select_related('job', 'job__company').order_by('-applied_at')
@@ -28,14 +40,39 @@ def candidate_dashboard(request):
         status="PUBLISHED",
         visibility="public"
     ).select_related("company").order_by("-created_at")[:6]
-    context={
+
+    context = {
         "featured_jobs": featured_jobs,
         "candidate": candidate,
-        "applications":  applications,
+        "applications": applications,
         "total_applied": total_applied,
     }
 
     return render(request, 'candidate/candidate_dashboard.html', context)
+
+# @login_required
+# def candidate_dashboard(request):
+#     candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
+#         # Applications
+#     applications = Applications.objects.filter(
+#         candidate=candidate
+#     ).select_related('job', 'job__company').order_by('-applied_at')
+
+#     # Stats
+#     total_applied = applications.count()
+
+#     featured_jobs = JobPost.objects.filter(
+#         status="PUBLISHED",
+#         visibility="public"
+#     ).select_related("company").order_by("-created_at")[:6]
+#     context={
+#         "featured_jobs": featured_jobs,
+#         "candidate": candidate,
+#         "applications":  applications,
+#         "total_applied": total_applied,
+#     }
+
+#     return render(request, 'candidate/candidate_dashboard.html', context)
 
 
 # @candidate_login_required

@@ -10,13 +10,20 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
+from django.urls import reverse
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from .models import CustomUser, CompanyProfile, CompanyRejection
+from django.contrib.auth import get_user_model
+from notifications.models import Notification
 from .forms import (
     CustomUserRegistrationForm,
     LoginForm,
     ForgotPasswordForm,
     SetNewPasswordForm,
 )
+
+User = get_user_model()
+
 # ── REGISTER ──
 def register_view(request):
     if request.method == "POST":
@@ -25,15 +32,22 @@ def register_view(request):
             user = form.save(commit=False)
             user.save()
             if user.role == "COMPANY":
-                # Company → pending
-                # user session mein store hoa sirf pending show karne ke liye
-
                 request.session["pending_user_id"] = user.pk
+
+                admins = CustomUser.objects.filter(is_superuser=True)
+                for admin in admins:
+                    Notification.objects.create(
+                        user=admin,
+                        notification_type="KYC_SUBMITTED",
+                        title="New Company Verification Pending 🏢",
+                        message=f"A new company '{user.username}' has submitted details for KYC verification.",
+                        link="/custom_admin/companies/pending/",
+                    )
                 # messages.success(
                 #     request, "Registration successful! Please wait for admin approval."
                 # )
                 # return redirect("login")
-                return redirect("company_registration")
+                return redirect("accounts:company_registration")
             else:
                 # login(request, user)
                 login(
@@ -217,16 +231,16 @@ def company_approved(request):
             # return redirect("company:company_dashboard")
             return render(request, "accounts/company_approved.html", {"user": user})
 
-        return redirect("login")
+        return redirect("accounts:login")
 
     try:
         user = CustomUser.objects.get(pk=user_id)
         profile = user.company_profile
     except (CustomUser.DoesNotExist, CompanyProfile.DoesNotExist):
-        return redirect("login")
+        return redirect("accounts:login")
 
     if not user.is_approved:
-        return redirect("company_pending")
+        return redirect("accounts:company_pending")
 
     # ── STATUS CHANGED TO PERMANENT APPROVED ──
     # Taake agli dafa login karne par Congrats page bypass ho jaye
@@ -253,7 +267,7 @@ def company_approved(request):
 def logout_view(request):
     request.session.flush()  # session clear
     logout(request)
-    return redirect("login")
+    return redirect("accounts:login")
 
 
 #  ── COMPANY — PENDING PAGE ──
@@ -261,16 +275,16 @@ def logout_view(request):
 def company_pending(request):
     user_id = request.session.get("pending_user_id")
     if not user_id:
-        return redirect("login")
+        return redirect("accounts:login")
 
     try:
         user = CustomUser.objects.get(pk=user_id)
     except CustomUser.DoesNotExist:
-        return redirect("login")
+        return redirect("accounts:login")
 
     # when approved ->  show approved page
     if user.is_approved:
-        return redirect("company_approved")
+        return redirect("accounts:company_approved")
 
     return render(request, "accounts/company_pending.html", {"user": user})
 
@@ -291,7 +305,7 @@ def company_documents_review(request):
         messages.success(
             request, "Documents uploaded successfully. We will review them shortly."
         )
-        return redirect("company_pending")
+        return redirect("accounts:company_pending")
 
     approved_docs = [
         # {'name': 'Business Registration Certificate', 'id': 1},
@@ -335,7 +349,7 @@ def custom_forget_password(request):
                     fail_silently=False,
                 )
             messages.success(request, "Password reset link sent to your email.")
-            return redirect("login")
+            return redirect("accounts:login")
         else:
             messages.error(request, "No account found with this email address.")
     return render(request, "accounts/forget_password.html")
@@ -358,7 +372,7 @@ def custom_password_reset_confirm(request, uidb64, token):
                 messages.success(
                     request, "Password reset successful! Login with your new password."
                 )
-                return redirect("login")
+                return redirect("accounts:login")
             else:
                 for error in form.errors.values():
                     messages.error(request, error.as_text())
@@ -381,16 +395,16 @@ def company_registration(request):
     # Session se user lo
     user_id = request.session.get("pending_user_id")
     if not user_id:
-        return redirect("login")
+        return redirect("accounts:login")
 
     try:
         user = CustomUser.objects.get(pk=user_id, role="COMPANY")
     except CustomUser.DoesNotExist:
-        return redirect("login")
+        return redirect("accounts:login")
 
     # Already approved hai to dashboard pe bhejo
     if user.is_approved:
-        return redirect("company_dashboard")
+        return redirect("company:company_dashboard")
 
     # GET — form dikhao
     if request.method == "GET":
@@ -465,7 +479,7 @@ def company_registration(request):
     messages.success(
         request, "Company profile submitted! Please wait for admin review."
     )
-    return redirect("company_pending")
+    return redirect("accounts:company_pending")
 
 
 # def company_resubmit(request):
@@ -501,21 +515,21 @@ def company_resubmit(request):
                 pass
 
     if user is None:
-        return redirect("login")
+        return redirect("accounts:login")
 
     # ── Profile dhundo ──
     try:
         profile = CompanyProfile.objects.get(user=user)
     except CompanyProfile.DoesNotExist:
         request.session["pending_user_id"] = user.pk
-        return redirect("company_registration")
+        return redirect("accounts:company_registration")
 
     # ── Status check — sirf REJECTED ya ROLLBACK allow karo ──
     status = profile.company_status or "PENDING"
     if status not in ("REJECTED", "ROLLBACK"):
         if user.is_approved:
             return redirect("company:company_dashboard")
-        return redirect("company_pending")
+        return redirect("accounts:company_pending")
 
     # ── Latest rejection fetch karo ──
     latest_rejection = CompanyRejection.objects.filter(
@@ -560,7 +574,7 @@ def company_resubmit(request):
         request.session["pending_user_id"] = user.pk
 
         messages.success(request, "Your updates have been resubmitted successfully!")
-        return redirect("company_pending")
+        return redirect("accounts:company_pending")
 
     context = {
         "user":             user,
@@ -662,9 +676,10 @@ def logout_view(request):
     logout(request) 
     return redirect('accounts:login')
 
-def send_verification_email(user):
-    token=signer.sign(user.id)
-    verification_link= request.build_absolute_uri(reverse("accounts:verify", args=[token])) 
+def send_verification_email(user, request):
+    signer = TimestampSigner(salt="email-verify")
+    token = signer.sign(str(user.id))
+    verification_link = request.build_absolute_uri(reverse("accounts:verify", args=[token]))
     send_mail(
         subject="Verify your email address",
         message=render_to_string("emails/verify_email.html", {"link": verification_link}),
@@ -676,13 +691,14 @@ def send_verification_email(user):
 
 
 def verify_email(request, token):
+    signer = TimestampSigner(salt="email-verify")
     try:
-        pk=signer.unsign(token, max_age=86400) # 24-hour expiry 
-        user= CustomUser.objects.get(pk=pk) 
+        pk = signer.unsign(token, max_age=86400)
+        user = CustomUser.objects.get(pk=int(pk))
         user.is_verified = True
         user.save()
         messages.success(request, "Email verified successfully.")
-    except (BadSignature, SignatureExpired):
+    except (BadSignature, SignatureExpired, ValueError, CustomUser.DoesNotExist):
         messages.error(request, "Verification link is invalid or expired.")
     return redirect("accounts:login")
     

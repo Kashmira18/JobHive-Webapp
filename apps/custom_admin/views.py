@@ -7,7 +7,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
-
+from notifications.models import Notification
 from company.models import CompanyType
 
 from .forms import AdminLoginForm, AdminForgotPasswordForm, AdminResetPasswordForm
@@ -194,180 +194,6 @@ def view_company_details(request, user_id):
     return render(request, "custom_admin/view_company_details.html", context)
 
 # _____________________________________________________________________________________________________________________________
-# # ────────────────────────────────────────────
-# #  APPROVE COMPANY
-# # ──────────────────────────────────────────────
-# @admin_login_required
-# def approve_company(request, user_id):
-#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-
-#     try:
-#         profile = company_user.company_profile
-#     except CompanyProfile.DoesNotExist:
-#         profile = None
-
-#     # POST — approve karo
-#     if request.method == "POST":
-#         company_user.is_approved = True
-#         company_user.save()
-
-#         if profile:
-#             profile.company_status = "APPROVED"
-#             profile.feedback = ""
-#             profile.rejected_fields = {}
-#             profile.save()
-
-#         messages.success(request, f"{company_user.email} approved successfully.")
-#         return redirect("custom_admin:admin_dashboard")
-
-#     # GET — confirmation page dikhao
-#     return render(request, "custom_admin/approve_company.html", {
-#         "company_user": company_user,
-#         "profile": profile,
-#     })
-# # def approve_company(request, user_id):
-#     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-#     company.is_approved = True
-#     company.company_status = "APPROVED"
-#     company.save()
-
-#     try:
-#         profile = company.company_profile
-#         profile.feedback = ""
-#         profile.save()
-#     except CompanyProfile.DoesNotExist:
-#         messages.error(request,'Compny not found.')
-
-#     messages.success(request, f"{company.email} approved successfully.")
-#     return redirect("custom_admin:admin_dashboard")
-
-
-# # ──────────────────────────────────────────────
-# #  REJECT COMPANY
-# #  Company ko login hi nahi karne deta
-# # ──────────────────────────────────────────────
-# @admin_login_required
-# def reject_company(request, user_id):
-#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-
-#     if request.method == "POST":
-#         try:
-#             profile = company_user.company_profile
-#         except CompanyProfile.DoesNotExist:
-#             profile = CompanyProfile.objects.create(user=company_user)
-
-#         profile.admin_message = request.POST.get("admin_message", "").strip()
-#         profile.rejection_reason = profile.admin_message
-
-#         # Build rejected_fields from checkboxes + reasons
-#         rejected = {}
-#         field_keys = [
-#             "trade_name",
-#             "legal_name",
-#             "ntn_number",
-#             "company_email",
-#             "company_type",
-#             "industry",
-#             "logo",
-#             "city",
-#             "legal_address",
-#             "country",
-#             "province",
-#             "website",
-#             "overview",
-#         ]
-#         for key in field_keys:
-#             reason = request.POST.get(f"field_{key}", "").strip()
-#             if reason:
-#                 rejected[key] = reason
-
-#         profile.rejected_fields = rejected
-#         profile.save()
-
-#         company_user.is_approved = False
-#         company_user.company_status = "REJECTED"
-#         company_user.save()
-
-#         messages.success(request, f"{company_user.email} rejected.")
-
-#         return redirect('custom_admin:admin_dashboard')
-#         # return render("custom_admin/reject_company.html")
-#         # return render(request, "custom_admin/reject_company.html")
-
-#     # GET — show reject form
-#     try:
-#         profile = company_user.company_profile
-#     except CompanyProfile.DoesNotExist:
-#         profile = None
-
-#     return render(request,"custom_admin/reject_company.html",{"company_user": company_user, "profile": profile})
-
-
-# # ──────────────────────────────────────────────
-# #  ROLLBACK COMPANY
-# #  Company login kar sakti hai, form fill karke
-# #  resubmit kar sakti hai specific fields
-# # ──────────────────────────────────────────────
-# @admin_login_required
-# def rollback_company(request, user_id):
-#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-
-#     if request.method == "POST":
-#         try:
-#             profile = company_user.company_profile
-#         except CompanyProfile.DoesNotExist:
-#             profile = CompanyProfile.objects.create(user=company_user)
-
-#         profile.admin_message = request.POST.get("admin_message", "").strip()
-
-#         # Build rollback fields 
-#         rollback_fields = {}
-#         field_keys = [
-#             "trade_name",
-#             "legal_name",
-#             "ntn_number",
-#             "company_email",
-#             "company_type",
-#             "industry",
-#             "logo",
-#             "city",
-#             "legal_address",
-#             "country",
-#             "province",
-#             "website",
-#             "overview",
-#         ]
-#         for key in field_keys:
-#             reason = request.POST.get(f"field_{key}", "").strip()
-#             if reason:
-#                 rollback_fields[key] = reason
-
-#         profile.rejected_fields = rollback_fields
-#         profile.save()
-
-#         company_user.is_approved = False
-#         company_user.company_status = "ROLLBACK"
-#         company_user.save()
-
-#         messages.success(request, f"{company_user.email} sent for rollback correction.")
-#         return redirect("custom_admin:admin_dashboard")
-
-#     # show rollback form
-#     try:
-#         profile = company_user.company_profile
-#     except CompanyProfile.DoesNotExist:
-#         profile = None
-
-#     return render(
-#         request,
-#         "custom_admin/rollback_company.html",
-#         {
-#             "company_user": company_user,
-#             "profile": profile,
-#         },
-#     )
-# _____________________________________________________________________________________________________________________________
-
 
 @admin_login_required
 def approve_company(request, user_id):
@@ -388,6 +214,14 @@ def approve_company(request, user_id):
         profile.save()
     except Exception:
         pass
+
+    Notification.objects.create(
+        user=company_user,
+        notification_type="KYC_APPROVED",
+        title="KYC Approved! 🎉",
+        message="Congratulations! Your company KYC verification has been approved. You can now post jobs.",
+        link="/company/dashboard/",
+    )
 
     messages.success(request, f"{company_user.email} approved successfully.")
     return redirect("custom_admin:admin_dashboard")   
@@ -447,6 +281,14 @@ def reject_company(request, user_id):
         company_user.is_approved    = False
         company_user.company_status = "REJECTED"
         company_user.save()
+
+        Notification.objects.create(
+            user=company_user,
+            notification_type="KYC_REJECTED",
+            title="KYC Rejected ❌",
+            message="Your company verification failed. Please review your profile data and submit again.",
+            link="/company/profile/edit/",
+        )
 
         messages.success(request, f"{company_user.email} rejected.")
         return redirect("custom_admin:admin_dashboard")
@@ -513,6 +355,14 @@ def rollback_company(request, user_id):
         company_user.company_status = "ROLLBACK"
         company_user.save()
 
+        Notification.objects.create(
+            user=company_user,
+            notification_type="KYC_ROLLBACK",
+            title="KYC Needs Attention 🔄",
+            message="Your company verification has been sent back for review. Please update the required details and resubmit.",
+            link="/company/profile/edit/",
+        )
+
         messages.success(request, f"{company_user.email} sent for rollback.")
         return redirect("custom_admin:admin_dashboard")
 
@@ -525,115 +375,6 @@ def rollback_company(request, user_id):
         "company_user": company_user,
         "profile":      profile,
     })
-
-# _____________________________________________________________________________________________________
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @admin_login_required
-# def reject_company(request, user_id):
-#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-
-#     if request.method == "POST":
-#         try:
-#             profile = company_user.company_profile
-#         except CompanyProfile.DoesNotExist:
-#             profile = CompanyProfile.objects.create(user=company_user)
-
-#         profile.admin_message    = request.POST.get("admin_message", "").strip()
-#         profile.rejection_reason = profile.admin_message
-#         profile.company_status = "REJECTED"
-
-#         rejected = {}
-#         field_keys = [
-#             "trade_name", "legal_name", "ntn_number", "company_email",
-#             "company_type", "industry", "logo", "city",
-#             "legal_address", "country", "province", "website", "overview",
-#         ]
-#         for key in field_keys:
-#             reason = request.POST.get(f"field_{key}", "").strip()
-#             if reason:
-#                 rejected[key] = reason
-
-#         profile.rejected_fields = rejected
-#         profile.save()
-
-#         company_user.is_approved    = False
-#         company_user.company_status = "REJECTED"
-#         company_user.save()
-
-#         messages.success(request, f"{company_user.email} rejected.")
-#         return redirect("custom_admin:admin_dashboard")
-
-#     try:
-#         profile = company_user.company_profile
-#     except CompanyProfile.DoesNotExist:
-#         profile = None
-
-#     return render(request, "custom_admin/reject_company.html", {
-#         "company_user": company_user,
-#         "profile":      profile,
-#     })
-
-
-# @admin_login_required
-# def rollback_company(request, user_id):
-#     company_user = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
-
-#     if request.method == "POST":
-#         try:
-#             profile = company_user.company_profile
-#         except CompanyProfile.DoesNotExist:
-#             profile = CompanyProfile.objects.create(user=company_user)
-
-#         profile.admin_message = request.POST.get("admin_message", "").strip()
-#         profile.company_status = "ROLLBACK"
-
-#         rollback_fields = {}
-#         field_keys = [
-#             "trade_name", "legal_name", "ntn_number", "company_email",
-#             "company_type", "industry", "logo", "city",
-#             "legal_address", "country", "province", "website", "overview",
-#         ]
-#         for key in field_keys:
-#             reason = request.POST.get(f"field_{key}", "").strip()
-#             if reason:
-#                 rollback_fields[key] = reason
-
-#         profile.rejected_fields = rollback_fields
-#         profile.save()
-
-#         company_user.is_approved    = False
-#         company_user.company_status = "ROLLBACK"
-#         company_user.save()
-
-#         messages.success(request, f"{company_user.email} sent for rollback.")
-#         return redirect("custom_admin:admin_dashboard")
-
-#     try:
-#         profile = company_user.company_profile
-#     except CompanyProfile.DoesNotExist:
-#         profile = None
-
-#     return render(request, "custom_admin/rollback_company.html", {
-#         "company_user": company_user,
-#         "profile":      profile,
-#     })
-
-
-
-
 
 
 
@@ -655,10 +396,38 @@ def company_type(request):
     return render(request, "custom_admin/company_type.html")
 
 def admin_company(request):
-    return render(request, "custom_admin/admin_company.html")
+    companies = CustomUser.objects.filter(role="COMPANY").select_related("company_profile")
+
+    pending_companies = companies.filter(company_profile__company_status="PENDING")
+    approved_companies = companies.filter(company_profile__company_status="APPROVED")
+    rejected_companies = companies.filter(company_profile__company_status="REJECTED")
+    rollback_companies = companies.filter(company_profile__company_status="ROLLBACK")
+
+    context = {
+        "pending_companies": pending_companies,
+        "approved_companies": approved_companies,
+        "rejected_companies": rejected_companies,
+        "rollback_companies": rollback_companies,
+        "active_tab": request.GET.get("tab", "pending"),
+    }
+    return render(request, "custom_admin/admin_company.html", context)
 
 def admin_jobs(request):
-    return render(request, "custom_admin/admin_jobs.html")
+    published_jobs = JobPost.objects.filter(status="PUBLISHED").select_related("company").order_by("-created_at")
+    pending_jobs = JobPost.objects.filter(status="DRAFT").count()
+    featured_jobs = JobPost.objects.filter(visibility="public", status="PUBLISHED").count()
+    total_jobs = JobPost.objects.count()
+
+    context = {
+        "published_jobs": published_jobs,
+        "recent_published_jobs": published_jobs[:10],
+        "total_published_jobs": published_jobs.count(),
+        "active_jobs_count": published_jobs.count(),
+        "pending_jobs_count": pending_jobs,
+        "featured_jobs_count": featured_jobs,
+        "total_jobs_count": total_jobs,
+    }
+    return render(request, "custom_admin/admin_jobs.html", context)
 
 def candidate_list(request):
     return render(request, "custom_admin/candidate_list.html")
@@ -679,10 +448,7 @@ def admin_users(request):
 #     companies = CustomUser.objects.filter(role="COMPANY")
 #     return render(request, "custom_admin/admin_dashboard.html", {"companies": companies})
 def admin_company_list(request):
-    companies = CustomUser.objects.filter(role="COMPANY")
-    # Ya jo bhi aapka related model name ho: 'profile', 'company', etc.
-    
-    return redirect("custom_admin:admin_dashboard")
+    return redirect("custom_admin:admin_company")
 
 # @admin_login_required 
 # def approve_company(request, user_id):

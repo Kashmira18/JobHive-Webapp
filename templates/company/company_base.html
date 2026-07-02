@@ -550,44 +550,38 @@
             <div class="icon-wrapper">
                 <a href="javascript:void(0)" class="nav-icon-link" onclick="toggleDropdown('notifDropdown', event)">
                     <i class="fas fa-bell"></i>
+                    {% if unread_notifications_count %}
                     <span class="badge-dot"></span>
+                    {% endif %}
                 </a>
                 <div id="notifDropdown" class="header-dropdown-card">
                     <div class="card-header-custom">
                         <span>Notifications</span>
-                        <span class="badge bg-danger rounded-pill">3 New</span>
+                        {% if unread_notifications_count %}
+                        <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }} New</span>
+                        {% endif %}
                     </div>
                     <div class="card-body-custom">
-                        <div class="list-item-custom">
-                            <div class="item-avatar" style="background: #e3f2fd; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-briefcase" style="color: #2196f3;"></i>
+                        {% if notifications %}
+                            {% for notification in notifications %}
+                            <div class="list-item-custom">
+                                <div class="item-avatar" style="background: #e3f2fd; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-bell" style="color: #2196f3;"></i>
+                                </div>
+                                <div class="item-content">
+                                    <h6>{{ notification.title|default:"Notification" }}</h6>
+                                    <p>{{ notification.message }}</p>
+                                    <span class="item-time">{{ notification.created_at|timesince }} ago</span>
+                                </div>
                             </div>
-                            <div class="item-content">
-                                <h6>New Job Application</h6>
-                                <p>Alice applied for Senior Dev position.</p>
-                                <span class="item-time">10 mins ago</span>
+                            {% endfor %}
+                        {% else %}
+                            <div class="list-item-custom">
+                                <div class="item-content">
+                                    <p class="mb-0">No notifications yet.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="list-item-custom">
-                            <div class="item-avatar" style="background: #fff3cd; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-clock" style="color: #ffc107;"></i>
-                            </div>
-                            <div class="item-content">
-                                <h6>Interview Scheduled</h6>
-                                <p>Interview with John at 3 PM tomorrow.</p>
-                                <span class="item-time">1 hour ago</span>
-                            </div>
-                        </div>
-                        <div class="list-item-custom">
-                            <div class="item-avatar" style="background: #d4edda; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
-                            </div>
-                            <div class="item-content">
-                                <h6>Job Approved</h6>
-                                <p>Your job post has been approved.</p>
-                                <span class="item-time">2 hours ago</span>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
                     <div class="text-center p-2 border-top bg-light">
                         <a href="#" class="text-decoration-none small fw-bold">View All Notifications</a>

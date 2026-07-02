@@ -77,7 +77,7 @@ def approved_company_required(view_func):
         # Agar dono surton mein profile na mile:
         if not profile:
             messages.warning(request, "Please complete your company registration first.")
-            return redirect("company_registration")
+            return redirect("accounts:company_registration")
  
         # ✨ CHNAGE HERE: Status check ko case-insensitive aur user check ke sath flexible banaya
         status = profile.company_status or "PENDING"
@@ -88,7 +88,7 @@ def approved_company_required(view_func):
 
         if not (is_profile_approved or is_user_approved):
             messages.warning(request, "Your company account must be approved before posting jobs.")
-            return redirect("company_pending")
+            return redirect("accounts:company_pending")
  
         return view_func(request, *args, **kwargs)
     return wrapper

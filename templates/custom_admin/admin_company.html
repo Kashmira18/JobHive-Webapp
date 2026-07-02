@@ -360,6 +360,7 @@ body.dimmed .container-fluid {
                         <th>#</th>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Trade Name</th>
                         <th>Rejection Reason</th>
                         <th>Actions</th>
                     </tr>
@@ -370,6 +371,11 @@ body.dimmed .container-fluid {
                         <td>{{ forloop.counter }}</td>
                         <td>{{ company.username }}</td>
                         <td>{{ company.email }}</td>
+                        <td>
+                            {% if company.company_profile.trade_name %}
+                            {{ company.company_profile.trade_name }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
                         <td>
                             {% if company.company_profile.rejection_reason %}
                             {{ company.company_profile.rejection_reason|truncatechars:50 }}
@@ -388,7 +394,7 @@ body.dimmed .container-fluid {
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-3">No rejected companies</td>
+                        <td colspan="6" class="text-center text-muted py-3">No rejected companies</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -403,6 +409,7 @@ body.dimmed .container-fluid {
                         <th>#</th>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Trade Name</th>
                         <th>Admin Message</th>
                         <th>Actions</th>
                     </tr>
@@ -413,6 +420,11 @@ body.dimmed .container-fluid {
                         <td>{{ forloop.counter }}</td>
                         <td>{{ company.username }}</td>
                         <td>{{ company.email }}</td>
+                        <td>
+                            {% if company.company_profile.trade_name %}
+                            {{ company.company_profile.trade_name }}
+                            {% else %}<span class="text-muted">—</span>{% endif %}
+                        </td>
                         <td>
                             {% if company.company_profile.admin_message %}
                             {{ company.company_profile.admin_message|truncatechars:50 }}
@@ -431,7 +443,7 @@ body.dimmed .container-fluid {
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-3">No rollback companies</td>
+                        <td colspan="6" class="text-center text-muted py-3">No rollback companies</td>
                     </tr>
                     {% endfor %}
                 </tbody>

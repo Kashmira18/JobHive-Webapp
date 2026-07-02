@@ -308,65 +308,47 @@ body{
 
         <!-- Notification Dropdown -->
         <div class="dropdown">
-    <div class="nav-icon position-relative" data-bs-toggle="dropdown" style="cursor:pointer;">
-        <i class="bi bi-bell-fill"></i>
-        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle px-2">
-            3
-        </span>
-    </div>
+            <div class="nav-icon position-relative" data-bs-toggle="dropdown" style="cursor:pointer;">
+                <i class="bi bi-bell-fill"></i>
+                {% if unread_notifications_count %}
+                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle px-2">
+                    {{ unread_notifications_count }}
+                </span>
+                {% endif %}
+            </div>
 
-    <ul class="dropdown-menu dropdown-menu-end p-0 border-0 shadow notification-box">
-        
-        <!-- Header -->
-        <li class="notify-header d-flex justify-content-between align-items-center px-3 py-3">
-            <h6 class="mb-0 fw-bold">Notifications</h6>
-            <span class="badge bg-danger rounded-pill">3 New</span>
-        </li>
+            <ul class="dropdown-menu dropdown-menu-end p-0 border-0 shadow notification-box">
+                <li class="notify-header d-flex justify-content-between align-items-center px-3 py-3">
+                    <h6 class="mb-0 fw-bold">Notifications</h6>
+                    {% if unread_notifications_count %}
+                    <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }} New</span>
+                    {% endif %}
+                </li>
 
-        <!-- Item 1 -->
-        <li class="notify-item d-flex align-items-start px-3 py-3">
-            <div class="icon blue me-3">
-                <i class="bi bi-briefcase-fill"></i>
-            </div>
-            <div>
-                <h6 class="mb-1">New Job Application</h6>
-                <p class="mb-1 small text-muted">Alice applied for Senior Dev position.</p>
-                <small class="text-muted">10 mins ago</small>
-            </div>
-        </li>
+                {% if notifications %}
+                    {% for notification in notifications %}
+                    <li class="notify-item d-flex align-items-start px-3 py-3">
+                        <div class="icon blue me-3">
+                            <i class="bi bi-bell-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ notification.title|default:"Notification" }}</h6>
+                            <p class="mb-1 small text-muted">{{ notification.message }}</p>
+                            <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="px-3 py-3 text-muted small">No notifications yet.</li>
+                {% endif %}
 
-        <!-- Item 2 -->
-        <li class="notify-item d-flex align-items-start px-3 py-3">
-            <div class="icon yellow me-3">
-                <i class="bi bi-clock-fill"></i>
-            </div>
-            <div>
-                <h6 class="mb-1">Interview Scheduled</h6>
-                <p class="mb-1 small text-muted">Interview with John at 3 PM tomorrow.</p>
-                <small class="text-muted">1 hour ago</small>
-            </div>
-        </li>
-
-        <!-- Item 3 -->
-        <li class="notify-item d-flex align-items-start px-3 py-3">
-            <div class="icon green me-3">
-                <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div>
-                <h6 class="mb-1">Job Approved</h6>
-                <p class="mb-1 small text-muted">Your job post has been approved.</p>
-                <small class="text-muted">2 hours ago</small>
-            </div>
-        </li>
-
-        <!-- Footer -->
-        <li>
-            <a href="#" class="view-all text-center d-block py-3 fw-bold text-primary text-decoration-none">
-                View All Notifications
-            </a>
-        </li>
-    </ul>
-</div>
+                <li>
+                    <a href="#" class="view-all text-center d-block py-3 fw-bold text-primary text-decoration-none">
+                        View All Notifications
+                    </a>
+                </li>
+            </ul>
+        </div>
 
         <!-- Profile Dropdown -->
         <div class="dropdown">
@@ -395,7 +377,7 @@ body{
                 <li><hr class="dropdown-divider"></li>
 
                 <li>
-                    <a class="dropdown-item text-danger" href="#">
+                    <a class="dropdown-item text-danger" href="{% url 'custom_admin:logout' %}">
                         <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </a>
                 </li>
@@ -496,7 +478,7 @@ body{
         </li>
         
         <li>
-            <a href="#" class="menu-link">
+            <a href="{% url 'custom_admin:logout' %}" class="menu-link">
                 <i class="bi bi-box-arrow-right"></i>
                 <span class="menu-text">Logout</span>
             </a>
