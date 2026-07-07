@@ -1,0 +1,348 @@
+{% extends 'company/company_base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JobHive – My Profile</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        body { background: #F0F4F8; font-family: 'Plus Jakarta Sans', sans-serif; color: #1A1D2E; }
+        .text-brand { color: #31C2EF; }
+        .bg-brand { background: #31C2EF; }
+        
+        .settings-card { 
+            background: #fff; 
+            border: 1px solid #E4E6F0; 
+            border-radius: 16px; 
+            padding: 28px 30px; 
+            margin-bottom: 22px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,.04); 
+        }
+        
+        .card-title { 
+            font-weight: 700; 
+            font-size: 1rem; 
+            margin-bottom: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: #1A1D2E; 
+        }
+        .card-title i { color: #31C2EF; }
+        
+        .section-banner { 
+            background: linear-gradient(135deg, #1A1D2E 0%, #2a3050 60%, #1e3a5f 100%); 
+            border-radius: 16px; 
+            padding: 28px 32px; 
+            margin-bottom: 24px; 
+            color: #fff; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .section-banner::before { 
+            content: ''; 
+            position: absolute; 
+            top: -40px; right: -40px; 
+            width: 200px; height: 200px; 
+            background: radial-gradient(circle, rgba(49,194,239,.25) 0%, transparent 70%); 
+            border-radius: 50%; 
+        }
+        .section-banner h5 { font-weight: 800; font-size: 1.1rem; margin: 0; }
+        .section-banner p { font-size: .85rem; opacity: 0.8; margin-top: 4px; margin-bottom: 0; }
+        
+        .form-control, .form-select { 
+            border-radius: 10px; 
+            border: 1.5px solid #E4E6F0; 
+            font-size: .875rem; 
+            padding: 10px 14px; 
+            transition: all .2s;
+        }
+        .form-control:focus, .form-select:focus { 
+            border-color: #31C2EF !important; 
+            box-shadow: 0 0 0 3px rgba(49,194,239,.15) !important; 
+        }
+        
+        .input-group-text { 
+            background: #F8FAFC; 
+            border: 1.5px solid #E4E6F0; 
+            border-radius: 10px 0 0 10px; 
+            color: #64748b; 
+        }
+        
+        .btn-brand { 
+            background: linear-gradient(135deg, #31C2EF, #1da8d3); 
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            padding: 10px 24px; 
+            font-weight: 700; 
+            font-size: .875rem; 
+            transition: all .2s; 
+        }
+        .btn-brand:hover { 
+            background: linear-gradient(135deg, #28afd9, #1795bb); 
+            color: #fff; 
+            transform: translateY(-1px); 
+        }
+        
+        .form-label { 
+            font-weight: 600; 
+            font-size: .82rem; 
+            color: #374151; 
+            margin-bottom: 6px; 
+        }
+
+        /* Nav Tabs Layout (If keeping the menu visible) */
+        .settings-tabs-wrap { 
+            background: #fff; 
+            border-radius: 14px; 
+            padding: 6px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 4px; 
+            margin-bottom: 24px; 
+            border: 1px solid #E4E6F0; 
+        }
+        .settings-tab { 
+            padding: 9px 18px; 
+            border-radius: 10px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: .84rem; 
+            color: #6B7094; 
+            transition: all .18s; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        .settings-tab.active { background: #E3F3FA; color: #31C2EF; }
+        .settings-tab:hover:not(.active) { background: #F5F6FA; color: #1A1D2E; }
+    </style>
+</head>
+
+<body>
+
+    {% if messages %}
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+            {% for message in messages %}
+            <div class="toast show align-items-center text-bg-{{ message.tags|default:'dark' }} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body fw-semibold px-3 py-2">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="settings-tabs-wrap">
+        <a href="?tab=myprofile" class="settings-tab active">
+            <i class="fas fa-user"></i> My Profile
+        </a>
+        <a href="?tab=security" class="settings-tab">
+            <i class="fas fa-lock"></i> Security
+        </a>
+        <a href="?tab=notifications" class="settings-tab">
+            <i class="fas fa-bell"></i> Notifications
+        </a>
+        <a href="?tab=billing" class="settings-tab">
+            <i class="fas fa-credit-card"></i> Billing
+        </a>
+        <a href="?tab=danger" class="settings-tab">
+            <i class="fas fa-triangle-exclamation"></i> Danger Zone
+        </a>
+    </div>
+
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_profile">
+
+        <div class="section-banner">
+            <h5><i class="fas fa-user-circle me-2"></i>My Profile</h5>
+            <p>Fill in your personal and company details to complete your account setup.</p>
+        </div>
+
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-user"></i> Owner Information</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">First Name <span class="text-danger">*</span></label>
+                    {{ user_form.first_name }}
+                    {% if user_form.first_name.errors %}
+                        <div class="text-danger small mt-1">{{ user_form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                    {{ user_form.last_name }}
+                    {% if user_form.last_name.errors %}
+                        <div class="text-danger small mt-1">{{ user_form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Username <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-at"></i></span>
+                        {{ user_form.username }}
+                    </div>
+                    {% if user_form.username.errors %}
+                        <div class="text-danger small mt-1">{{ user_form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        {{ user_form.email }}
+                    </div>
+                    {% if user_form.email.errors %}
+                        <div class="text-danger small mt-1">{{ user_form.email.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if profile_form %}
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-building"></i> Company Information</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Trade Name <span class="text-danger">*</span></label>
+                    {{ profile_form.trade_name }}
+                    {% if profile_form.trade_name.errors %}
+                        <div class="text-danger small mt-1">{{ profile_form.trade_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Legal Name <span class="text-danger">*</span></label>
+                    {{ profile_form.legal_name }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">NTN / CUIN</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                        {{ profile_form.ntn_number }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Company Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        {{ profile_form.company_email }}
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label">Company Phone</label>
+                    {{ profile_form.company_phone }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Landline</label>
+                    {{ profile_form.landline }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Website URL</label>
+                    {{ profile_form.website }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Company Type</label>
+                    {{ profile_form.company_type }}
+                </div>
+                
+                <div class="col-md-4">
+                    <label class="form-label">Industry</label>
+                    {{ profile_form.industry }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Country</label>
+                    {{ profile_form.country }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    {{ profile_form.city }}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Legal Address</label>
+                    {{ profile_form.legal_address }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Company Overview</label>
+                    {{ profile_form.overview }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-image"></i> Company Logo</div>
+            <div id="logoDropZone" onclick="document.getElementById('logoUpload').click()" 
+                 style="border: 2px dashed #31C2EF; border-radius: 14px; padding: 40px 20px; text-align: center; cursor: pointer; background: #F8FAFC; transition: background .2s;">
+                
+                {{ profile_form.logo }}
+                
+                <div id="logoPreviewWrap">
+                    <i class="fas fa-cloud-arrow-up fa-2x text-brand mb-3 d-block"></i>
+                    <p class="fw-600 mb-1" style="font-weight:600;">Click to browse or replace logo file</p>
+                    <p class="text-muted small mb-0">PNG, JPG or JPEG (Max 5MB)</p>
+                </div>
+                
+                <img id="logoPreviewImg" src="" alt="Logo Preview" 
+                     style="max-height:120px; max-width:250px; border-radius:10px; display:none; margin:0 auto;" />
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="d-flex justify-content-end mb-5">
+            <button type="submit" class="btn btn-brand px-5 py-2">
+                <i class="fas fa-floppy-disk me-2"></i> Save Profile Settings
+            </button>
+        </div>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Bootstrap Toasts
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, { delay: 4000 });
+            });
+            toastList.forEach(toast => toast.show());
+        });
+
+        // Instant Logo Upload Preview Logic
+        function previewMyLogo(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById('logoPreviewImg');
+                    var wrap = document.getElementById('logoPreviewWrap');
+                    
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    wrap.style.display = 'none';
+                    
+                    // Optional: Visual cue that it's queued for save
+                    document.getElementById('logoDropZone').style.borderColor = '#16A34A';
+                    document.getElementById('logoDropZone').style.background = '#F0FDF4';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

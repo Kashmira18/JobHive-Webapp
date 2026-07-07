@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'job',
     'applications',
     'notifications',
+    'billing',
 
     #All-Auth
     "allauth",

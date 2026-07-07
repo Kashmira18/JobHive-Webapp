@@ -1,13 +1,15 @@
 from django import forms
 from job.models import JobPost
+from django.contrib.auth import get_user_model
+from accounts.models import CompanyProfile
 
+User = get_user_model()
 
 class JobPostForm(forms.ModelForm):
     """
     ModelForm for JobPost — excludes company, status, created_at.
     These are set in the view.
     """
-
     class Meta:
         model  = JobPost
         exclude = ["company", "status", "created_at", "updated_at"]
@@ -143,3 +145,45 @@ class JobPostForm(forms.ModelForm):
             if not cleaned.get("salary_min") and not cleaned.get("salary_max"):
                 pass  # optional — allow empty range
         return cleaned
+
+# ─────────────────────────────────────────────────────────
+#  NEW: SETTINGS FORMS
+# ─────────────────────────────────────────────────────────
+class CompanyUserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'owner@example.com'}),
+        }
+
+class CompanyProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CompanyProfile
+        # Adapt these fields to match your exact CompanyProfile model columns
+        fields = [
+            'trade_name', 'legal_name', 'ntn_number', 'company_email',
+            'company_phone', 'landline', 'website', 'company_type',
+            'industry', 'country', 'province', 'city', 'legal_address',
+            'overview', 'logo'
+        ]
+        widgets = {
+            'trade_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter trade name'}),
+            'legal_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter legal name'}),
+            'ntn_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter NTN/CUIN'}),
+            'company_email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'info@company.com'}),
+            'company_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '300 1234567'}),
+            'landline': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+92 21 12345678'}),
+            'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://www.company.com'}),
+            'company_type': forms.Select(attrs={'class': 'form-select'}),
+            'industry': forms.Select(attrs={'class': 'form-select'}),
+            'country': forms.Select(attrs={'class': 'form-select'}),
+            'province': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter state or province'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter city'}),
+            'legal_address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter complete address'}),
+            'overview': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe your company'}),
+            'logo': forms.FileInput(attrs={'class': 'd-none', 'id': 'logoUpload', 'onchange': 'previewMyLogo(this)'}),
+        }

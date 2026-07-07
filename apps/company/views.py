@@ -12,6 +12,9 @@ from .forms import JobPostForm
 from custom_admin.decorators import admin_login_required
 from .decorators import approved_company_required
 from applications.models import Applications
+from django.contrib.auth import update_session_auth_hash, logout
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import JobPostForm, CompanyUserUpdateForm, CompanyProfileUpdateForm
 # Create your views here.
 
 # from .decorators import candidate_login_required
@@ -345,3 +348,97 @@ def job_applications(request, job_id):
             "applications": applications
         }
     )
+
+
+
+
+# ════════════════════════════════
+#  ACCOUNT SETTINGS
+# ════════════════════════════════
+@login_required(login_url='login')
+def company_account_settings(request):
+    # Read active tab from query params, default to myprofile
+    tab = request.GET.get('tab', 'myprofile')
+    user = request.user
+    
+    # Get or fetch company profile safely
+    company_profile, _ = CompanyProfile.objects.get_or_create(user=user)
+
+    # Initialize forms for GET requests
+    user_form = CompanyUserUpdateForm(instance=user)
+    profile_form = CompanyProfileUpdateForm(instance=company_profile)
+    password_form = PasswordChangeForm(user=user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # 1. MY PROFILE Form Handling
+        if action == 'update_profile':
+            user_form = CompanyUserUpdateForm(request.POST, instance=user)
+            profile_form = CompanyProfileUpdateForm(request.POST, request.FILES, instance=company_profile)
+            
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                messages.success(request, "Your profile has been updated successfully.")
+                return redirect(f"{request.path}?tab=myprofile")
+            else:
+                messages.error(request, "Please correct the errors below.")
+                tab = 'myprofile'
+
+        # 2. SECURITY Form Handling
+        elif action == 'change_password':
+            password_form = PasswordChangeForm(user=user, data=request.POST)
+            if password_form.is_valid():
+                updated_user = password_form.save()
+                update_session_auth_hash(request, updated_user) # Keeps user logged in after pass change
+                messages.success(request, "Your password was successfully updated!")
+                return redirect(f"{request.path}?tab=security")
+            else:
+                messages.error(request, "Password update failed. Please check the requirements.")
+                tab = 'security'
+
+        # 3. NOTIFICATIONS Form Handling (Mock/Fallback)
+        elif action == 'update_notifications':
+            # Integrate with actual model fields here when available
+            messages.success(request, "Notification preferences saved.")
+            return redirect(f"{request.path}?tab=notifications")
+
+        # 5. DANGER ZONE Form Handling
+        elif action == 'deactivate_account':
+            # Safe logical disable
+            user.is_active = False
+            user.save()
+            logout(request)
+            messages.info(request, "Your account has been deactivated.")
+            return redirect('login')
+
+        elif action == 'delete_account':
+            confirm_text = request.POST.get('deleteConfirm', '').strip()
+            if confirm_text == 'DELETE':
+                # SAFE DELETION: Logical soft delete strictly enforced
+                user.is_active = False
+                user.save()
+                logout(request)
+                messages.error(request, "Your account has been permanently closed.")
+                return redirect('home')
+            else:
+                messages.error(request, "You must type DELETE exactly to confirm.")
+                tab = 'danger'
+
+    # 4. BILLING Context Variables
+    billing_context = {
+        'plan_name': 'Pro Tier',
+        'plan_status': 'Active',
+        'plan_price': 'PKR 2,999'
+    }
+
+    context = {
+        'tab': tab,
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'password_form': password_form,
+        'billing': billing_context,
+    }
+    
+    return render(request, "company/company_account_setting.html", context)

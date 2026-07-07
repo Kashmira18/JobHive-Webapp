@@ -41,4 +41,5 @@ urlpatterns = [
     path('company/', include('company.urls')),
     path('application/', include('applications.urls')),
     path('notifications/', include('notifications.urls', namespace='notifications')),
+    path('billing/', include('billing.urls', namespace='billing')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
