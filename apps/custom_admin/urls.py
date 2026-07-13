@@ -30,5 +30,11 @@ urlpatterns = [
     path("company/<int:user_id>/rollback/", views.rollback_company,     name="rollback_company"),
     # path("company/<int:user_id>/delete/",   views.delete_company,       name="delete_company"),
     # path("company/<int:user_id>/edit/",     views.edit_company,         name="edit_company"),
-    # path("company/<int:user_id>/update/",   views.update_company,       name="update_company")
+    # path("company/<int:user_id>/update/",   views.update_company,       name="update_company"),
+    #_________billing____________
+    # path("billing/", views.admin_billing, name="billing"),
+    path("payments/", views.admin_payments, name="admin_payments"),
+    path("payments/<int:log_id>/approve/", views.approve_payment, name="approve_payment"),
+    path("payments/<int:log_id>/reject/", views.reject_payment, name="reject_payment"),
+    path("plans/manage/", views.manage_plans, name="manage_plans"),
 ]

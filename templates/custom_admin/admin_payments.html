@@ -1,0 +1,51 @@
+{% extends 'custom_admin/admin_layout.html' %}
+{% block content %}
+<div class="container-fluid py-4">
+    <h3 class="fw-bold mb-4">Payment Verification</h3>
+    
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-header bg-warning text-dark fw-bold">Pending Approvals</div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Company</th>
+                        <th>Txn ID</th>
+                        <th>Sender Account</th>
+                        <th>Gateway</th>
+                        <th>Amount</th>
+                        <th>Plan</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in pending_payments %}
+                    <tr>
+                        <td>{{ log.timestamp|date:"d M Y, h:i A" }}</td>
+                        <td class="fw-bold">{{ log.company.trade_name }}</td>
+                        <td class="font-monospace">{{ log.transaction_id }}</td>
+                        <td>{{ log.account_number }}</td>
+                        <td>{{ log.gateway }}</td>
+                        <td>PKR {{ log.amount }}</td>
+                        <td>{{ log.plan.name }}</td>
+                        <td>
+                            <form action="{% url 'custom_admin:approve_payment' log.id %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve payment and upgrade plan?')"><i class="fas fa-check"></i> Approve</button>
+                            </form>
+                            <form action="{% url 'custom_admin:reject_payment' log.id %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this payment?')"><i class="fas fa-times"></i> Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No pending payments.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

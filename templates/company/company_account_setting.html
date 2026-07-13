@@ -363,161 +363,156 @@
             </div>
         </form>
     </div>
-
     <div class="tab-panel {% if tab == 'billing' %}active{% endif %}" id="tab-billing">
         <div class="section-banner">
-            <h5><i class="fas fa-credit-card me-2"></i>Billing & Plans</h5>
+            <h5><i class="fas fa-credit-card me-2"></i>Billing &amp; Plans</h5>
+            <p>Manage your subscription, credits, and payment methods securely.</p>
         </div>
 
-        <!-- <div class="settings-card">
-            <div class="card-title"><i class="fas fa-star"></i> Current Plan</div>
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mt-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="px-4 py-3 rounded-3 text-center" style="background:#E3F3FA; border:2px solid #31C2EF; min-width:110px;">
-                        <p class="text-brand fw-bold fs-5 mb-0">{{ billing.plan_name|upper }}</p>
-                    </div>
-                    <div>
-                        <p class="fw-bold mb-1">Status: {{ billing.plan_status }}</p>
-                        <p class="text-muted small mb-0">Cost: {{ billing.plan_price }}</p>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <div class="tab-panel {% if tab == 'billing' %}active{% endif %}" id="tab-billing">
-    <div class="section-banner">
-        <h5><i class="fas fa-credit-card me-2"></i>Billing & Plans</h5>
-        <p>Manage your subscription, credits, and payment methods securely.</p>
-    </div>
-
-    <div class="row g-3 mb-4">
-        <div class="col-md-6">
-            <div class="settings-card h-100 mb-0">
-                <div class="card-title"><i class="fas fa-star"></i> Current Plan</div>
-                <div class="d-flex align-items-center gap-3 mt-3">
-                    <div class="px-4 py-3 rounded-3 text-center" style="background:#E3F3FA; border:2px solid #31C2EF; min-width:110px;">
-                        <p class="text-brand fw-bold fs-5 mb-0">{{ subscription.current_plan.name|upper }}</p>
-                    </div>
-                    <div>
-                        <p class="fw-bold mb-1">Status: <span class="text-success">{{ subscription.status }}</span></p>
-                        <p class="text-muted small mb-0">Job Posts Limit: {{ subscription.current_plan.job_post_limit }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="settings-card h-100 mb-0">
-                <div class="card-title"><i class="fas fa-coins text-warning"></i> Available Credits</div>
-                <div class="d-flex align-items-center gap-3 mt-3">
-                    <h2 class="fw-bold mb-0">{{ credits.available_credits }}</h2>
-                    <p class="text-muted small mb-0 lh-sm">Credits are used to permanently unlock<br>candidate contact info & resumes.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="settings-card">
-        <div class="card-title"><i class="fas fa-cart-plus"></i> Purchase & Top-up</div>
-        
-        <div class="row g-3 mt-2">
+        <div class="row g-3 mb-4">
             <div class="col-md-6">
-                <div class="p-4 rounded-3 border" style="background:#FFFDF8; border-color:#FDE047 !important;">
-                    <h6 class="fw-bold">Professional Plan</h6>
-                    <p class="fw-bold text-brand fs-4 mb-1">PKR 2,999<span class="fs-6 text-muted fw-normal">/mo</span></p>
-                    <ul class="text-muted small ps-3 mb-3">
-                        <li>Unlimited Active Jobs</li>
-                        <li>Advanced Analytics</li>
-                        <li>20 Monthly Unlock Credits</li>
-                    </ul>
-                    <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Pro_Plan">Upgrade to Pro</button>
+                <div class="settings-card h-100 mb-0">
+                    <div class="card-title"><i class="fas fa-star"></i> Current Plan</div>
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        <div class="px-4 py-3 rounded-3 text-center" style="background:#E3F3FA; border:2px solid #31C2EF; min-width:110px;">
+                            <p class="text-brand fw-bold fs-5 mb-0">{{ subscription.current_plan.name|upper }}</p>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-1">Status: 
+                                {% if subscription.status == 'Active' %}
+                                    <span class="text-success">Active</span>
+                                {% else %}
+                                    <span class="text-danger">{{ subscription.status }}</span>
+                                {% endif %}
+                            </p>
+                            <p class="text-muted small mb-0">Job Posts Limit: {{ subscription.current_plan.job_post_limit }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="p-4 rounded-3 border bg-light">
-                    <h6 class="fw-bold">Credit Bundle</h6>
-                    <p class="fw-bold text-dark fs-4 mb-1">PKR 500<span class="fs-6 text-muted fw-normal">/pack</span></p>
-                    <ul class="text-muted small ps-3 mb-3">
-                        <li>10 Profile Unlock Credits</li>
-                        <li>Never expires</li>
-                        <li>Instant allocation</li>
-                    </ul>
-                    <button class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Credit_Bundle">Buy Credits</button>
+                <div class="settings-card h-100 mb-0">
+                    <div class="card-title"><i class="fas fa-coins text-warning"></i> Available Credits</div>
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        <h2 class="fw-bold mb-0">{{ credits.available_credits }}</h2>
+                        <p class="text-muted small mb-0 lh-sm">Credits are used to permanently unlock<br>candidate contact info &amp; resumes.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="settings-card">
-        <div class="card-title"><i class="fas fa-history"></i> Payment History</div>
-        <div class="table-responsive mt-3">
-            <table class="table table-hover align-middle small">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Transaction ID</th>
-                        <th>Gateway</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for log in payment_logs %}
-                    <tr>
-                        <td>{{ log.timestamp|date:"d M Y" }}</td>
-                        <td class="font-monospace text-muted">{{ log.transaction_id }}</td>
-                        <td>{{ log.gateway }}</td>
-                        <td class="fw-semibold">PKR {{ log.amount }}</td>
-                        <td>
-                            {% if log.status == 'Success' %}<span class="badge bg-success">Success</span>
-                            {% elif log.status == 'Pending' %}<span class="badge bg-warning text-dark">Pending</span>
-                            {% else %}<span class="badge bg-danger">Failed</span>{% endif %}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="5" class="text-center text-muted py-3">No transactions found.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="paymentModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius:16px;">
-            <div class="modal-header border-bottom-0 pb-0">
-                <h6 class="modal-title fw-bold"><i class="fas fa-lock text-success me-2"></i>Secure Checkout</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body pt-2">
-                <form action="{% url 'billing:initiate_payment' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="package_type" id="pkgTypeInput">
-                    
-                    <label class="form-label small">Select Payment Method</label>
-                    <div class="d-flex gap-2 mb-3">
-                        <div class="form-check border rounded p-2 flex-fill">
-                            <input class="form-check-input ms-1 mt-1" type="radio" name="gateway" id="ep" value="EasyPaisa" checked>
-                            <label class="form-check-label fw-bold ms-2" style="color:#119D4F;" for="ep">EasyPaisa</label>
-                        </div>
-                        <div class="form-check border rounded p-2 flex-fill">
-                            <input class="form-check-input ms-1 mt-1" type="radio" name="gateway" id="jc" value="JazzCash">
-                            <label class="form-check-label fw-bold ms-2" style="color:#D32F2F;" for="jc">JazzCash</label>
-                        </div>
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-cart-plus"></i> Purchase &amp; Top-up</div>
+            
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <div class="p-4 rounded-3 border" style="background:#FFFDF8; border-color:#FDE047 !important;">
+                        <h6 class="fw-bold">Professional Plan</h6>
+                        <p class="fw-bold text-brand fs-4 mb-1">PKR 2,999<span class="fs-6 text-muted fw-normal">/mo</span></p>
+                        <ul class="text-muted small ps-3 mb-3">
+                            <li>Unlimited Active Jobs</li>
+                            <li>Advanced Analytics</li>
+                            <li>20 Monthly Unlock Credits</li>
+                        </ul>
+                        {% if pro_plan %}
+                            <a href="{% url 'billing:checkout' pro_plan.id %}" class="btn btn-brand w-100">Upgrade to Pro</a>
+                        {% else %}
+                            <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Pro_Plan">Upgrade to Pro</button>
+                        {% endif %}
                     </div>
-
-                    <label class="form-label small">Mobile Wallet Number</label>
-                    <div class="input-group mb-4">
-                        <span class="input-group-text bg-light">+92</span>
-                        <input type="text" name="mobile_number" class="form-control" placeholder="3XX XXXXXXX" required>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-4 rounded-3 border bg-light">
+                        <h6 class="fw-bold">Credit Bundle</h6>
+                        <p class="fw-bold text-dark fs-4 mb-1">PKR 500<span class="fs-6 text-muted fw-normal">/pack</span></p>
+                        <ul class="text-muted small ps-3 mb-3">
+                            <li>10 Profile Unlock Credits</li>
+                            <li>Never expires</li>
+                            <li>Instant allocation</li>
+                        </ul>
+                        <button class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Credit_Bundle">Buy Credits</button>
                     </div>
-
-                    <button type="submit" class="btn btn-brand w-100 py-2">Pay Now</button>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
+        <div class="settings-card">
+            <div class="card-title"><i class="fas fa-history"></i> Payment History</div>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover align-middle small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Transaction ID</th>
+                            <th>Gateway</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in payment_logs %}
+                        <tr>
+                            <td>{{ log.timestamp|date:"d M Y" }}</td>
+                            <td class="font-monospace text-muted">{{ log.transaction_id }}</td>
+                            <td>{{ log.gateway }}</td>
+                            <td class="fw-semibold">PKR {{ log.amount }}</td>
+                            <td>
+                                {% if log.status == 'Approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif log.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif log.status == 'Rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ log.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center text-muted py-3">No transactions found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0" style="border-radius:16px;">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h6 class="modal-title fw-bold"><i class="fas fa-lock text-success me-2"></i>Secure Checkout</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body pt-2">
+                        <form action="{% url 'billing:initiate_payment' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="package_type" id="pkgTypeInput">
+                            
+                            <label class="form-label small">Select Payment Method</label>
+                            <div class="d-flex gap-2 mb-3">
+                                <div class="form-check border rounded p-2 flex-fill">
+                                    <input class="form-check-input ms-1 mt-1" type="radio" name="gateway" id="ep" value="EasyPaisa" checked>
+                                    <label class="form-check-label fw-bold ms-2" style="color:#119D4F;" for="ep">EasyPaisa</label>
+                                </div>
+                                <div class="form-check border rounded p-2 flex-fill">
+                                    <input class="form-check-input ms-1 mt-1" type="radio" name="gateway" id="jc" value="JazzCash">
+                                    <label class="form-check-label fw-bold ms-2" style="color:#D32F2F;" for="jc">JazzCash</label>
+                                </div>
+                            </div>
+
+                            <label class="form-label small">Mobile Wallet Number</label>
+                            <div class="input-group mb-4">
+                                <span class="input-group-text bg-light">+92</span>
+                                <input type="text" name="mobile_number" class="form-control" placeholder="3XX XXXXXXX" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-brand w-100 py-2">Pay Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="tab-panel {% if tab == 'danger' %}active{% endif %}" id="tab-danger">

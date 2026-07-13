@@ -476,6 +476,20 @@ body{
                 <span class="menu-text">Email Template</span>
             </a>
         </li>
+
+        <li>
+            <a href="{% url 'custom_admin:admin_payments' %}" class="menu-link">
+                <i class="bi bi-credit-card-fill"></i>
+                <span class="menu-text">Billing / Payments</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'custom_admin:manage_plans' %}" class="menu-link">
+                <i class="bi bi-box-seam-fill"></i>
+                <span class="menu-text">Manage Plans</span>
+            </a>
+        </li>
         
         <li>
             <a href="{% url 'custom_admin:logout' %}" class="menu-link">

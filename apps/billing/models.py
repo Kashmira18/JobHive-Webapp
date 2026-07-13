@@ -3,6 +3,7 @@ from django.utils import timezone
 from accounts.models import CompanyProfile # Adjust import path
 from candidate.models import CandidateProfile # Adjust import path
 
+
 class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=50, unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -44,10 +45,12 @@ class ProfileUnlock(models.Model):
 
 class PaymentLog(models.Model):
     company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE)
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True)
     transaction_id = models.CharField(max_length=100, unique=True)
+    account_number = models.CharField(max_length=20, null=True, blank=True) # Added to store sender's wallet number
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     gateway = models.CharField(max_length=20, choices=[('EasyPaisa', 'EasyPaisa'), ('JazzCash', 'JazzCash')])
-    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Success', 'Success'), ('Failed', 'Failed')], default='Pending')
+    status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Pending')
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

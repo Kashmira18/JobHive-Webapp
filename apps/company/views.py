@@ -1,6 +1,7 @@
 import profile
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 
 from accounts.models import CompanyProfile
 from django.contrib.auth.decorators import login_required
@@ -10,11 +11,12 @@ from django.http import JsonResponse
 from job.models import JobPost
 from .forms import JobPostForm
 from custom_admin.decorators import admin_login_required
-from .decorators import approved_company_required
+# from .decorators import approved_company_required
 from applications.models import Applications
 from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import JobPostForm, CompanyUserUpdateForm, CompanyProfileUpdateForm
+from billing.models import CompanySubscription, CompanyCredit, PaymentLog, SubscriptionPlan
 # Create your views here.
 
 # from .decorators import candidate_login_required
@@ -137,7 +139,7 @@ def company_messenger(request):
 # @company_required
 @login_required
 def company_my_profile(request):
-    # profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
     return render(request, "company/company_my_profile.html", {"profile": profile})
 
 
@@ -153,7 +155,7 @@ def company_account_settings(request):
 # ─────────────────────────────────────────────────────────
 #  CREATE JOB
 # ─────────────────────────────────────────────────────────
-@approved_company_required
+# @approved_company_required
 # def create_job(request):
 def company_job_post(request, job_id=None):
     """
@@ -264,7 +266,7 @@ def company_job_post(request, job_id=None):
 # ─────────────────────────────────────────────────────────
 #  MANAGE JOBS (company's own job list)
 # ─────────────────────────────────────────────────────────
-@approved_company_required
+# @approved_company_required
 def manage_jobs(request):
     """
     List all jobs posted by the logged-in company.
@@ -298,7 +300,7 @@ def manage_jobs(request):
 # ─────────────────────────────────────────────────────────
 #  CLOSE / DELETE JOB
 # ─────────────────────────────────────────────────────────
-@approved_company_required
+# @approved_company_required
 def close_job(request, job_id):
     profile = request.user.company_profile
     job     = get_object_or_404(JobPost, pk=job_id, company=profile)
@@ -308,7 +310,7 @@ def close_job(request, job_id):
     return redirect("company:company_job_list")
 
 
-@approved_company_required
+# @approved_company_required
 def delete_job(request, job_id):
     profile = request.user.company_profile
     job     = get_object_or_404(JobPost, pk=job_id, company=profile)
@@ -318,7 +320,7 @@ def delete_job(request, job_id):
     return redirect("company:company_job_list")
 
 
-@approved_company_required
+# @approved_company_required
 def publish_job(request, job_id):
     profile = request.user.company_profile
     job     = get_object_or_404(JobPost, pk=job_id, company=profile)
@@ -391,7 +393,7 @@ def company_account_settings(request):
             password_form = PasswordChangeForm(user=user, data=request.POST)
             if password_form.is_valid():
                 updated_user = password_form.save()
-                update_session_auth_hash(request, updated_user) # Keeps user logged in after pass change
+                update_session_auth_hash(request, updated_user)
                 messages.success(request, "Your password was successfully updated!")
                 return redirect(f"{request.path}?tab=security")
             else:
@@ -400,13 +402,11 @@ def company_account_settings(request):
 
         # 3. NOTIFICATIONS Form Handling (Mock/Fallback)
         elif action == 'update_notifications':
-            # Integrate with actual model fields here when available
             messages.success(request, "Notification preferences saved.")
             return redirect(f"{request.path}?tab=notifications")
 
         # 5. DANGER ZONE Form Handling
         elif action == 'deactivate_account':
-            # Safe logical disable
             user.is_active = False
             user.save()
             logout(request)
@@ -416,7 +416,6 @@ def company_account_settings(request):
         elif action == 'delete_account':
             confirm_text = request.POST.get('deleteConfirm', '').strip()
             if confirm_text == 'DELETE':
-                # SAFE DELETION: Logical soft delete strictly enforced
                 user.is_active = False
                 user.save()
                 logout(request)
@@ -426,19 +425,136 @@ def company_account_settings(request):
                 messages.error(request, "You must type DELETE exactly to confirm.")
                 tab = 'danger'
 
-    # 4. BILLING Context Variables
-    billing_context = {
-        'plan_name': 'Pro Tier',
-        'plan_status': 'Active',
-        'plan_price': 'PKR 2,999'
-    }
+    # ════════════════════════════════
+    #  NEW: BILLING DATA FETCHING
+    # ════════════════════════════════
+    
+    # 1. Fetch or create Subscription (Handles old accounts gracefully)
+    try:
+        subscription = company_profile.subscription
+        # Dynamically check and update expired subscriptions
+        if subscription.status == 'Active' and subscription.end_date and subscription.end_date < timezone.now():
+            subscription.status = 'Expired'
+            subscription.save()
+    except CompanySubscription.DoesNotExist:
+        free_plan, _ = SubscriptionPlan.objects.get_or_create(
+            name="Free", 
+            defaults={'price': 0, 'job_post_limit': 3, 'monthly_credits': 0}
+        )
+        subscription = CompanySubscription.objects.create(
+            company=company_profile, 
+            current_plan=free_plan, 
+            status='Active'
+        )
+
+    # 2. Fetch or create Credits
+    try:
+        credits = company_profile.credits
+    except CompanyCredit.DoesNotExist:
+        credits = CompanyCredit.objects.create(company=company_profile, available_credits=0)
+
+    # 3. Fetch Payment History
+    payment_logs = PaymentLog.objects.filter(company=company_profile).order_by('-timestamp')
+
+    # 4. Fetch Professional Subscription Plan
+    pro_plan = SubscriptionPlan.objects.filter(name__icontains='Professional').first()
 
     context = {
         'tab': tab,
         'user_form': user_form,
         'profile_form': profile_form,
         'password_form': password_form,
-        'billing': billing_context,
+        'subscription': subscription,  # Passed to template
+        'credits': credits,            # Passed to template
+        'payment_logs': payment_logs,  # Passed to template
+        'pro_plan': pro_plan,          # Passed to template
     }
     
     return render(request, "company/company_account_setting.html", context)
+# @login_required(login_url='login')
+# def company_account_settings(request):
+#     # Read active tab from query params, default to myprofile
+#     tab = request.GET.get('tab', 'myprofile')
+#     user = request.user
+    
+#     # Get or fetch company profile safely
+#     company_profile, _ = CompanyProfile.objects.get_or_create(user=user)
+
+#     # Initialize forms for GET requests
+#     user_form = CompanyUserUpdateForm(instance=user)
+#     profile_form = CompanyProfileUpdateForm(instance=company_profile)
+#     password_form = PasswordChangeForm(user=user)
+
+#     if request.method == 'POST':
+#         action = request.POST.get('action')
+
+#         # 1. MY PROFILE Form Handling
+#         if action == 'update_profile':
+#             user_form = CompanyUserUpdateForm(request.POST, instance=user)
+#             profile_form = CompanyProfileUpdateForm(request.POST, request.FILES, instance=company_profile)
+            
+#             if user_form.is_valid() and profile_form.is_valid():
+#                 user_form.save()
+#                 profile_form.save()
+#                 messages.success(request, "Your profile has been updated successfully.")
+#                 return redirect(f"{request.path}?tab=myprofile")
+#             else:
+#                 messages.error(request, "Please correct the errors below.")
+#                 tab = 'myprofile'
+
+#         # 2. SECURITY Form Handling
+#         elif action == 'change_password':
+#             password_form = PasswordChangeForm(user=user, data=request.POST)
+#             if password_form.is_valid():
+#                 updated_user = password_form.save()
+#                 update_session_auth_hash(request, updated_user) # Keeps user logged in after pass change
+#                 messages.success(request, "Your password was successfully updated!")
+#                 return redirect(f"{request.path}?tab=security")
+#             else:
+#                 messages.error(request, "Password update failed. Please check the requirements.")
+#                 tab = 'security'
+
+#         # 3. NOTIFICATIONS Form Handling (Mock/Fallback)
+#         elif action == 'update_notifications':
+#             # Integrate with actual model fields here when available
+#             messages.success(request, "Notification preferences saved.")
+#             return redirect(f"{request.path}?tab=notifications")
+
+#         # 5. DANGER ZONE Form Handling
+#         elif action == 'deactivate_account':
+#             # Safe logical disable
+#             user.is_active = False
+#             user.save()
+#             logout(request)
+#             messages.info(request, "Your account has been deactivated.")
+#             return redirect('login')
+
+#         elif action == 'delete_account':
+#             confirm_text = request.POST.get('deleteConfirm', '').strip()
+#             if confirm_text == 'DELETE':
+#                 # SAFE DELETION: Logical soft delete strictly enforced
+#                 user.is_active = False
+#                 user.save()
+#                 logout(request)
+#                 messages.error(request, "Your account has been permanently closed.")
+#                 return redirect('home')
+#             else:
+#                 messages.error(request, "You must type DELETE exactly to confirm.")
+#                 tab = 'danger'
+
+#     # 4. BILLING Context Variables
+#     billing_context = {
+#         'plan_name': 'Pro Tier',
+#         'plan_status': 'Active',
+#         'plan_price': 'PKR 2,999'
+#     }
+
+#     context = {
+#         'tab': tab,
+#         'user_form': user_form,
+#         'profile_form': profile_form,
+#         'password_form': password_form,
+#         'billing': billing_context,
+#     }
+    
+#     return render(request, "company/company_account_setting.html", context)

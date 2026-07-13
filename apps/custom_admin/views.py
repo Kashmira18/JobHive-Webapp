@@ -16,6 +16,13 @@ from django.contrib.admin.views.decorators import staff_member_required
 from accounts.models import CompanyProfile, CustomUser, CompanyRejection
 from job.models import JobPost
 
+# from django.contrib import messages
+from billing.models import PaymentLog, CompanySubscription, CompanyCredit
+# from notifications.models import Notification
+from django.utils import timezone
+# from .decorators import admin_login_required
+from billing.models import SubscriptionPlan
+
 User = get_user_model()
 
 
@@ -480,3 +487,114 @@ def admin_company_list(request):
 #     company = get_object_or_404(CustomUser, pk=user_id, role="COMPANY")
 #     # Implement form handling for editing company details
 #     return render(request, "custom_admin/edit_company.html", {"company": company})
+
+
+
+
+
+# ___________ billing ___________
+
+@admin_login_required
+def admin_payments(request):
+    """View to list all payments for admin"""
+    pending_payments = PaymentLog.objects.filter(status='Pending').order_by('-timestamp')
+    history_payments = PaymentLog.objects.exclude(status='Pending').order_by('-timestamp')
+    
+    context = {
+        'pending_payments': pending_payments,
+        'history_payments': history_payments,
+    }
+    return render(request, "custom_admin/admin_payments.html", context)
+
+@admin_login_required
+def approve_payment(request, log_id):
+    log = get_object_or_404(PaymentLog, id=log_id)
+    
+    if log.status == 'Pending':
+        # 1. Mark as Approved
+        log.status = 'Approved'
+        log.save()
+        
+        # Get or create the company's credit tracker
+        credit, _ = CompanyCredit.objects.get_or_create(company=log.company)
+        
+        plan_name = "Credit Bundle"
+        
+        # 2. Check if this payment was for a Subscription Plan
+        if log.plan:
+            # Upgrade the Company's Subscription
+            sub, _ = CompanySubscription.objects.get_or_create(company=log.company)
+            sub.current_plan = log.plan
+            sub.status = 'Active'
+            sub.start_date = timezone.now()
+            sub.save()
+            
+            # Add the plan's Monthly Credits
+            credit.available_credits += log.plan.monthly_credits
+            credit.save()
+            
+            plan_name = log.plan.name
+        else:
+            # 3. Handle standalone Credit Bundle (or fallback if plan was missing)
+            # Based on your UI, the Credit Bundle gives 10 credits.
+            credit.available_credits += 10
+            credit.save()
+        
+        # 4. Trigger Notification
+        Notification.objects.create(
+            user=log.company.user,
+            notification_type="PAYMENT_APPROVED",
+            title="Payment Approved! 🎉",
+            message=f"Your payment of PKR {log.amount} via {log.gateway} was approved. You received: {plan_name}.",
+            link="/company/profile/?tab=billing",
+        )
+        messages.success(request, f"Transaction {log.transaction_id} approved successfully.")
+        
+    return redirect('custom_admin:admin_payments')
+
+@admin_login_required
+def reject_payment(request, log_id):
+    log = get_object_or_404(PaymentLog, id=log_id)
+    
+    if log.status == 'Pending':
+        log.status = 'Rejected'
+        log.save()
+        
+        # Trigger Notification
+        Notification.objects.create(
+            user=log.company.user,
+            notification_type="PAYMENT_REJECTED",
+            title="Payment Rejected ❌",
+            message=f"Your payment of PKR {log.amount} via {log.gateway} was rejected. Please contact support or try again.",
+            link="/company/profile/?tab=billing",
+        )
+        messages.error(request, f"Transaction {log.transaction_id} has been rejected.")
+        
+    return redirect('custom_admin:admin_payments')
+
+@admin_login_required
+def manage_plans(request):
+    """View to list and create Subscription Plans"""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price = request.POST.get('price')
+        job_post_limit = request.POST.get('job_post_limit')
+        monthly_credits = request.POST.get('monthly_credits')
+        
+        # Basic validation
+        if name and price and job_post_limit and monthly_credits:
+            SubscriptionPlan.objects.create(
+                name=name,
+                price=price,
+                job_post_limit=job_post_limit,
+                monthly_credits=monthly_credits
+            )
+            messages.success(request, f"Plan '{name}' created successfully!")
+        else:
+            messages.error(request, "Please fill out all fields.")
+            
+        return redirect('custom_admin:manage_plans')
+
+    # GET request: fetch all plans
+    plans = SubscriptionPlan.objects.all().order_by('price')
+    return render(request, "custom_admin/manage_plans.html", {'plans': plans})

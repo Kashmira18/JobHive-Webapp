@@ -1,94 +1,33 @@
-# # apps/company/decorators.py
-# from django.shortcuts import redirect
-# from django.contrib import messages
-# from django.contrib.auth.decorators import login_required
-
-# def approved_company_required(view_func):
-#     """
-#     Custom decorator — ensures:
-#     1. User is authenticated
-#     2. User role is COMPANY
-#     3. Company profile exists and is APPROVED
-#     """
-#     @login_required
-#     def wrapper(request, *args, **kwargs):
-#         if request.user.role != "COMPANY":
-#             messages.error(request, "Access denied. Company accounts only.")
-#             return redirect("login")
- 
-#         # Safe check bina try-except crash ke:
-#         profile = None
-#         if hasattr(request.user, 'company_profile') and request.user.company_profile:
-#             profile = request.user.company_profile
-#         elif hasattr(request.user, 'companyprofile') and request.user.companyprofile:
-#             profile = request.user.companyprofile
-
-#         # Agar dono surton mein profile na mile:
-#         if not profile:
-#             messages.warning(request, "Please complete your company registration first.")
-#             return redirect("company_registration")
- 
-#         # Status check
-#         if profile.company_status != "APPROVED":
-#             messages.warning(request, "Your company account must be approved before posting jobs.")
-#             return redirect("company_pending")
- 
-#         return view_func(request, *args, **kwargs)
-#     return wrapper
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# apps/company/decorators.py
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from functools import wraps
+from django.urls import reverse
+from billing.models import ProfileUnlock, CompanyCredit
 
-def approved_company_required(view_func):
-    """
-    Custom decorator — ensures:
-    1. User is authenticated
-    2. User role is COMPANY
-    3. Company profile exists and is APPROVED
-    """
-    @login_required
-    def wrapper(request, *args, **kwargs):
-        if request.user.role != "COMPANY":
-            messages.error(request, "Access denied. Company accounts only.")
-            return redirect("login")
- 
-        # Safe check bina try-except crash ke:
-        profile = None
-        if hasattr(request.user, 'company_profile') and request.user.company_profile:
-            profile = request.user.company_profile
-        elif hasattr(request.user, 'companyprofile') and request.user.companyprofile:
-            profile = request.user.companyprofile
+def require_credit_to_view(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, candidate_id, *args, **kwargs):
+        company = getattr(request.user, 'company_profile', None)
+        if not company:
+            return redirect('home')
 
-        # Agar dono surton mein profile na mile:
-        if not profile:
-            messages.warning(request, "Please complete your company registration first.")
-            return redirect("accounts:company_registration")
- 
-        # ✨ CHNAGE HERE: Status check ko case-insensitive aur user check ke sath flexible banaya
-        status = profile.company_status or "PENDING"
+        # Check if already unlocked
+        has_unlocked = ProfileUnlock.objects.filter(company=company, candidate_id=candidate_id).exists()
         
-        # Agar direct user model par b APPROVED ho ya status text match kare
-        is_profile_approved = status in ["APPROVED", "Approved", "approved"]
-        is_user_approved = hasattr(request.user, 'is_approved') and request.user.is_approved
+        if not has_unlocked:
+            try:
+                company_credits = company.credits
+            except CompanyCredit.DoesNotExist:
+                company_credits = CompanyCredit.objects.create(company=company, available_credits=0)
 
-        if not (is_profile_approved or is_user_approved):
-            messages.warning(request, "Your company account must be approved before posting jobs.")
-            return redirect("accounts:company_pending")
- 
-        return view_func(request, *args, **kwargs)
-    return wrapper
+            if company_credits.available_credits > 0:
+                # Deduct and unlock
+                company_credits.deduct_credit()
+                ProfileUnlock.objects.create(company=company, candidate_id=candidate_id)
+                messages.success(request, "1 credit deducted to unlock this profile.")
+            else:
+                messages.error(request, "Insufficient credits to view this profile. Please top up.")
+                return redirect(reverse('company:company_account_settings') + '?tab=billing')
+                
+        return view_func(request, candidate_id, *args, **kwargs)
+    return _wrapped_view

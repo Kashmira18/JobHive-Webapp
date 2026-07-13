@@ -1,61 +1,57 @@
 import uuid
-import requests
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from .models import PaymentLog, SubscriptionPlan
 
-@login_required
+@login_required(login_url='login')
 def initiate_payment(request):
     if request.method == 'POST':
-        company = request.user.company_profile
+        company = getattr(request.user, 'company_profile', None)
+        if not company:
+            return redirect('home')
+
         gateway = request.POST.get('gateway')
         mobile_number = request.POST.get('mobile_number')
-        package_type = request.POST.get('package_type') # e.g., 'Pro_Plan' or 'Credit_Bundle'
+        package_type = request.POST.get('package_type') # 'Pro_Plan' or 'Credit_Bundle'
         
-        # Determine amount based on package (mock logic)
-        amount = 2999 if package_type == 'Pro_Plan' else 500
+        # 1. Safely fetch the plan from the database
+        if package_type == 'Pro_Plan':
+            # Use filter().first() so it doesn't crash if the plan is missing
+            plan = SubscriptionPlan.objects.filter(name='Professional').first()
+            amount = plan.price if plan else 2999
+        else:
+            plan = None
+            amount = 500 # Default price for credit bundle
+            
+        # 2. Generate unique transaction ID
+        txn_id = f"TXN-{uuid.uuid4().hex[:8].upper()}"
         
-        # Generate unique transaction ID
-        txn_id = f"{gateway[:2].upper()}-{uuid.uuid4().hex[:8].upper()}"
-        
-        # Create Pending Log
+        # 3. Create a PENDING log for the Admin to verify
         PaymentLog.objects.create(
             company=company,
+            plan=plan,
             transaction_id=txn_id,
+            account_number=mobile_number,
             amount=amount,
-            gateway=gateway
+            gateway=gateway,
+            status='Pending'
         )
 
-        # Mock API Call to Wallet Provider
-        api_url = f"https://api.mock{gateway.lower()}.com/v1/charge"
-        payload = {
-            "mobile": mobile_number,
-            "amount": amount,
-            "reference": txn_id,
-            "callback_url": f"https://yourdomain.com/billing/webhook/{gateway.lower()}/"
-        }
+        messages.success(request, f"Your payment request via {gateway} has been submitted! It is now pending Admin verification.")
         
-        try:
-            # Simulate request
-            # response = requests.post(api_url, json=payload, timeout=5)
-            # In development, we auto-simulate a successful callback
-            simulate_webhook_success(txn_id, gateway, package_type)
-            messages.success(request, f"Payment request sent to your {gateway} number. Processing...")
-        except requests.RequestException:
-            messages.error(request, "Gateway timeout. Please try again.")
+        return redirect(reverse('company:company_account_settings') + '?tab=billing')
 
-        return redirect('/company/dashboard/?tab=billing')
     return redirect('home')
-
 def simulate_webhook_success(txn_id, gateway, package_type):
     """Mock webhook processor to update DB instantly for development"""
     log = PaymentLog.objects.get(transaction_id=txn_id)
-    log.status = 'Success'
+    log.status = 'Approved'
     log.save()
     
     if package_type == 'Pro_Plan':
-        pro_plan = SubscriptionPlan.objects.get(name='Professional')
+        pro_plan = SubscriptionPlan.objects.filter(name__icontains='Professional').first()
         sub = log.company.subscription
         sub.current_plan = pro_plan
         sub.status = 'Active'
@@ -65,3 +61,35 @@ def simulate_webhook_success(txn_id, gateway, package_type):
         credits = log.company.credits
         credits.available_credits += 10
         credits.save()
+
+
+@login_required(login_url='login')
+def checkout_view(request, plan_id):
+    if request.user.role != 'COMPANY':
+        return redirect('home')
+
+    plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+    company_profile = request.user.company_profile
+
+    if request.method == 'POST':
+        gateway = request.POST.get('gateway')
+        account_number = request.POST.get('account_number')
+        
+        # Generate a unique Txn ID
+        txn_id = f"TXN-{uuid.uuid4().hex[:8].upper()}"
+        
+        # Create Pending Payment Log
+        PaymentLog.objects.create(
+            company=company_profile,
+            plan=plan,
+            transaction_id=txn_id,
+            account_number=account_number,
+            amount=plan.price,
+            gateway=gateway,
+            status='Pending'
+        )
+        
+        messages.success(request, f"Your payment request for {plan.name} has been submitted. It is pending admin verification.")
+        return redirect(reverse('company:company_account_settings') + '?tab=billing')
+
+    return render(request, 'billing/checkout.html', {'plan': plan})

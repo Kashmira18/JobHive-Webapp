@@ -5,4 +5,5 @@ app_name = 'billing'
 
 urlpatterns = [
     path('checkout/', views.initiate_payment, name='initiate_payment'),
+    path('checkout/<int:plan_id>/', views.checkout_view, name='checkout'),
 ]

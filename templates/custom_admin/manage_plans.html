@@ -1,0 +1,84 @@
+{% extends 'custom_admin/admin_layout.html' %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">Manage Subscription Plans</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPlanModal">
+            <i class="fas fa-plus me-1"></i> Add New Plan
+        </button>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Plan Name</th>
+                        <th>Price (PKR)</th>
+                        <th>Active Job Limit</th>
+                        <th>Monthly Credits</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plan in plans %}
+                    <tr>
+                        <td class="fw-bold">{{ plan.name }}</td>
+                        <td>{{ plan.price }}</td>
+                        <td>{% if plan.job_post_limit == 9999 %}Unlimited{% else %}{{ plan.job_post_limit }}{% endif %}</td>
+                        <td>{{ plan.monthly_credits }}</td>
+                        <td>
+                            {% if plan.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No plans created yet. Click "Add New Plan" to get started.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addPlanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Create New Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'custom_admin:manage_plans' %}" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Plan Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g., Professional" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price (PKR)</label>
+                        <input type="number" name="price" class="form-control" placeholder="e.g., 2999" required>
+                        <small class="text-muted">Enter 0 for a Free plan.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Active Job Limit</label>
+                        <input type="number" name="job_post_limit" class="form-control" placeholder="e.g., 5" required>
+                        <small class="text-muted">Use 9999 for unlimited jobs.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Monthly Credits (Profile Unlocks)</label>
+                        <input type="number" name="monthly_credits" class="form-control" placeholder="e.g., 20" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
