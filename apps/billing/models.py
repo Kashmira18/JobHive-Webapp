@@ -26,11 +26,37 @@ class CompanySubscription(models.Model):
 
 class CompanyCredit(models.Model):
     company = models.OneToOneField(CompanyProfile, on_delete=models.CASCADE, related_name='credits')
-    available_credits = models.IntegerField(default=0)
+    subscription_credits = models.IntegerField(default=0)
+    addon_credits = models.IntegerField(default=0)
+    reset_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def available_credits(self):
+        return self.subscription_credits + self.addon_credits
 
     def deduct_credit(self):
-        if self.available_credits > 0:
-            self.available_credits -= 1
+        if self.subscription_credits > 0:
+            self.subscription_credits -= 1
+            self.save()
+            return True
+        elif self.addon_credits > 0:
+            self.addon_credits -= 1
+            self.save()
+            return True
+        return False
+
+    def check_and_reset_credits(self):
+        if self.reset_date and self.reset_date <= timezone.now():
+            from datetime import timedelta
+            try:
+                sub = self.company.subscription
+                default_credits = sub.current_plan.monthly_credits if sub.current_plan else 0
+            except Exception:
+                default_credits = 0
+
+            self.subscription_credits = default_credits
+            while self.reset_date <= timezone.now():
+                self.reset_date += timedelta(days=30)
             self.save()
             return True
         return False

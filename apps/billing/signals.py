@@ -1,5 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
+from datetime import timedelta
 from accounts.models import CompanyProfile
 from .models import CompanySubscription, CompanyCredit, SubscriptionPlan
 
@@ -15,4 +17,9 @@ def create_billing_profiles(sender, instance, created, **kwargs):
             current_plan=free_plan, 
             status='Active'
         )
-        CompanyCredit.objects.create(company=instance, available_credits=free_plan.monthly_credits)
+        CompanyCredit.objects.create(
+            company=instance,
+            subscription_credits=free_plan.monthly_credits,
+            addon_credits=0,
+            reset_date=timezone.now() + timedelta(days=30)
+        )

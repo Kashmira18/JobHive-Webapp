@@ -27,7 +27,7 @@ class CompanySubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyCredit)
 class CompanyCreditAdmin(admin.ModelAdmin):
-    list_display = ('company', 'available_credits')
+    list_display = ('company', 'subscription_credits', 'addon_credits', 'available_credits', 'reset_date')
     search_fields = ('company__trade_name',)
 
 
@@ -76,10 +76,13 @@ class PaymentLogAdmin(admin.ModelAdmin):
                 except CompanyCredit.DoesNotExist:
                     credits = CompanyCredit.objects.create(
                         company=log.company,
-                        available_credits=log.plan.monthly_credits,
+                        subscription_credits=log.plan.monthly_credits,
+                        addon_credits=0,
+                        reset_date=timezone.now() + timedelta(days=30),
                     )
                 else:
-                    credits.available_credits += log.plan.monthly_credits
+                    credits.subscription_credits = log.plan.monthly_credits
+                    credits.reset_date = timezone.now() + timedelta(days=30)
                     credits.save()
             else:
                 # Credit bundle purchase — add 10 credits
@@ -88,10 +91,11 @@ class PaymentLogAdmin(admin.ModelAdmin):
                 except CompanyCredit.DoesNotExist:
                     credits = CompanyCredit.objects.create(
                         company=log.company,
-                        available_credits=10,
+                        subscription_credits=0,
+                        addon_credits=10,
                     )
                 else:
-                    credits.available_credits += 10
+                    credits.addon_credits += 10
                     credits.save()
 
             approved_count += 1

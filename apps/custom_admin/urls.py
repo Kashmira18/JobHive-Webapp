@@ -37,4 +37,7 @@ urlpatterns = [
     path("payments/<int:log_id>/approve/", views.approve_payment, name="approve_payment"),
     path("payments/<int:log_id>/reject/", views.reject_payment, name="reject_payment"),
     path("plans/manage/", views.manage_plans, name="manage_plans"),
+    path("plans/<int:plan_id>/edit/", views.edit_plan, name="edit_plan"),
+    path("plans/<int:plan_id>/delete/", views.delete_plan, name="delete_plan"),
+    path("plans/<int:plan_id>/toggle-status/", views.toggle_plan_status, name="toggle_plan_status"),
 ]

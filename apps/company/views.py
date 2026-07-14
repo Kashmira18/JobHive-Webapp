@@ -157,6 +157,7 @@ def company_account_settings(request):
 # ─────────────────────────────────────────────────────────
 # @approved_company_required
 # def create_job(request):
+@login_required(login_url='login')
 def company_job_post(request, job_id=None):
     """
     Multi-step job posting form.
@@ -169,7 +170,7 @@ def company_job_post(request, job_id=None):
       - description  ← contenteditable #jobDesc innerHTML
       - action       ← "publish" or "draft"
     """
-    profile = request.user.company_profile
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
 
     job = None
     if job_id:
@@ -221,6 +222,35 @@ def company_job_post(request, job_id=None):
         # Attach company profile
         job.company = profile
  
+        # Check if the job was already published
+        was_published = False
+        if job.pk:
+            try:
+                orig = JobPost.objects.get(pk=job.pk)
+                was_published = (orig.status == "PUBLISHED")
+            except JobPost.DoesNotExist:
+                pass
+
+        is_publishing = (action == "publish")
+
+        if is_publishing and not was_published:
+            credits, _ = CompanyCredit.objects.get_or_create(company=profile)
+            if credits.available_credits <= 0:
+                error_msg = "Insufficient credits to publish this job. Please purchase credits or subscribe to a plan."
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return JsonResponse({
+                        "success": False,
+                        "errors": {"__all__": [error_msg]},
+                    }, status=400)
+                messages.error(request, error_msg)
+                return render(request, "company/company_job_post.html", {
+                    "form": form,
+                    "job": job,
+                    "post_data": request.POST,
+                })
+            # Deduct credit (subscription first, then addon)
+            credits.deduct_credit()
+
         # Set status based on action
         job.status = "PUBLISHED" if action == "publish" else "DRAFT"
 
@@ -324,6 +354,17 @@ def delete_job(request, job_id):
 def publish_job(request, job_id):
     profile = request.user.company_profile
     job     = get_object_or_404(JobPost, pk=job_id, company=profile)
+    
+    if job.status == "PUBLISHED":
+        messages.info(request, f'"{job.title}" is already published.')
+        return redirect("company:company_job_list")
+
+    credits, _ = CompanyCredit.objects.get_or_create(company=profile)
+    if credits.available_credits <= 0:
+        messages.error(request, "Insufficient credits to publish this job. Please purchase credits or subscribe to a plan.")
+        return redirect("company:company_job_list")
+
+    credits.deduct_credit()
     job.status = "PUBLISHED"
     job.save()
     messages.success(request, f'"{job.title}" has been published successfully.')
@@ -456,7 +497,8 @@ def company_account_settings(request):
     # 3. Fetch Payment History
     payment_logs = PaymentLog.objects.filter(company=company_profile).order_by('-timestamp')
 
-    # 4. Fetch Professional Subscription Plan
+    # 4. Fetch active paid plans and Professional plan (as fallback)
+    plans = SubscriptionPlan.objects.filter(is_active=True).exclude(price=0).order_by('price')
     pro_plan = SubscriptionPlan.objects.filter(name__icontains='Professional').first()
 
     context = {
@@ -467,6 +509,7 @@ def company_account_settings(request):
         'subscription': subscription,  # Passed to template
         'credits': credits,            # Passed to template
         'payment_logs': payment_logs,  # Passed to template
+        'plans': plans,                # Passed to template
         'pro_plan': pro_plan,          # Passed to template
     }
     

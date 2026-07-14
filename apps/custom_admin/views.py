@@ -529,15 +529,17 @@ def approve_payment(request, log_id):
             sub.start_date = timezone.now()
             sub.save()
             
-            # Add the plan's Monthly Credits
-            credit.available_credits += log.plan.monthly_credits
+            # Add the plan's Monthly Credits and reset date
+            from datetime import timedelta
+            credit.subscription_credits = log.plan.monthly_credits
+            credit.reset_date = timezone.now() + timedelta(days=30)
             credit.save()
             
             plan_name = log.plan.name
         else:
             # 3. Handle standalone Credit Bundle (or fallback if plan was missing)
             # Based on your UI, the Credit Bundle gives 10 credits.
-            credit.available_credits += 10
+            credit.addon_credits += 10
             credit.save()
         
         # 4. Trigger Notification
@@ -598,3 +600,47 @@ def manage_plans(request):
     # GET request: fetch all plans
     plans = SubscriptionPlan.objects.all().order_by('price')
     return render(request, "custom_admin/manage_plans.html", {'plans': plans})
+
+@admin_login_required
+def edit_plan(request, plan_id):
+    """View to update a Subscription Plan"""
+    plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        price = request.POST.get('price')
+        job_post_limit = request.POST.get('job_post_limit')
+        monthly_credits = request.POST.get('monthly_credits')
+        
+        if name and price and job_post_limit and monthly_credits:
+            plan.name = name
+            plan.price = price
+            plan.job_post_limit = job_post_limit
+            plan.monthly_credits = monthly_credits
+            plan.is_active = 'is_active' in request.POST
+            plan.save()
+            messages.success(request, f"Plan '{name}' updated successfully!")
+        else:
+            messages.error(request, "Please fill out all fields.")
+            
+    return redirect('custom_admin:manage_plans')
+
+@admin_login_required
+def delete_plan(request, plan_id):
+    """View to delete a Subscription Plan"""
+    if request.method == 'POST':
+        plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+        name = plan.name
+        plan.delete()
+        messages.success(request, f"Plan '{name}' deleted successfully!")
+    return redirect('custom_admin:manage_plans')
+
+@admin_login_required
+def toggle_plan_status(request, plan_id):
+    """View to toggle active status of a Subscription Plan"""
+    if request.method == 'POST':
+        plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+        plan.is_active = not plan.is_active
+        plan.save()
+        status_str = "activated" if plan.is_active else "deactivated"
+        messages.success(request, f"Plan '{plan.name}' {status_str} successfully!")
+    return redirect('custom_admin:manage_plans')

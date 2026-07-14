@@ -393,9 +393,25 @@
             <div class="col-md-6">
                 <div class="settings-card h-100 mb-0">
                     <div class="card-title"><i class="fas fa-coins text-warning"></i> Available Credits</div>
-                    <div class="d-flex align-items-center gap-3 mt-3">
-                        <h2 class="fw-bold mb-0">{{ credits.available_credits }}</h2>
-                        <p class="text-muted small mb-0 lh-sm">Credits are used to permanently unlock<br>candidate contact info &amp; resumes.</p>
+                    <div class="d-flex flex-column gap-2 mt-3">
+                        <div class="d-flex align-items-baseline gap-2">
+                            <h2 class="fw-bold mb-0 text-brand" style="color: var(--brand-color, #f59e0b);">{{ credits.available_credits }}</h2>
+                            <span class="text-muted small">Total Available Credits</span>
+                        </div>
+                        <hr class="my-1" style="opacity: 0.15;">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>Subscription Credits (Monthly):</span>
+                            <span class="fw-bold text-dark">{{ credits.subscription_credits }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>Add-on Credits (Never expires):</span>
+                            <span class="fw-bold text-dark">{{ credits.addon_credits }}</span>
+                        </div>
+                        {% if credits.reset_date %}
+                        <div class="text-muted small mt-2" style="font-size: 0.75rem; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 6px;">
+                            <i class="far fa-calendar-alt"></i> Next reset date: {{ credits.reset_date|date:"F d, Y" }}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -405,32 +421,70 @@
             <div class="card-title"><i class="fas fa-cart-plus"></i> Purchase &amp; Top-up</div>
             
             <div class="row g-3 mt-2">
-                <div class="col-md-6">
-                    <div class="p-4 rounded-3 border" style="background:#FFFDF8; border-color:#FDE047 !important;">
-                        <h6 class="fw-bold">Professional Plan</h6>
-                        <p class="fw-bold text-brand fs-4 mb-1">PKR 2,999<span class="fs-6 text-muted fw-normal">/mo</span></p>
-                        <ul class="text-muted small ps-3 mb-3">
-                            <li>Unlimited Active Jobs</li>
-                            <li>Advanced Analytics</li>
-                            <li>20 Monthly Unlock Credits</li>
-                        </ul>
-                        {% if pro_plan %}
-                            <a href="{% url 'billing:checkout' pro_plan.id %}" class="btn btn-brand w-100">Upgrade to Pro</a>
-                        {% else %}
-                            <button class="btn btn-brand w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Pro_Plan">Upgrade to Pro</button>
-                        {% endif %}
+                {% for plan in plans %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded-3 border h-100 d-flex flex-column justify-content-between shadow-sm" style="background:#FFFDF8; border-color:#FDE047 !important;">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-2">{{ plan.name }}</h6>
+                            <p class="fw-bold text-brand fs-4 mb-1">PKR {{ plan.price|floatformat:0 }}<span class="fs-6 text-muted fw-normal">/mo</span></p>
+                            <ul class="text-muted small ps-3 mb-3">
+                                <li>
+                                    {% if plan.job_post_limit == 9999 %}
+                                        Unlimited Active Jobs
+                                    {% else %}
+                                        {{ plan.job_post_limit }} Active Jobs Limit
+                                    {% endif %}
+                                </li>
+                                <li>{{ plan.monthly_credits }} Monthly Unlock Credits</li>
+                                <li>Advanced Analytics</li>
+                            </ul>
+                        </div>
+                        <div>
+                            {% if subscription.current_plan == plan and subscription.status == 'Active' %}
+                                <button class="btn btn-outline-success w-100 fw-bold" disabled><i class="fas fa-check me-1"></i> Current Plan</button>
+                            {% else %}
+                                <a href="{% url 'billing:checkout' plan.id %}" class="btn btn-brand w-100 fw-bold">Upgrade to {{ plan.name }}</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="p-4 rounded-3 border bg-light">
-                        <h6 class="fw-bold">Credit Bundle</h6>
-                        <p class="fw-bold text-dark fs-4 mb-1">PKR 500<span class="fs-6 text-muted fw-normal">/pack</span></p>
-                        <ul class="text-muted small ps-3 mb-3">
-                            <li>10 Profile Unlock Credits</li>
-                            <li>Never expires</li>
-                            <li>Instant allocation</li>
-                        </ul>
-                        <button class="btn btn-outline-dark w-100" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Credit_Bundle">Buy Credits</button>
+                {% empty %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded-3 border h-100 d-flex flex-column justify-content-between shadow-sm" style="background:#FFFDF8; border-color:#FDE047 !important;">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-2">Professional Plan</h6>
+                            <p class="fw-bold text-brand fs-4 mb-1">PKR 2,999<span class="fs-6 text-muted fw-normal">/mo</span></p>
+                            <ul class="text-muted small ps-3 mb-3">
+                                <li>Unlimited Active Jobs</li>
+                                <li>Advanced Analytics</li>
+                                <li>20 Monthly Unlock Credits</li>
+                            </ul>
+                        </div>
+                        <div>
+                            {% if pro_plan %}
+                                <a href="{% url 'billing:checkout' pro_plan.id %}" class="btn btn-brand w-100 fw-bold">Upgrade to Pro</a>
+                            {% else %}
+                                <button class="btn btn-brand w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Pro_Plan">Upgrade to Pro</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="p-4 rounded-3 border bg-light h-100 d-flex flex-column justify-content-between shadow-sm">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-2">Credit Bundle</h6>
+                            <p class="fw-bold text-dark fs-4 mb-1">PKR 500<span class="fs-6 text-muted fw-normal">/pack</span></p>
+                            <ul class="text-muted small ps-3 mb-3">
+                                <li>10 Profile Unlock Credits</li>
+                                <li>Never expires</li>
+                                <li>Instant allocation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-dark w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#paymentModal" data-pkg="Credit_Bundle">Buy Credits</button>
+                        </div>
                     </div>
                 </div>
             </div>
