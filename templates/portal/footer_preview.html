@@ -1,0 +1,16 @@
+{% extends 'portal/base.html' %}
+{% block title %}Footer Component Preview - JobHive{% endblock %}
+{% block content %}
+<div class="container py-5" style="margin-top: 120px; min-height: 70vh;">
+  <div class="card shadow-sm border-0 rounded-4 p-5 text-center bg-light">
+    <h1 class="fw-bold mb-3 text-info">Footer Component Preview</h1>
+    <p class="text-muted fs-5 mb-4">
+      This page is a standalone preview for the JobHive footer. Scroll to the bottom of the page to inspect the footer layout.
+    </p>
+    <div class="d-inline-flex gap-3 justify-content-center">
+      <a href="{% url 'home' %}" class="btn btn-info px-4 py-2 text-white rounded-pill fw-semibold">Go to Home</a>
+      <a href="{% url 'contact' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-semibold">Contact Us</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

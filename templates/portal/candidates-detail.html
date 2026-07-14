@@ -1,37 +1,12 @@
-{% extends 'portal/base.html'%}
+{% extends 'portal/base.html' %}
+{% load static %}
 
-{%block content%}
-<!DOCTYPE html>
-<html lang="en">
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/candidates-detail.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css">
+{% endblock %}
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Candidate-detail Page</title>
-        <!-- Custom CSS -->
-        {%load static%}
-        <link rel="stylesheet" href="{% static 'css/candidates-detail.css' %}">
-        <!-- Bootstrap 5 CDN -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-
-        <!-- OR Version 5.x -->
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/icofont@1.0.1/icofont.min.css">
-        <!-- OR -->
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/icofont/1.0.2/icofont.min.css">
-        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> -->
-
-    </head>
-
-    <body>
+{% block content %}
 
         <!-- ===== Hero Banner Start ===== -->
         <!-- <section
@@ -438,18 +413,5 @@
                 </div>
             </div>
         </div>
-        {% include 'portal/footer.html' %}
-
-        <!-- Bootstrap JS -->
-
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Custom JS -->
-        <!-- <script src="script.js"></script> -->
-    </body>
-
-</html>
-
-{%endblock%}
+{% endblock %}
 

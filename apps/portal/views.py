@@ -1,7 +1,10 @@
 # from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Count
 from job.models import JobPost
+from accounts.models import CompanyProfile
+from candidate.models import CandidateProfile
+from applications.models import Applications
 # Create your views here.
 
 def home(request):
@@ -9,34 +12,55 @@ def home(request):
         status="PUBLISHED",
         visibility="public"
     ).select_related("company").order_by("-created_at")
+    
     total_jobs = published_jobs.count()
+    total_candidates = CandidateProfile.objects.count()
+    total_companies = CompanyProfile.objects.filter(company_status="APPROVED").count()
+    total_hires = Applications.objects.filter(status="HIRED").count()
+    
     recent_jobs = published_jobs
     trending_jobs = published_jobs[:3]  # up to 3 for the trending bar
-    home_categories = list(
+    home_categories = (
         JobPost.objects.filter(status="PUBLISHED", visibility="public")
-        .values_list("category", flat=True)
-        .distinct()
+        .values("category")
+        .annotate(count=Count("id"))
         .order_by("category")
+    )
+    # All approved companies with their open job count
+    top_companies = (
+        CompanyProfile.objects
+        .filter(company_status="APPROVED")
+        .select_related("user")
+        .annotate(open_jobs=Count(
+            "jobs",
+            filter=Q(jobs__status="PUBLISHED", jobs__visibility="public")
+        ))
+        .order_by("-open_jobs", "trade_name")
     )
     return render(request, "portal/home.html", {
         "published_jobs": published_jobs,
         "recent_jobs": recent_jobs,
         "trending_jobs": trending_jobs,
         "total_jobs": total_jobs,
+        "total_candidates": total_candidates,
+        "total_companies": total_companies,
+        "total_hires": total_hires,
         "home_categories": home_categories,
+        "top_companies": top_companies,
     })
 
 def selector(request):
     return render(request, "portal/selector.html")
 
 def navbar(request):
-    return render(request, "portal/navbar.html")
+    return render(request, "portal/navbar_preview.html")
 
 def navbar2(request):
     return render(request, "portal/navbar2.html")
 
 def footer(request):
-    return render(request, "portal/footer.html")
+    return render(request, "portal/footer_preview.html")
+
 
 def about(request):
     return render(request, "portal/about.html")
