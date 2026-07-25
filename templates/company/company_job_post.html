@@ -534,17 +534,9 @@
           <label class="form-label">Category <span class="text-danger">*</span></label>
           <select class="form-select" id="jobCategory" name="category">
             <option value="" disabled selected>Select category</option>
-            <option {% if post_data.category == "Information Technology" %}selected{% endif %}>Information Technology
-            </option>
-            <option {% if post_data.category == "Design & Creative" %}selected{% endif %}>Design & Creative</option>
-            <option {% if post_data.category == "Marketing & Sales" %}selected{% endif %}>Marketing & Sales</option>
-            <option {% if post_data.category == "Finance & Accounting" %}selected{% endif %}>Finance & Accounting</option>
-            <option {% if post_data.category == "Engineering" %}selected{% endif %}>Engineering</option>
-            <option {% if post_data.category == "Human Resources" %}selected{% endif %}>Human Resources</option>
-            <option {% if post_data.category == "Healthcare" %}selected{% endif %}>Healthcare</option>
-            <option {% if post_data.category == "Education & Training" %}selected{% endif %}>Education & Training</option>
-            <option {% if post_data.category == "Legal" %}selected{% endif %}>Legal</option>
-            <option {% if post_data.category == "Customer Support" %}selected{% endif %}>Customer Support</option>
+            {% for cat in global_job_categories %}
+            <option value="{{ cat.name }}" {% if post_data.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
           </select>
           <div class="text-danger small mt-1 d-none" id="errCategory">Please select a category.</div>
         </div>

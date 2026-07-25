@@ -399,9 +399,36 @@ def admin_layout(request):
     return render(request, "custom_admin/admin_layout.html")
 
 
+@admin_login_required
 def company_type(request):
-    return render(request, "custom_admin/company_type.html")
+    types = CompanyType.objects.all()
+    return render(request, "custom_admin/company_type.html", {"types": types})
 
+@admin_login_required
+def company_type_create(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        if name:
+            CompanyType.objects.create(name=name, is_active=True)
+            messages.success(request, "Company type created successfully.")
+    return redirect("custom_admin:company_type")
+
+@admin_login_required
+def company_type_delete(request, type_id):
+    if request.method == "POST":
+        CompanyType.objects.filter(id=type_id).delete()
+        messages.success(request, "Company type deleted.")
+    return redirect("custom_admin:company_type")
+
+@admin_login_required
+def company_type_toggle(request, type_id):
+    if request.method == "POST":
+        ctype = get_object_or_404(CompanyType, id=type_id)
+        ctype.is_active = not ctype.is_active
+        ctype.save()
+    return redirect("custom_admin:company_type")
+
+@admin_login_required
 def admin_company(request):
     companies = CustomUser.objects.filter(role="COMPANY").select_related("company_profile")
 
@@ -419,6 +446,7 @@ def admin_company(request):
     }
     return render(request, "custom_admin/admin_company.html", context)
 
+@admin_login_required
 def admin_jobs(request):
     published_jobs = JobPost.objects.filter(status="PUBLISHED").select_related("company").order_by("-created_at")
     pending_jobs = JobPost.objects.filter(status="DRAFT").count()
@@ -436,17 +464,147 @@ def admin_jobs(request):
     }
     return render(request, "custom_admin/admin_jobs.html", context)
 
+@admin_login_required
 def candidate_list(request):
-    return render(request, "custom_admin/candidate_list.html")
+    candidates = CustomUser.objects.filter(role="CANDIDATE").prefetch_related("candidate_profile", "candidate_profile__professional_info")
+    return render(request, "custom_admin/candidate_list.html", {"candidates": candidates})
 
+@admin_login_required
+def candidate_list_create(request):
+    if request.method == "POST":
+        first_name = request.POST.get("first_name", "")
+        last_name = request.POST.get("last_name", "")
+        username = request.POST.get("username", "")
+        email = request.POST.get("email", "")
+        phone = request.POST.get("phone", "")
+        password = request.POST.get("password", "")
+        profession = request.POST.get("profession", "")
+        experience = request.POST.get("experience", 0)
+        job_role = request.POST.get("job_role", "")
+        
+        if username and email and password:
+            if not User.objects.filter(username=username).exists() and not User.objects.filter(email=email).exists():
+                user = User.objects.create_user(username=username, email=email, password=password, role="CANDIDATE", first_name=first_name, last_name=last_name, phone=phone, is_approved=True)
+                
+                from candidate.models import CandidateProfile, ProfessionalInfo
+                profile = CandidateProfile.objects.create(user=user, first_name=first_name, last_name=last_name, username=username, email=email, phone_number=phone)
+                
+                try:
+                    exp_val = int(experience)
+                except ValueError:
+                    exp_val = 0
+                
+                ProfessionalInfo.objects.create(candidate=profile, industry=profession, job_title=job_role, years_of_experience=exp_val)
+                messages.success(request, "Candidate created successfully.")
+            else:
+                messages.error(request, "Username or email already exists.")
+    return redirect("custom_admin:candidate_list")
+
+@admin_login_required
+def candidate_list_delete(request, user_id):
+    if request.method == "POST":
+        CustomUser.objects.filter(id=user_id, role="CANDIDATE").delete()
+        messages.success(request, "Candidate deleted successfully.")
+    return redirect("custom_admin:candidate_list")
+
+from job.models import JobType, JobCategory
+
+@admin_login_required
 def job_type(request):  
-    return render(request, "custom_admin/job_type.html")
+    types = JobType.objects.all()
+    return render(request, "custom_admin/job_type.html", {"types": types})
 
+@admin_login_required
+def job_type_create(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        status = request.POST.get("status") == "Active"
+        if name:
+            JobType.objects.create(name=name, is_active=status)
+            messages.success(request, "Job type created successfully.")
+    return redirect("custom_admin:job_type")
+
+@admin_login_required
+def job_type_delete(request, type_id):
+    if request.method == "POST":
+        JobType.objects.filter(id=type_id).delete()
+        messages.success(request, "Job type deleted.")
+    return redirect("custom_admin:job_type")
+
+@admin_login_required
+def job_type_toggle(request, type_id):
+    if request.method == "POST":
+        jtype = get_object_or_404(JobType, id=type_id)
+        jtype.is_active = not jtype.is_active
+        jtype.save()
+    return redirect("custom_admin:job_type")
+
+@admin_login_required
 def job_categories(request):
-    return render(request, "custom_admin/job_categories.html")
+    categories = JobCategory.objects.all()
+    return render(request, "custom_admin/job_categories.html", {"categories": categories})
 
+@admin_login_required
+def job_categories_create(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        image = request.FILES.get("image")
+        is_active = request.POST.get("status") == "on"
+        if name:
+            JobCategory.objects.create(name=name, image=image, is_active=is_active)
+            messages.success(request, "Job category created successfully.")
+    return redirect("custom_admin:job_categories")
+
+@admin_login_required
+def job_categories_delete(request, cat_id):
+    if request.method == "POST":
+        JobCategory.objects.filter(id=cat_id).delete()
+        messages.success(request, "Job category deleted.")
+    return redirect("custom_admin:job_categories")
+
+@admin_login_required
+def job_categories_toggle(request, cat_id):
+    if request.method == "POST":
+        cat = get_object_or_404(JobCategory, id=cat_id)
+        cat.is_active = not cat.is_active
+        cat.save()
+    return redirect("custom_admin:job_categories")
+
+@admin_login_required
 def admin_users(request):
-    return render(request, "custom_admin/admin_users.html")
+    staff_users = CustomUser.objects.filter(is_staff=True).order_by("-date_joined")
+    return render(request, "custom_admin/admin_users.html", {"staff_users": staff_users})
+
+@admin_login_required
+def admin_users_create(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "")
+        email = request.POST.get("email", "")
+        role = request.POST.get("role", "Staff")
+        
+        if name and email:
+            username = email.split("@")[0]
+            if not User.objects.filter(email=email).exists():
+                user = User.objects.create_user(username=username, email=email, password="password123", is_staff=True)
+                if role == "Super Admin":
+                    user.is_superuser = True
+                user.role = "ADMIN"
+                user.first_name = name
+                user.save()
+                messages.success(request, f"Admin user {name} created successfully. Default password is 'password123'.")
+            else:
+                messages.error(request, "A user with this email already exists.")
+    return redirect("custom_admin:admin_users")
+
+@admin_login_required
+def admin_users_delete(request, user_id):
+    if request.method == "POST":
+        if request.user.id == user_id:
+            messages.error(request, "You cannot delete yourself.")
+        else:
+            CustomUser.objects.filter(id=user_id, is_staff=True).delete()
+            messages.success(request, "Admin user deleted successfully.")
+    return redirect("custom_admin:admin_users")
 
  
 

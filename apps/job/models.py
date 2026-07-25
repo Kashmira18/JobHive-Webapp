@@ -90,3 +90,18 @@ class JobPost(models.Model):
         ordering            = ["-created_at"]
         verbose_name        = "Job Post"
         verbose_name_plural = "Job Posts"
+
+class JobType(models.Model):
+    name = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+class JobCategory(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="job_categories/", null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name

@@ -16,7 +16,7 @@ body {
 /* --- Hero Section --- */
 .home-slider-area {
     position: relative;
-    height: 120vh;
+    min-height: 90vh;
     width: 100%;
     display: flex;
     align-items: center;
@@ -28,65 +28,25 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     color: white;
-    padding-left: 130px;
-    padding-top: 150px;
-
+    padding: 130px 20px 90px 20px;
 }
 
-
-.slider-content {
-
-    padding-right: 100px;
-    padding-left: 100px;
-
-}
-
-/* Add a dark overlay for readability */
+/* Gradient dark overlay for premium visual and excellent readability */
 .home-slider-area::before {
     content: "";
     position: absolute;
     inset: 0;
-    /* background: rgba(0, 0, 0, 0.6); */
+    background: linear-gradient(135deg, rgba(26, 32, 50, 0.85) 0%, rgba(31, 37, 51, 0.7) 100%);
     -webkit-tap-highlight-color: transparent;
     z-index: 1;
 }
 
-/* Ensure text appears above the overlay */
-.slider-content {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    padding: 20px;
-}
-
-/* Optional: Style text */
-.slider-content h2 {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 40px;
-}
-
-.slider-content p {
-    font-size: 18px;
-    color: #e0e0e0;
-}
-
-/* --- Overlay for readability --- */
-.home-slider-area::before {
-
-    content: "";
-    position: absolute;
-    inset: 0;
-    /* Navy transparent overlay */
-    z-index: 1;
-}
-
-/* --- Content --- */
 .slider-content {
     position: relative;
     z-index: 5;
-    max-width: 1000px;
-    margin-bottom: 90px;
+    max-width: 850px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .slider-content h2 {
@@ -94,36 +54,37 @@ body {
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 20px;
-
     color: #ffffff;
-    font-family: sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .slider-content p {
-    font-size: 15px;
+    font-size: 16px;
     margin-bottom: 30px;
     color: #dce4f2;
 }
 
 /* --- Job Search Form --- */
+/* --- Job Search Container & Form --- */
 .job-search-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
-    padding: 12px 40px 12px 15px;
-    ;
+    margin-top: 35px;
+    padding: 0;
+    width: 100%;
 }
 
 .job-search-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.15);
     padding: 15px;
-
     border-radius: 15px;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    width: 100%;
 }
 
 .job-search-form .form-group {
@@ -435,17 +396,19 @@ body {
     display: block;
     color: inherit;
     height: 100%;
-    border-radius: 50px;
 }
 
 .company-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    border-color: #cbcbcb !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    border-color: #e2e8f0 !important;
+    border-radius: 12px !important;
+    background-color: #ffffff;
 }
 
 .company-card-link:hover .company-card {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    border-color: #23C0E9 !important;
 }
 
 .btn-opening {
@@ -454,12 +417,12 @@ body {
     padding: 8px 15px;
     pointer-events: none;
     color: white;
-    background-color: #012c57;
-    border: 1px solid #012c57;
+    background-color: #1A2032;
+    border: 1px solid #1A2032;
     transition: all 0.2s;
 }
 
-/* Button Hover Effect (Red/Pink from video) */
+/* Button Hover Effect */
 .company-card-link:hover .btn-opening {
     background-color: #23C0E9;
     border-color: #23C0E9;
@@ -549,36 +512,144 @@ body {
     font-size: 1rem;
 }
 
-/* ======= Category Cards ======= */
+/* ======= Category Cards Slider Layout ======= */
+.categories-slider-wrapper {
+    position: relative;
+    padding: 0 45px;
+}
+
+.categories-slider-container {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px 5px 25px 5px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+
+.categories-slider-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+}
+
+.category-slider-item {
+    flex: 0 0 210px;
+    max-width: 210px;
+}
+
+/* Card Redesign - Small Font & Compact layout */
 .category-card {
-    display: block;
-    background-color: #f7f9f9;
-    color: #222;
-    text-decoration: none;
-    padding: 20px;
-    padding-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    justify-content: center;
-    border-radius: 3px;
-    font-size: 14px;
-    font-weight: 400;
-    transition: all 0.3s ease-out;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    transform: translateY(0);
+    background-color: #ffffff;
+    color: #1a2032;
+    text-decoration: none;
+    padding: 18px 12px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    height: 100%;
 }
 
 .category-card:hover {
+    background-color: #ffffff;
+    color: #1a2032;
+    transform: translateY(-5px);
+    border-color: #23C0E9;
+    box-shadow: 0 10px 20px rgba(35, 192, 233, 0.12);
+}
+
+.category-icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    background-color: rgba(35, 192, 233, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    transition: all 0.25s ease;
+}
+
+.category-icon-box i {
+    font-size: 18px; /* Small icon */
+    color: #23C0E9;
+    transition: all 0.25s ease;
+}
+
+.category-card:hover .category-icon-box {
     background-color: #23C0E9;
-    color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(0, 191, 255, 0.4);
+}
+
+.category-card:hover .category-icon-box i {
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.category-title {
+    font-size: 13px; /* Small Font */
+    font-weight: 600;
+    color: #1a2032;
+    margin-bottom: 4px;
+    transition: color 0.25s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.category-card:hover .category-title {
+    color: #23C0E9;
+}
+
+.category-count {
+    font-size: 11px; /* Small Font */
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Slider Navigation Buttons */
+.categories-slider-wrapper .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #1a2032;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 15;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.categories-slider-wrapper .slider-btn:hover {
+    background-color: #23C0E9;
+    color: #ffffff;
+    border-color: #23C0E9;
+    box-shadow: 0 4px 12px rgba(35, 192, 233, 0.3);
+}
+
+.categories-slider-wrapper .prev-btn {
+    left: 0;
+}
+
+.categories-slider-wrapper .next-btn {
+    right: 0;
 }
 
 /* ===== Recent Job Area Styling ===== */
 .recent-job-area {
-
     background-color: #f5f7fa;
-    padding: 100px 0;
+    padding: 80px 0;
     font-family: "Poppins", sans-serif;
 }
 
@@ -598,30 +669,40 @@ body {
 /* === Recent Job Item (Main Card) === */
 .recent-job-item {
     background: #fff;
-    border-radius: 4px;
-    padding: 50px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     margin-bottom: 30px;
-    transition: all 0.1s ease-in-out;
-    border: 1px solid transparent;
+    transition: all 0.25s ease;
+    border: 1px solid #e2e8f0;
+    height: calc(100% - 30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .recent-job-item:hover {
-    transform: translateY(-1px);
-    border-color: #14A1C5;
-    box-shadow: 0 6px 18px rgba(0, 123, 255, 0.2);
+    transform: translateY(-5px);
+    border-color: #23C0E9;
+    box-shadow: 0 15px 30px rgba(35, 192, 233, 0.15);
 }
 
 /* === Company Info === */
 .company-info {
     display: flex;
     align-items: center;
-    /* margin-bottom: 20px; */
+    margin-bottom: 18px;
+}
+
+.company-info .logo {
+    margin-right: 15px;
+    flex-shrink: 0;
 }
 
 .company-info .logo img {
-    border-radius: 12px;
+    border-radius: 8px;
     background: #f2f2f2;
+    object-fit: contain;
 }
 
 .company-info .name a {
@@ -806,53 +887,50 @@ body {
 
 /* <!-- ______registration cards start_______ --> */
 .registration-cards {
-    background-color: #f7f7f7;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+    background-color: #f7f9fc;
+    padding: 80px 0;
 }
 
 /* --- Shared Card Styling --- */
-.card {
-    padding-top: 50px !important;
-    padding-bottom: 50px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+.registration-cards .card {
+    padding: 50px 30px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05) !important;
     height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Title Divider (the thin colored line) */
-/* .title-divider {
-    width: 40px;
-    height: 3px;
-    margin: 0 auto 1.5rem;
-} */
+.registration-cards .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+}
 
 /* --- Employer Card  --- */
 .employer-card {
     background-color: white;
 }
 
-/* Employer Button (Light Blue) */
+/* Employer Button (Theme Blue) */
 .employer-btn {
-    background-color: #00a2e8 !important;
-    border-color: #00a2e8 !important;
+    background-color: #23C0E9 !important;
+    border-color: #23C0E9 !important;
     transition: background-color 0.3s;
 }
 
 .employer-btn:hover {
-    background-color: #0087c2 !important;
-    border-color: #0087c2 !important;
+    background-color: #14A1C5 !important;
+    border-color: #14A1C5 !important;
 }
 
 .employer-card .icon-box svg {
-    stroke: #00a2e8;
+    stroke: #23C0E9;
 }
 
 /* ---  Candidate Card  --- */
 .candidate-card {
-    background-color: #333a4d;
+    background-color: #1A2032;
     color: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
 .candidate-btn {
@@ -867,12 +945,12 @@ body {
 }
 
 .candidate-card .icon-box svg {
-    stroke: #00a2e8;
+    stroke: #23C0E9;
 }
 
 /* FREE Badge on Candidate Card */
 .candidate-card .badge {
-    background-color: #333;
+    background-color: #23C0E9;
     color: white;
     padding: 5px 12px;
     border-radius: 4px;
@@ -884,7 +962,11 @@ body {
     width: 50px;
     height: 50px;
     background-color: white;
-    border-color: #c0c0c0 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 991.98px) {

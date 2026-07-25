@@ -117,6 +117,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 'notifications.context_processors.notification_context',
+                'job.context_processors.global_job_categories',
             ],
         },
     },

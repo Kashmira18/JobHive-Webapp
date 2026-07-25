@@ -7,27 +7,24 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 <style>
     .job-section {
-      max-width: 1000px;
-      /* Adjust max-width as needed */
-      margin: 50px auto;
-      /* Center the section on the page */
-      height: 0%;
-      margin-bottom: -15rem;
-
+      max-width: 1140px;
+      margin: -60px auto 50px auto;
+      position: relative;
+      z-index: 10;
     }
 
     /* Row Styling - The main container border */
     .job-row {
       background-color: white;
-      border: 1px solid #dee2e6;
-      /* Light border around the whole section */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
     }
 
     /* 1. Trending Jobs Box Style */
     .tranding-jobs-box {
-      background-color: #31c2ef;
-      /* The vibrant blue color */
+      background-color: #23C0E9;
       font-size: 1.1rem;
       line-height: 1.2;
       letter-spacing: 1px;
@@ -140,8 +137,8 @@
               <div class="form-group">
                 <select class="form-control" name="category">
                   <option value="">Choose Category</option>
-                  {% for cat in home_categories %}
-                  <option value="{{ cat.category }}" {% if request.GET.category == cat.category %}selected{% endif %}>{{ cat.category }}</option>
+                  {% for cat in global_job_categories %}
+                  <option value="{{ cat.name }}" {% if request.GET.category == cat.name %}selected{% endif %}>{{ cat.name }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -163,22 +160,21 @@
             <img src="{% static 'images\play.webp' %}" alt="Play Video">
           </a>
         </div>
-
+      </div>
     </section>
     <div class="container job-section">
       <div class="row g-0 job-row">
 
-        <div class="col-3 col-md-3 col-lg-2 p-0">
-          <div class="tranding-jobs-box d-flex align-items-center justify-content-center h-100 p-3">
+        <div class="col-12 col-md-3 col-lg-3 p-0">
+          <div class="tranding-jobs-box d-flex align-items-center justify-content-center h-100 p-3" style="background-color: #23C0E9;">
             <span class="text-white text-center fw-bold">TRENDING<br>JOBS</span>
           </div>
         </div>
 
         {% if trending_jobs %}
         {% for job in trending_jobs %}
-        <div
-          class="col-12 col-md-3 col-lg-{% if forloop.first %}3{% else %}4{% endif %} d-flex align-items-center job-card p-3 p-md-4">
-          <a href="{% url 'job:job_list' %}" class="stretched-link job-link">
+        <div class="col-12 col-md-3 col-lg-3 d-flex align-items-center job-card p-3 p-md-4">
+          <a href="{% url 'job_details' job.id %}" class="stretched-link job-link">
             <div class="d-flex align-items-center">
               {% if job.company.logo %}
               <img src="{{ job.company.logo.url }}" alt="{{ job.company.trade_name }} Logo" class="job-logo me-3">
@@ -228,7 +224,7 @@
             <div class="counter-icon">
               <i class="fas fa-briefcase fa-1x text-info"></i>
             </div>
-            <div class="counter" data-target="{{ total_jobs|default:0 }}">0</div>
+            <div class="counter counter-number" data-target="{{ total_jobs|default:0 }}">0</div>
             <p class="counter-text">Jobs Posted</p>
           </div>
         </div>
@@ -239,7 +235,7 @@
             <div class="counter-icon">
               <i class="fas fa-users fa-1x text-info"></i>
             </div>
-            <div class="counter" data-target="{{ total_candidates|default:0 }}">0</div>
+            <div class="counter counter-number" data-target="{{ total_candidates|default:0 }}">0</div>
             <p class="counter-text">Happy Candidates</p>
           </div>
         </div>
@@ -250,7 +246,7 @@
             <div class="counter-icon">
               <i class="fas fa-building fa-1x text-info"></i>
             </div>
-            <div class="counter" data-target="{{ total_companies|default:0 }}">0</div>
+            <div class="counter counter-number" data-target="{{ total_companies|default:0 }}">0</div>
             <p class="counter-text">Verified Companies</p>
           </div>
         </div>
@@ -261,7 +257,7 @@
             <div class="counter-icon">
               <i class="fas fa-handshake fa-1x text-info"></i>
             </div>
-            <div class="counter" data-target="{{ total_hires|default:0 }}">0</div>
+            <div class="counter counter-number" data-target="{{ total_hires|default:0 }}">0</div>
             <p class="counter-text">Successful Hires</p>
           </div>
         </div>
@@ -303,7 +299,7 @@
                 {% if company.city %}
                   <p class="company-location text-muted small mb-2">{{ company.city }}</p>
                 {% endif %}
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">
                   {{ company.open_jobs }} OPENING{{ company.open_jobs|pluralize }}
                 </div>
               </div>
@@ -323,7 +319,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Akshay INC.</h3>
                 <p class="company-location text-muted small">(New York)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">3 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">3 OPENING</div>
               </div>
             </a>
           </div>
@@ -335,7 +331,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Pay Walt</h3>
                 <p class="company-location text-muted small">(Ohio)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">2 OPENING</div>
               </div>
             </a>
           </div>
@@ -347,7 +343,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Apus Inc.</h3>
                 <p class="company-location text-muted small">(New York)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">1 OPENING</div>
               </div>
             </a>
           </div>
@@ -359,7 +355,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Envato Inc.</h3>
                 <p class="company-location text-muted small">(India)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">2 OPENING</div>
               </div>
             </a>
           </div>
@@ -371,7 +367,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">FShop Inc.</h3>
                 <p class="company-location text-muted small">(Australia)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">2 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">2 OPENING</div>
               </div>
             </a>
           </div>
@@ -383,7 +379,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">EVNShop Inc.</h3>
                 <p class="company-location text-muted small">(New York)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">1 OPENING</div>
               </div>
             </a>
           </div>
@@ -395,7 +391,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Next Co.</h3>
                 <p class="company-location text-muted small">(London)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">5 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">5 OPENING</div>
               </div>
             </a>
           </div>
@@ -407,7 +403,7 @@
                 </div>
                 <h3 class="company-name fs-6 fw-bold">Sample Inc.</h3>
                 <p class="company-location text-muted small">(Paris)</p>
-                <div class="btn btn-dark btn-sm rounded-0 mt-2 btn-opening">1 OPENING</div>
+                <div class="btn btn-dark btn-sm rounded-pill mt-2 btn-opening">1 OPENING</div>
               </div>
             </a>
           </div>
@@ -426,50 +422,23 @@
       </p>
 
       <div class="row g-3 justify-content-center">
-        {% if home_categories %}
-          {% for cat in home_categories %}
+          {% for cat in global_job_categories %}
           <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category={{ cat.category|urlencode }}" class="category-card">
-              {{ cat.category }} ({{ cat.count }})
+            <a href="{% url 'job_list' %}?category={{ cat.name|urlencode }}" class="category-card">
+              <div class="category-icon-box" style="display:flex; justify-content:center; align-items:center;">
+                {% if cat.image %}
+                  <img src="{{ cat.image.url }}" alt="{{ cat.name }}" style="max-height: 40px; max-width: 40px; object-fit: contain;">
+                {% else %}
+                  <i class="bi bi-briefcase"></i>
+                {% endif %}
+              </div>
+              <h4 class="category-title">{{ cat.name }}</h4>
+              <p class="category-count">{{ cat.job_count }} Job{{ cat.job_count|pluralize }} Available</p>
             </a>
           </div>
+          {% empty %}
+          <div class="col-12 text-muted">No categories available at the moment.</div>
           {% endfor %}
-        {% else %}
-          <!-- Static fallback categories when DB has no published jobs -->
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Accounting%2FFinance" class="category-card">Accounting/Finance (305)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Production%2FOperation" class="category-card">Production/Operation (95)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Education%2FTraining" class="category-card">Education/Training (212)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Design%2FCreative" class="category-card">Design/Creative (93)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Health%20%26%20Fitness" class="category-card">Health & Fitness (4)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Research%2FConsultancy" class="category-card">Research/Consultancy (34)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Engineer%2FArchitects" class="category-card">Engineer/Architects (376)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Telecommunication" class="category-card">Telecommunication (450)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Data%20Entry%2FOperator" class="category-card">Data Entry/Operator (25)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Marketing%2FSales" class="category-card">Marketing/Sales (666)</a>
-          </div>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <a href="{% url 'job_list' %}?category=Security%2FSupport%20Service" class="category-card">Security/Support Service (62)</a>
-          </div>
-        {% endif %}
       </div>
     </div>
   </section>
@@ -496,23 +465,25 @@
             <div class="company-info">
               <div class="logo">
                 {% if job.company.logo %}
-                <a href="{% url 'job_details' job.id %}"><img src="{{ job.company.logo.url }}" width="100" height="100"
-                    alt="{{ job.company.trade_name }}"></a>
-                {% else %}
                 <a href="{% url 'job_details' job.id %}">
+                  <img src="{{ job.company.logo.url }}" width="55" height="55"
+                    alt="{{ job.company.trade_name }}" style="border-radius: 8px; object-fit: contain;">
+                </a>
+                {% else %}
+                <a href="{% url 'job_details' job.id %}" class="text-decoration-none">
                   <div
-                    style="width:100px;height:100px;background:#e0e8ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;color:#4f7cff;">
+                    style="width:55px;height:55px;background:#e0e8ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#4f7cff;">
                     {{ job.company.trade_name|slice:':2'|upper }}</div>
                 </a>
                 {% endif %}
               </div>
               <div class="content-recent-job">
-                <h4 class="name"><a href="{% url 'job:job_list' %}">{{ job.company.trade_name }}</a></h4>
+                <h4 class="name"><a href="{% url 'job_list' %}?keyword={{ job.company.trade_name|urlencode }}">{{ job.company.trade_name }}</a></h4>
                 <p class="address">{{ job.location }}</p>
               </div>
             </div>
             <div class="main-content">
-              <h3 class="title"><a href="{% url 'job:job_list' %}">{{ job.title }}</a></h3>
+              <h3 class="title"><a href="{% url 'job_details' job.id %}">{{ job.title }}</a></h3>
               <h5 class="work-type">{{ job.job_type }}</h5>
               <p class="desc">{{ job.get_skills_list|join:', '|truncatechars:60 }}</p>
             </div>
@@ -520,7 +491,7 @@
               <div class="salary">
                 <h4 style="font-size:0.95rem;">{{ job.salary_display }}</h4>
               </div>
-              <a class="btn-theme btn-sm" href="{% url 'job:job_list' %}">Apply Now</a>
+              <a class="btn-theme btn-sm text-decoration-none" href="{% url 'job_details' job.id %}">Apply Now</a>
             </div>
           </div>
           <!--== End Recent Job Item ==-->
@@ -692,6 +663,20 @@
     // Optional: Trigger on load if already in view
     if ($('.counter-section').length && $('.counter-section').isInViewport()) {
       animateCounters();
+    }
+
+    // Category Slider Horizontal Scrolling
+    const container = document.getElementById('catSliderContainer');
+    const prevBtn = document.getElementById('catPrevBtn');
+    const nextBtn = document.getElementById('catNextBtn');
+    
+    if (container && prevBtn && nextBtn) {
+      prevBtn.addEventListener('click', function() {
+        container.scrollBy({ left: -240, behavior: 'smooth' });
+      });
+      nextBtn.addEventListener('click', function() {
+        container.scrollBy({ left: 240, behavior: 'smooth' });
+      });
     }
   </script>
 {% endblock %}

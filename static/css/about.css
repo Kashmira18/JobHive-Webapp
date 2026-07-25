@@ -1,195 +1,501 @@
-.hero {
-    position: relative;
-    height: 70vh;
-    background: url('../images/blog_herobg.jpg') no-repeat center center/cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    overflow: hidden;
-}
+/* ════════════════════════════════════════
+   about.css — JobHive About Page
+   Theme: Navy #0F1C2E + Cyan #31C2EF
+════════════════════════════════════════ */
 
-.hero .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(5, 10, 30, 0.8), rgba(0, 0, 51, 0.4));
-    /* background: linear-gradient(to bottom,
-            rgba(0, 0, 51, 0.4), rgba(0, 0, 0, 0.7)); */
-    z-index: 1;
-}
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-.hero .container {
-    position: relative;
-    z-index: 2;
-}
-
-.hero h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-
-.hero .breadcrumb-text {
-    font-size: 1.1rem;
-    color: #d6e4ff;
-}
-
-.hero .breadcrumb-text a {
-    color: #00b4ff;
-    text-decoration: none;
-}
-
-.hero .breadcrumb-text a:hover {
-    color: #ffffff;
-}
-
-@media (max-width: 768px) {
-    .hero {
-        height: 50vh;
-    }
-
-    .hero h1 {
-        font-size: 2rem;
-    }
-}
-
-/* <!-- _______about main start__________ --> */
-/* --- THEME COLORS --- */
 :root {
-    --navy-blue: #1A2032;
-    /* Dark blue for text/heading */
-    --light-text: #14A1C5;
-    /* Lighter grey for description */
-    --light-blue: #23C0E9;
-    --hover-blue: #14A1C5;
-    --hover-shadow: rgba(0, 0, 0, 0.1);
+  --navy:   #0F1C2E;
+  --navy2:  #1a3452;
+  --cyan:   #31C2EF;
+  --cyan2:  #1DA8D3;
+  --silver: #F3F6FA;
+  --border: #E4ECF3;
+  --muted:  #6B7C8D;
+  --text:   #1A2B3C;
+  --green:  #16A34A;
 }
 
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-
-.platform-box {
-    transition: 0.4s ease;
-    border-radius: 10px;
-    padding: 20px;
+/* ── HERO ── */
+.jh-about-hero {
+  position: relative;
+  min-height: 68vh;
+  background: url('../images/blog_herobg.jpg') no-repeat center center / cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.platform-box:hover {
-    background: #f3f8ff;
-    transform: translateY(-5px);
-    box-shadow: 0 0 12px var(--hover-shadow);
+.jh-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15,28,46,.92) 0%, rgba(29,168,211,.35) 100%);
+  z-index: 1;
 }
 
-.section-title {
-    font-weight: 700;
-    color: #0056b3;
+.jh-hero-inner {
+  position: relative;
+  z-index: 2;
+  padding: 80px 20px 70px;
 }
 
-.platform-img {
-    border-radius: 6px;
-    border: 3px solid #dce8ff;
-    padding: 4px;
-    width: 100%;
-    max-width: 420px;
-    transition: 0.3s;
+.jh-eyebrow {
+  display: inline-block;
+  background: rgba(49,194,239,.18);
+  border: 1px solid rgba(49,194,239,.35);
+  color: var(--cyan);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  border-radius: 20px;
+  padding: 5px 18px;
+  margin-bottom: 18px;
 }
 
-.platform-img:hover {
-    transform: scale(1.05);
-    border-color: #0056b3;
+.jh-hero-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.18;
+  margin-bottom: 14px;
 }
 
+.jh-hero-title span { color: var(--cyan); }
 
-
-
-/* --- STYLING FOR SERVICE SECTION --- */
-.service-section {
-    padding: 80px 0;
-    background-color: white;
+.jh-hero-sub {
+  color: rgba(255,255,255,.72);
+  font-size: 1.05rem;
+  max-width: 540px;
+  margin: 0 auto 24px;
+  line-height: 1.7;
 }
 
-/* Main Heading Style */
-.service-section h2 {
-    color: var(--navy-blue);
-    font-weight: 400;
-    font-size: 1.5rem;
+.jh-breadcrumb { margin: 0; }
+.jh-breadcrumb .breadcrumb-item a { color: var(--cyan); text-decoration: none; font-size: .85rem; }
+.jh-breadcrumb .breadcrumb-item.active { color: rgba(255,255,255,.55); font-size: .85rem; }
+.jh-breadcrumb .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,.3); }
+
+/* ── REUSABLE SECTION ── */
+.jh-section { padding: 88px 0; background: var(--silver); }
+
+.jh-label {
+  display: inline-block;
+  background: rgba(49,194,239,.1);
+  border: 1px solid rgba(49,194,239,.25);
+  color: var(--cyan2);
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  border-radius: 20px;
+  padding: 4px 14px;
+  margin-bottom: 10px;
 }
 
-/* --- SERVICE BOX STYLING & ANIMATIONS --- */
-.service-box {
-    text-align: left;
-    padding: 25px;
-    margin-bottom: 30px;
-
-    /* Animation/Transition Properties */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    /* Indicates it's interactive */
-    border-radius: 8px;
-    /* Optional: adds a nice soft edge */
+.jh-section-title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 14px;
 }
 
-/* Hover Effect: Subtle Lift and Shadow */
-.service-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px var(--hover-shadow);
-    background-color: white;
+.jh-sub-text {
+  color: var(--muted);
+  font-size: .95rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.7;
 }
 
-.service-box h5 {
-    color: var(--navy-blue);
-    font-weight: 600;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-    /* Transition for text color */
+.jh-text { color: var(--muted); font-size: .95rem; line-height: 1.8; margin-bottom: 16px; }
+
+/* ── MISSION TAGS ── */
+.jh-mission-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.jh-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.jh-tag i { color: var(--green); font-size: .85rem; }
+
+/* ── MISSION IMAGE ── */
+.jh-img-wrap { position: relative; }
+
+.jh-platform-img {
+  width: 100%;
+  border-radius: 18px;
+  border: 3px solid var(--border);
+  object-fit: cover;
+  max-height: 420px;
+  transition: transform .35s;
+  box-shadow: 0 20px 60px rgba(15,28,46,.12);
 }
 
-.service-box p {
-    color: var(--light-text);
-    font-size: 0.95rem;
-    line-height: 1.5;
+.jh-img-wrap:hover .jh-platform-img { transform: scale(1.02); }
+
+.jh-img-badge {
+  position: absolute;
+  bottom: -18px;
+  left: 28px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .84rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(15,28,46,.25);
+  border: 2px solid rgba(49,194,239,.3);
 }
 
-/* --- ICON STYLING & ANIMATIONS --- */
-.icon-circle {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #dee2e6;
-    /* Light gray border */
-    margin-bottom: 15px;
+.jh-img-badge i { color: var(--cyan); font-size: 1.1rem; }
 
-    /* Transition Properties */
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+/* ── STATS ── */
+.jh-stats-section {
+  background: var(--navy);
+  padding: 72px 0;
 }
 
-.icon-circle i {
-    font-size: 28px;
-    color: var(--navy-blue);
-    transition: color 0.3s ease, transform 0.3s ease;
-    /* Transition for icon color/size */
+.jh-stat-card { padding: 10px; }
+
+.jh-stat-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(49,194,239,.15);
+  border: 1px solid rgba(49,194,239,.3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 1.3rem;
+  color: var(--cyan);
+  transition: all .3s;
 }
 
-/* Hover Effect: Icon Circle (Non-Highlighted) */
-.service-box:hover .icon-circle {
-    border-color: var(--light-blue);
-    /* Border changes color on hover */
-    /* background-color: white; */
+.jh-stat-card:hover .jh-stat-icon {
+  background: var(--cyan);
+  color: #fff;
+  transform: translateY(-4px);
 }
 
-/* Hover Effect: Icon itself */
-.service-box:hover .icon-circle i {
-    color: var(--light-blue);
-    /* Icon changes color on hover */
-    transform: scale(1.1);
-    /* Icon slightly enlarges on hover */
+.jh-stat-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
 }
 
-/* <!-- _______END about main start__________ --> */
+.jh-stat-label {
+  font-size: .82rem;
+  color: rgba(255,255,255,.55);
+  font-weight: 500;
+}
+
+/* ── HOW IT WORKS ── */
+.jh-how-card {
+  background: var(--silver);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  height: 100%;
+  transition: box-shadow .25s;
+}
+
+.jh-how-card:hover { box-shadow: 0 12px 40px rgba(15,28,46,.08); }
+
+.jh-how-card--company { background: #EAF8FF; border-color: rgba(49,194,239,.25); }
+
+.jh-how-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.jh-how-header i { color: var(--cyan); font-size: 1.2rem; }
+
+.jh-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.jh-step:last-child { margin-bottom: 0; }
+
+.jh-step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cyan);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.jh-step h6 {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 4px;
+}
+
+.jh-step p { font-size: .82rem; color: var(--muted); margin: 0; line-height: 1.65; }
+
+/* ── SERVICES ── */
+.jh-services-section { background: var(--silver); }
+
+.jh-service-box {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  height: 100%;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.jh-service-box::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--cyan2));
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.jh-service-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(15,28,46,.1);
+  border-color: rgba(49,194,239,.3);
+}
+
+.jh-service-box:hover::before { opacity: 1; }
+
+.jh-service-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: rgba(49,194,239,.1);
+  border: 1px solid rgba(49,194,239,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--cyan2);
+  margin-bottom: 18px;
+  transition: all .25s;
+}
+
+.jh-service-box:hover .jh-service-icon {
+  background: var(--cyan);
+  color: #fff;
+  border-color: var(--cyan);
+  transform: scale(1.05);
+}
+
+.jh-service-box h5 {
+  font-size: .97rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  transition: color .2s;
+}
+
+.jh-service-box:hover h5 { color: var(--cyan2); }
+
+.jh-service-box p {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── VALUES ── */
+.jh-value-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: center;
+  transition: all .25s;
+  height: 100%;
+}
+
+.jh-value-card:hover {
+  background: rgba(49,194,239,.12);
+  border-color: rgba(49,194,239,.3);
+  transform: translateY(-5px);
+}
+
+.jh-value-card > i {
+  font-size: 2rem;
+  color: var(--cyan);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.jh-value-card h5 {
+  font-size: .97rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.jh-value-card p { font-size: .82rem; color: rgba(255,255,255,.6); line-height: 1.7; margin: 0; }
+
+/* ── TEAM ── */
+.jh-team-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 16px 20px;
+  text-align: center;
+  transition: all .25s;
+}
+
+.jh-team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(15,28,46,.1);
+  border-color: rgba(49,194,239,.3);
+}
+
+.jh-team-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--navy), var(--cyan2));
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 6px 18px rgba(15,28,46,.2);
+}
+
+.jh-team-card h6 {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.jh-team-card span {
+  font-size: .76rem;
+  color: var(--cyan2);
+  font-weight: 600;
+}
+
+.jh-team-socials { margin-top: 14px; display: flex; justify-content: center; gap: 8px; }
+
+.jh-team-socials a {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--silver);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: .8rem;
+  text-decoration: none;
+  transition: all .2s;
+}
+
+.jh-team-socials a:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* ── CTA ── */
+.jh-cta-section {
+  position: relative;
+  background: var(--navy);
+  padding: 96px 20px;
+  overflow: hidden;
+}
+
+.jh-cta-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(49,194,239,.18) 0%, transparent 70%);
+}
+
+.jh-btn-primary {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 30px;
+  font-weight: 700;
+  font-size: .9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(49,194,239,.35);
+  transition: all .2s;
+}
+
+.jh-btn-primary:hover { opacity: .9; transform: translateY(-2px); color: #fff; }
+
+.jh-btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,.35);
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-weight: 700;
+  font-size: .9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all .2s;
+}
+
+.jh-btn-outline:hover {
+  background: rgba(255,255,255,.1);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 991px) {
+  .jh-img-badge { display: none; }
+  .jh-about-hero { min-height: 55vh; }
+}
+
+@media (max-width: 576px) {
+  .jh-section { padding: 56px 0; }
+  .jh-stats-section { padding: 52px 0; }
+  .jh-how-card { padding: 20px 16px; }
+  .jh-service-box { padding: 22px 18px; }
+}

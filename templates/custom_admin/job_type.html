@@ -125,33 +125,38 @@ input:checked + .slider:before { transform: translateX(18px); }
                         </tr>
                     </thead>
                     <tbody>
+                        {% for jtype in types %}
                         <tr>
-                            <td>1</td>
-                            <td>Internship</td>
+                            <td>{{ jtype.id }}</td>
+                            <td>{{ jtype.name }}</td>
                             <td>
-                                <label class="switch">
-                                    <input type="checkbox" checked>
-                                    <span class="slider"></span>
-                                </label>
+                                <form method="POST" action="{% url 'custom_admin:job_type_toggle' jtype.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <label class="switch">
+                                        <input type="checkbox" {% if jtype.is_active %}checked{% endif %} onchange="this.form.submit()">
+                                        <span class="slider"></span>
+                                    </label>
+                                </form>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-success"><i class="bi bi-pencil"></i></button>
-                                <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                <form method="POST" action="{% url 'custom_admin:job_type_delete' jtype.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this job type?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
-                        <!-- More rows -->
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center">No job types found.</td></tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
 
             <!-- Footer -->
             <div class="d-flex justify-content-between mt-3">
-                <div>Showing 1 to 4 of 4 entries</div>
-                <div class="pagination">
-                    <span class="page-link">Previous</span>
-                    <span class="page-link active">1</span>
-                    <span class="page-link">Next</span>
-                </div>
+                <div>Showing entries</div>
             </div>
 
         </div>
@@ -161,22 +166,25 @@ input:checked + .slider:before { transform: translateX(18px); }
 <!-- Popup Form -->
 <div class="overlay"></div>
 <div class="popup-form">
-    <button class="btn-close">×</button>
+    <button class="btn-close" type="button">×</button>
     <h5 class="mb-3">Create Job Type</h5>
-    <div class="mb-3">
-        <label class="form-label">Job Type Name *</label>
-        <input type="text" class="form-control" placeholder="Enter Job Type Name">
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Status</label>
-        <select class="form-select">
-            <option selected>Active</option>
-            <option>Inactive</option>
-        </select>
-    </div>
-    <div class="text-end">
-        <button class="btn btn-success">Save</button>
-    </div>
+    <form method="POST" action="{% url 'custom_admin:job_type_create' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Job Type Name *</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter Job Type Name" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+    </form>
 </div>
 
 <script>

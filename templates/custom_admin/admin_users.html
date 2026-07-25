@@ -136,17 +136,30 @@ th, td {
 </tr>
 </thead>
 <tbody id="staffTableBody">
+{% for user in staff_users %}
 <tr>
-    <td>Tushar Rahman</td>
-    <td>tushar@gmail.com</td>
-    <td>Staff</td>
+    <td>{{ user.first_name }}</td>
+    <td>{{ user.email }}</td>
+    <td>
+        {% if user.is_superuser %}Super Admin{% else %}Admin{% endif %}
+    </td>
     <td>
         <div class="action-cell">
             <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-            <button class="btn-action btn-delete" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button>
+            <form method="POST" action="{% url 'custom_admin:admin_users_delete' user.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete this admin?');">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </form>
         </div>
     </td>
 </tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="text-center">No admins found.</td>
+</tr>
+{% endfor %}
 </tbody>
 </table>
 </div>
@@ -155,64 +168,31 @@ th, td {
 <div class="modal-overlay" id="staffModal">
 <div class="modal-box">
     <div class="modal-header">Add users</div>
+    <form method="POST" action="{% url 'custom_admin:admin_users_create' %}">
+        {% csrf_token %}
+        <input type="text" name="name" id="staffName" class="form-control" placeholder="Name" required>
+        <input type="email" name="email" id="staffEmail" class="form-control" placeholder="Email" required>
+        <select name="role" id="staffRole" class="form-control">
+            <option>Staff</option>
+            <option>Admin</option>
+            <option>Super Admin</option>
+        </select>
 
-    <input type="text" id="staffName" class="form-control" placeholder="Name">
-    <input type="email" id="staffEmail" class="form-control" placeholder="Email">
-    <select id="staffRole" class="form-control">
-        <option>Staff</option>
-        <option>Admin</option>
-        <option>Super Admin</option>
-    </select>
-
-    <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-save" onclick="saveStaff()">Save</button>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button type="submit" class="btn-save">Save</button>
+        </div>
+    </form>
 </div>
 </div>
 
 <script>
-function deleteRow(btn) {
-    if (confirm('Delete this staff?')) {
-        btn.closest('tr').remove();
-    }
-}
-
 function openModal() {
     document.getElementById('staffModal').style.display = 'flex';
 }
 
 function closeModal() {
     document.getElementById('staffModal').style.display = 'none';
-}
-
-function saveStaff() {
-    const name = staffName.value;
-    const email = staffEmail.value;
-    const role = staffRole.value;
-
-    if (!name || !email) {
-        alert('All fields required');
-        return;
-    }
-
-    const row = `
-    <tr>
-        <td>${name}</td>
-        <td>${email}</td>
-        <td>${role}</td>
-        <td>
-            <div class="action-cell">
-                <button class="btn-action btn-edit"><i class="fas fa-edit"></i></button>
-                <button class="btn-action btn-delete" onclick="deleteRow(this)">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </td>
-    </tr>
-    `;
-    staffTableBody.insertAdjacentHTML('beforeend', row);
-    closeModal();
 }
 </script>
 

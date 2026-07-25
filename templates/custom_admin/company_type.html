@@ -214,67 +214,30 @@ body{
             </thead>
 
             <tbody>
-
+                {% for ctype in types %}
                 <tr>
-                    <td>1</td>
-                    <td>Accounting</td>
+                    <td>{{ ctype.id }}</td>
+                    <td>{{ ctype.name }}</td>
 
                     <td>
-                        <div class="toggle active"></div>
+                        <form method="POST" action="{% url 'custom_admin:company_type_toggle' ctype.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <div class="toggle {% if ctype.is_active %}active{% endif %}" onclick="this.parentNode.submit()"></div>
+                        </form>
                     </td>
 
                     <td>
-                        <button class="action-btn">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                        <form method="POST" action="{% url 'custom_admin:company_type_delete' ctype.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn" style="background:#e74c3c;" onclick="return confirm('Delete this type?');">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Industrial</td>
-
-                    <td>
-                        <div class="toggle active"></div>
-                    </td>
-
-                    <td>
-                        <button class="action-btn">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <td>Agriculture</td>
-
-                    <td>
-                        <div class="toggle active"></div>
-                    </td>
-
-                    <td>
-                        <button class="action-btn">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>4</td>
-                    <td>Software Agency</td>
-
-                    <td>
-                        <div class="toggle active"></div>
-                    </td>
-
-                    <td>
-                        <button class="action-btn">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </td>
-                </tr>
-
+                {% empty %}
+                <tr><td colspan="4" class="text-center">No company types found.</td></tr>
+                {% endfor %}
             </tbody>
 
         </table>
@@ -283,45 +246,8 @@ body{
         <div class="d-flex justify-content-between align-items-center">
 
             <small>
-                Showing 1 to 4 of 4 entries
+                Showing entries
             </small>
-
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            Previous
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            1
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            2
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            3
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            Next
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
-
         </div>
 
     </div>
@@ -335,25 +261,28 @@ body{
 
         <h4>Create Company Type</h4>
 
-        <div class="mb-3">
-            <label class="mb-1">Company Type</label>
+        <form method="POST" action="{% url 'custom_admin:company_type_create' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="mb-1">Company Type</label>
 
-            <input type="text" class="form-control">
-        </div>
+                <input type="text" name="name" class="form-control" required>
+            </div>
 
-        
+            
 
-        <div class="text-end">
+            <div class="text-end">
 
-            <button class="btn btn-secondary" onclick="closePopup()">
-                Cancel
-            </button>
+                <button type="button" class="btn btn-secondary" onclick="closePopup()">
+                    Cancel
+                </button>
 
-            <button class="btn btn-success">
-                Save
-            </button>
+                <button type="submit" class="btn btn-success">
+                    Save
+                </button>
 
-        </div>
+            </div>
+        </form>
 
     </div>
 

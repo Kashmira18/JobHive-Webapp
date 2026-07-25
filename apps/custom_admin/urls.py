@@ -15,12 +15,31 @@ urlpatterns = [
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("admin_layout/", views.admin_layout, name="layout"),
     path("company_type/", views.company_type, name="company_type"),
+    path("company_type/create/", views.company_type_create, name="company_type_create"),
+    path("company_type/delete/<int:type_id>/", views.company_type_delete, name="company_type_delete"),
+    path("company_type/toggle/<int:type_id>/", views.company_type_toggle, name="company_type_toggle"),
+
     path("admin_company", views.admin_company, name="admin_company"),
     path("admin_jobs", views.admin_jobs, name="admin_jobs"),
+
     path("job_type", views.job_type, name="job_type"),
+    path("job_type/create/", views.job_type_create, name="job_type_create"),
+    path("job_type/delete/<int:type_id>/", views.job_type_delete, name="job_type_delete"),
+    path("job_type/toggle/<int:type_id>/", views.job_type_toggle, name="job_type_toggle"),
+
     path("admin_users", views.admin_users, name="admin_users"),
+    path("admin_users/create/", views.admin_users_create, name="admin_users_create"),
+    path("admin_users/delete/<int:user_id>/", views.admin_users_delete, name="admin_users_delete"),
+
     path("job_categories", views.job_categories, name="job_categories"),
+    path("job_categories/create/", views.job_categories_create, name="job_categories_create"),
+    path("job_categories/delete/<int:cat_id>/", views.job_categories_delete, name="job_categories_delete"),
+    path("job_categories/toggle/<int:cat_id>/", views.job_categories_toggle, name="job_categories_toggle"),
+
     path("candidate_list", views.candidate_list, name="candidate_list"),
+    path("candidate_list/create/", views.candidate_list_create, name="candidate_list_create"),
+    path("candidate_list/delete/<int:user_id>/", views.candidate_list_delete, name="candidate_list_delete"),
+
     path('companies/', views.admin_company_list, name='admin_company_list'),
     path('company/<int:user_id>/approve', views.approve_company, name='approve_company'),
     
