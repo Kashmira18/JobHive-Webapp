@@ -584,7 +584,7 @@
                         {% endif %}
                     </div>
                     <div class="text-center p-2 border-top bg-light">
-                        <a href="#" class="text-decoration-none small fw-bold">View All Notifications</a>
+                        <a href="{% url 'notifications:list' %}" class="text-decoration-none small fw-bold">View All Notifications</a>
                     </div>
                 </div>
             </div>
@@ -592,10 +592,14 @@
             <!-- Profile -->
             <div class="user-menu" onclick="toggleDropdown('profileDropdown', event)" id="userMenuBtn">
                 <div class="user-info d-none d-md-block">
-                    <div class="user-name">TechSolutions Inc.</div>
+                    <div class="user-name">{{ request.user.company_profile.trade_name|default:request.user.company_profile.legal_name|default:"Company" }}</div>
                     <div class="user-role">Company Profile</div>
                 </div>
-                <img src="https://ui-avatars.com/api/?name=TechSolutions&background=31C2EF&color=fff&bold=true" class="user-img" alt="Profile">
+                {% if request.user.company_profile.logo %}
+                <img src="{{ request.user.company_profile.logo.url }}" class="user-img" alt="Profile">
+                {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ request.user.company_profile.trade_name|default:'Company' }}&background=31C2EF&color=fff&bold=true" class="user-img" alt="Profile">
+                {% endif %}
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                 <div class="profile-dropdown-box" id="profileDropdown">
                     <a href="{% url 'company:company_account_settings' %}">
@@ -658,6 +662,21 @@
         });
 
         // Dropdown Toggle
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         function toggleDropdown(dropdownId, event) {
             event.stopPropagation();
             
@@ -670,6 +689,20 @@
                     el.classList.toggle('show');
                     if (dropdownId === 'profileDropdown') {
                         userMenuBtn.classList.toggle('active');
+                    }
+                    if (dropdownId === 'notifDropdown' && el.classList.contains('show')) {
+                        fetch("{% url 'notifications:mark_all_read' %}", {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": getCookie("csrftoken")
+                            }
+                        }).then(res => {
+                            if (res.ok) {
+                                // hide badges
+                                document.querySelectorAll('#notifDropdown .badge').forEach(b => b.style.display = 'none');
+                                document.querySelectorAll('.nav-icon-link .badge-dot').forEach(b => b.style.display = 'none');
+                            }
+                        });
                     }
                 } else {
                     el.classList.remove('show');

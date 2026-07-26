@@ -15,8 +15,6 @@ from applications.models import Applications
 
 @login_required
 def candidate_dashboard(request):
-    # ── FIX: defaults dictionary add ki — warna username/email/phone
-    # empty "" string se create hote the aur dusre candidate pe clash karte the ──
     candidate, _ = CandidateProfile.objects.get_or_create(
         user=request.user,
         defaults={
@@ -35,6 +33,22 @@ def candidate_dashboard(request):
 
     # Stats
     total_applied = applications.count()
+    shortlisted_applications = applications.filter(status='SHORTLISTED').count()
+    saved_jobs = 0
+    profile_views = 0
+
+    # Calculate Profile Completion
+    fields = [
+        bool(candidate.first_name and candidate.last_name),
+        hasattr(candidate, 'professional_info') and bool(candidate.professional_info.job_title),
+        hasattr(candidate, 'location_info') and bool(candidate.location_info.city),
+        hasattr(candidate, 'about_me') and bool(candidate.about_me.professional_summary),
+        hasattr(candidate, 'resume') and bool(candidate.resume.file),
+        candidate.skills.exists(),
+        candidate.educations.exists(),
+        candidate.work_experiences.exists()
+    ]
+    completion_percentage = int((sum(fields) / len(fields)) * 100)
 
     featured_jobs = JobPost.objects.filter(
         status="PUBLISHED",
@@ -46,6 +60,10 @@ def candidate_dashboard(request):
         "candidate": candidate,
         "applications": applications,
         "total_applied": total_applied,
+        "shortlisted_applications": shortlisted_applications,
+        "saved_jobs": saved_jobs,
+        "profile_views": profile_views,
+        "completion_percentage": completion_percentage,
     }
 
     return render(request, 'candidate/candidate_dashboard.html', context)
@@ -126,7 +144,7 @@ def save_personal_info(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    return redirect('candidate:candidate_save_personal_info')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_professional_info(request):
@@ -141,7 +159,7 @@ def save_professional_info(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    return redirect('candidate:save_professional_info')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_location(request):
@@ -156,7 +174,7 @@ def save_location(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    return redirect('candidate:save_location')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_about_me(request):
@@ -171,7 +189,7 @@ def save_about_me(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    return redirect('candidate:save_about_me')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_resume(request):
@@ -186,7 +204,7 @@ def save_resume(request):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{error}")
-    return redirect('candidate:save_resume')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_skills(request):
@@ -198,7 +216,7 @@ def save_skills(request):
         for skill_name in skill_list:
             Skill.objects.create(candidate=candidate, skill_name=skill_name)
         messages.success(request, "Skills save ho gayi!")
-    return redirect('candidate:save_skills')
+    return redirect('candidate:candidate_edit_profile')
     # Skills ka form nahi banaya — simple hai, direct theek hai
 
 
@@ -227,7 +245,7 @@ def save_education(request):
                     messages.error(request, f"Education entry {i+1} mein error: {e}")
                     return redirect('candidate:candidate_edit_profile')
         messages.success(request, "Education save ho gayi!")
-    return redirect('candidate:save_education')
+    return redirect('candidate:candidate_edit_profile')
     # Education/Experience ka bhi form nahi — multiple entries hain, direct theek hai
 
 
@@ -255,7 +273,7 @@ def save_experience(request):
                     messages.error(request, f"Experience entry {i+1} mein error: {e}")
                     return redirect('candidate:candidate_edit_profile')
         messages.success(request, "Experience save ho gayi!")
-    return redirect('candidate:save_experience')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def save_social_links(request):
@@ -269,7 +287,7 @@ def save_social_links(request):
         else:
             for error in form.errors.values():
                 messages.error(request, error.as_text())
-    return redirect('candidate:save_social_links')
+    return redirect('candidate:candidate_edit_profile')
 
 
 def bookmark_jobs(request):

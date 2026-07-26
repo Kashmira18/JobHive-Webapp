@@ -38,7 +38,7 @@
                         <td class="ps-4 text-muted">{{ forloop.counter }}</td>
                         <td><strong>{{ user.email }}</strong></td>
                         <td>
-                            <!-- رول بیسڈ بیجز (تصویر کے مطابق رنگ) -->
+                            
                             {% if user.role == 'Company' or user.is_company %}
                                 <span class="badge px-3 py-2" style="background-color: #e6f0ff; color: #0066cc;">Company</span>
                             {% elif user.role == 'Candidate' or user.is_candidate %}

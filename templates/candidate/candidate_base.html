@@ -544,7 +544,7 @@
                         {% endif %}
                     </div>
                     <div class="text-center p-2 border-top bg-light">
-                        <a href="#" class="text-decoration-none small fw-bold">View All Notifications</a>
+                        <a href="{% url 'notifications:list' %}" class="text-decoration-none small fw-bold">View All Notifications</a>
                     </div>
                 </div>
             </div>
@@ -653,6 +653,21 @@
             mainContent.classList.toggle('expanded');
         });
 
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         function toggleDropdown(dropdownId, event) {
             event.stopPropagation();
             const allDropdowns = ['notifDropdown', 'profileDropdown'];
@@ -660,6 +675,19 @@
                 const el = document.getElementById(id);
                 if (id === dropdownId) {
                     el.classList.toggle('show');
+                    if (dropdownId === 'notifDropdown' && el.classList.contains('show')) {
+                        fetch("{% url 'notifications:mark_all_read' %}", {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": getCookie("csrftoken")
+                            }
+                        }).then(res => {
+                            if (res.ok) {
+                                document.querySelectorAll('#notifDropdown .badge').forEach(b => b.style.display = 'none');
+                                document.querySelectorAll('.nav-icon-link .badge-dot').forEach(b => b.style.display = 'none');
+                            }
+                        });
+                    }
                 } else {
                     el.classList.remove('show');
                 }

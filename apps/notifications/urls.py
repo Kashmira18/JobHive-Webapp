@@ -4,5 +4,6 @@ from . import views
 app_name = 'notifications'
 
 urlpatterns = [
-    # Abhi hum triggers par kaam kar rahe hain, views ka code agle step mein likhenge
+    path('list/', views.notification_list, name='list'),
+    path('mark-all-read/', views.mark_all_read, name='mark_all_read'),
 ]

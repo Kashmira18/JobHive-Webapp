@@ -178,6 +178,47 @@
       <form method="POST" enctype="multipart/form-data" id="resubmitForm" novalidate>
         {% csrf_token %}
 
+        <!-- Owner Information -->
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-user"></i> Owner Information</div>
+          <div class="card-sub">Your personal details as the account owner.</div>
+          <div class="row g-3">
+            <div class="col-md-6 field-approved">
+              <label class="form-label">First Name <span class="req">*</span></label>
+              <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" readonly />
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Last Name <span class="req">*</span></label>
+              <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" readonly />
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-at"></i></span>
+                <input type="text" class="form-control" value="{{ user.username }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" class="form-control" value="{{ user.email }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Contact Phone <span class="req">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">+92</span>
+                <input type="tel" name="owner_phone" class="form-control" value="{{ user.phone|default:'' }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Designation</label>
+              <input type="text" name="designation" class="form-control" value="{{ profile.designation }}" readonly />
+            </div>
+          </div>
+        </div>
+
         <!-- Company Information -->
         <div class="reg-card">
           <div class="card-head"><i class="fas fa-building"></i> Company Information</div>
@@ -240,13 +281,9 @@
               {% if latest_rejection.company_type %}
                 <select name="company_type" class="form-select">
                   <option value="" disabled>Select type</option>
-                  <option value="Private Limited" {% if profile.company_type == "Private Limited" %}selected{% endif %}>Private Limited</option>
-                  <option value="Public Limited" {% if profile.company_type == "Public Limited" %}selected{% endif %}>Public Limited</option>
-                  <option value="Sole Proprietorship" {% if profile.company_type == "Sole Proprietorship" %}selected{% endif %}>Sole Proprietorship</option>
-                  <option value="Partnership" {% if profile.company_type == "Partnership" %}selected{% endif %}>Partnership</option>
-                  <option value="NGO / Non-Profit" {% if profile.company_type == "NGO / Non-Profit" %}selected{% endif %}>NGO / Non-Profit</option>
-                  <option value="Government" {% if profile.company_type == "Government" %}selected{% endif %}>Government</option>
-                  <option value="Other" {% if profile.company_type == "Other" %}selected{% endif %}>Other</option>
+                  {% for ctype in company_types %}
+                  <option value="{{ ctype.name }}" {% if profile.company_type == ctype.name %}selected{% endif %}>{{ ctype.name }}</option>
+                  {% endfor %}
                 </select>
                 <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
               {% else %}
@@ -277,7 +314,7 @@
             </div>
 
             <!-- Website -->
-            <div class="col-md-4 {% if latest_rejection.website %}field-rejected{% else %}field-approved{% endif %}">
+            <div class="col-12 {% if latest_rejection.website %}field-rejected{% else %}field-approved{% endif %}">
               <label class="form-label">Website</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-globe"></i></span>
@@ -288,6 +325,33 @@
               {% if latest_rejection.website %}
               <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
               {% endif %}
+            </div>
+
+            <!-- Total Employees -->
+            <div class="col-md-3 field-approved">
+              <label class="form-label">Total Employees</label>
+              <input type="text" name="total_employees" class="form-control" value="{{ profile.total_employees }}" readonly />
+            </div>
+            <!-- Company Landline -->
+            <div class="col-md-3 field-approved">
+              <label class="form-label">Company Landline</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input type="tel" name="landline" class="form-control" value="{{ profile.landline }}" readonly />
+              </div>
+            </div>
+            <!-- Company Phone -->
+            <div class="col-md-3 field-approved">
+              <label class="form-label">Company Phone</label>
+              <div class="input-group">
+                <span class="input-group-text">+92</span>
+                <input type="tel" name="company_phone" class="form-control" value="{{ profile.company_phone }}" readonly />
+              </div>
+            </div>
+            <!-- Establishment Date -->
+            <div class="col-md-3 field-approved">
+              <label class="form-label">Establishment Date</label>
+              <input type="date" name="est_date" class="form-control" value="{{ profile.est_date|date:'Y-m-d' }}" readonly />
             </div>
 
           </div>
@@ -339,6 +403,12 @@
               {% endif %}
             </div>
 
+            <!-- Postal Code -->
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Postal Code</label>
+              <input type="text" name="postal_code" class="form-control" value="{{ profile.postal_code }}" readonly />
+            </div>
+
             <!-- Legal Address -->
             <div class="col-12 {% if latest_rejection.legal_address %}field-rejected{% else %}field-approved{% endif %}">
               <label class="form-label">Legal Address <span class="req">*</span></label>
@@ -385,19 +455,58 @@
         </div>
 
         <!-- Overview -->
-        {% if profile.overview or latest_rejection.overview %}
         <div class="reg-card">
           <div class="card-head"><i class="fas fa-align-left"></i> Company Overview</div>
-          <div class="{% if latest_rejection.overview %}field-rejected{% else %}field-approved{% endif %}">
-            <label class="form-label">Overview</label>
-            <textarea name="overview" class="form-control" rows="4"
-              {% if not latest_rejection.overview %}readonly{% endif %}>{{ profile.overview }}</textarea>
-            {% if latest_rejection.overview %}
-            <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
-            {% endif %}
+          <div class="row g-3">
+            <div class="col-12 {% if latest_rejection.overview %}field-rejected{% else %}field-approved{% endif %}">
+              <label class="form-label">Company Overview</label>
+              <textarea name="overview" class="form-control" rows="4"
+                {% if not latest_rejection.overview %}readonly{% endif %}>{{ profile.overview }}</textarea>
+              {% if latest_rejection.overview %}
+              <div class="rejection-note"><i class="fas fa-circle-exclamation"></i> Field needs correction.</div>
+              {% endif %}
+            </div>
+            <div class="col-12 field-approved">
+              <label class="form-label">Vision Statement</label>
+              <textarea name="vision" class="form-control" rows="3" readonly>{{ profile.vision }}</textarea>
+            </div>
           </div>
         </div>
-        {% endif %}
+
+        <!-- Social Media Links -->
+        <div class="reg-card">
+          <div class="card-head"><i class="fas fa-share-nodes"></i> Social Media Links</div>
+          <div class="row g-3">
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Facebook</label>
+              <div class="input-group">
+                <span class="input-group-text" style="background:#1877F2;border-color:#1877F2;color:#fff;border-radius:10px 0 0 10px;"><i class="fab fa-facebook-f"></i></span>
+                <input type="url" name="facebook" class="form-control" value="{{ profile.facebook }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Twitter / X</label>
+              <div class="input-group">
+                <span class="input-group-text" style="background:#000;border-color:#000;color:#fff;border-radius:10px 0 0 10px;"><i class="fab fa-x-twitter"></i></span>
+                <input type="url" name="twitter" class="form-control" value="{{ profile.twitter }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">LinkedIn</label>
+              <div class="input-group">
+                <span class="input-group-text" style="background:#0A66C2;border-color:#0A66C2;color:#fff;border-radius:10px 0 0 10px;"><i class="fab fa-linkedin-in"></i></span>
+                <input type="url" name="linkedin" class="form-control" value="{{ profile.linkedin }}" readonly />
+              </div>
+            </div>
+            <div class="col-md-6 field-approved">
+              <label class="form-label">Pinterest</label>
+              <div class="input-group">
+                <span class="input-group-text" style="background:#E60023;border-color:#E60023;color:#fff;border-radius:10px 0 0 10px;"><i class="fab fa-pinterest-p"></i></span>
+                <input type="url" name="pinterest" class="form-control" value="{{ profile.pinterest }}" readonly />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Submit -->
         <div class="d-flex justify-content-between align-items-center">

@@ -343,7 +343,7 @@ body{
                 {% endif %}
 
                 <li>
-                    <a href="#" class="view-all text-center d-block py-3 fw-bold text-primary text-decoration-none">
+                    <a href="{% url 'notifications:list' %}" class="view-all text-center d-block py-3 fw-bold text-primary text-decoration-none">
                         View All Notifications
                     </a>
                 </li>
@@ -524,4 +524,40 @@ btn.onclick = function(){
 {% block extra_js %}{% endblock %}
 
 </body>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var notifDropdown = document.querySelector('.nav-icon.position-relative[data-bs-toggle="dropdown"]');
+        if (notifDropdown) {
+            notifDropdown.parentElement.addEventListener('show.bs.dropdown', function () {
+                fetch("{% url 'notifications:mark_all_read' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                }).then(res => {
+                    if (res.ok) {
+                        document.querySelectorAll('.nav-icon .badge').forEach(b => b.style.display = 'none');
+                        document.querySelectorAll('.notify-header .badge').forEach(b => b.style.display = 'none');
+                    }
+                });
+            });
+        }
+    });
+</script>
 </html>

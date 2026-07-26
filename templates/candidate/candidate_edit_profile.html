@@ -515,6 +515,8 @@
         {% endif %}
 
         <!-- ── 1. PROFILE PHOTO ── -->
+        <form method="POST" action="{% url 'candidate:save_personal_info' %}" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
         <div class="form-card">
             <div class="section-title"><i class="bi bi-image-fill"></i> Profile Photo</div>
             <div class="photo-section">
@@ -527,21 +529,20 @@
                 <div class="photo-info">
                     <h6>Profile Picture</h6>
                     <p>Upload a clear, professional headshot.<br />Square images work best. JPG or PNG, max 2MB.</p>
-                    <button class="btn-choose-photo" onclick="document.getElementById('photoInput').click()">
+                    <button type="button" class="btn-choose-photo" onclick="document.getElementById('photoInput').click()">
                         <i class="bi bi-cloud-arrow-up me-1"></i>Choose Photo
                     </button>
-                    <input type="file" id="photoInput" accept="image/*" style="display:none"
+                    <input type="file" name="profile_photo" id="photoInput" accept="image/*" style="display:none"
                         onchange="previewPhoto(event)" />
                 </div>
             </div>
             <div class="section-footer">
-                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Photo</button>
+                <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Photo & Personal Info</button>
             </div>
         </div>
 
         <!-- ── 2. PERSONAL INFORMATION ── -->
-        <form method="POST" action="{% url 'candidate:save_personal_info' %}" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
+
             <div class="form-card">
             <div class="section-title"><i class="bi bi-person-fill"></i> Personal Information</div>
             <div class="row g-3">
@@ -645,8 +646,8 @@
                 </div> -->
                 <div class="col-md-4">
                     <label class="form-label">Job Type Preference</label>
-                    <select class="form-select">
-                        <option value="" name="job_type_preference" >Select type</option>
+                    <select class="form-select" name="job_type_preference">
+                        <option value="">Select type</option>
                         <option>Full-time</option>
                         <option>Part-time</option>
                         <option>Remote</option>
@@ -721,7 +722,7 @@
                 <p id="resumeLabel">Upload your Resume / CV</p>
                 <small>PDF or DOCX · Max 5MB</small>
             </div>
-            <input type="file" name="resume_file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none"
+            <input type="file" name="file" id="resumeFile" accept=".pdf,.doc,.docx" style="display:none"
                 onchange="updateFileLabel('resumeFile','resumeLabel')" />
             <div class="section-footer">
                 <button type="submit" class="btn-sec-save"><i class="bi bi-save2"></i> Save Resume</button>
@@ -734,7 +735,8 @@
         <div class="form-card">
             <div class="section-title"><i class="bi bi-stars"></i> Skills</div>
             <div class="d-flex gap-2 mb-3">
-                <input type="hidden" name="skills_data" class="form-control" id="skillInput"
+                <input type="hidden" name="skills_data" id="skillsData" value="" />
+                <input type="text" class="form-control" id="skillInput"
                     placeholder="Type a skill and press Enter or click +" />
                 <button type="submit" class="btn-sec-save px-3" style="border-radius:7px" onclick="addSkill()"><i
                         class="bi bi-plus-lg"></i></button>
@@ -803,8 +805,8 @@
                         <div class="col-md-4"><label class="form-label">End Date</label><input type="month"
                                 class="form-control" name="end_date" value="{{ exp.end_date|date:'Y-m' }}" /></div>
                         <div class="col-md-4"><label class="form-label" >Employment Type</label>
-                            <select class="form-select">
-                                <option value="" name="employment_type">Select</option>
+                            <select class="form-select" name="employment_type">
+                                <option value="">Select</option>
                                 <option>Full-time</option>
                                 <option>Part-time</option>
                                 <option>Freelance</option>
@@ -920,11 +922,11 @@
             const d = document.createElement('div'); d.className = 'entry-card';
             d.innerHTML = `<button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
       <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">Degree / Qualification *</label><input type="text" class="form-control" placeholder="e.g., Master of Business Administration"/></div>
-        <div class="col-md-6"><label class="form-label">Institution Name *</label><input type="text" class="form-control" placeholder="e.g., IBA Karachi"/></div>
-        <div class="col-md-4"><label class="form-label">Start Year</label><input type="number" class="form-control" placeholder="e.g., 2022"/></div>
-        <div class="col-md-4"><label class="form-label">End Year</label><input type="number" class="form-control" placeholder="e.g., 2024"/></div>
-        <div class="col-md-4"><label class="form-label">Grade / CGPA</label><input type="text" class="form-control" placeholder="e.g., 3.8 / 4.0"/></div>
+        <div class="col-md-6"><label class="form-label">Degree / Qualification *</label><input type="text" name="degree" class="form-control" placeholder="e.g., Master of Business Administration"/></div>
+        <div class="col-md-6"><label class="form-label">Institution Name *</label><input type="text" name="institution_name" class="form-control" placeholder="e.g., IBA Karachi"/></div>
+        <div class="col-md-4"><label class="form-label">Start Year</label><input type="number" name="start_year" class="form-control" placeholder="e.g., 2022"/></div>
+        <div class="col-md-4"><label class="form-label">End Year</label><input type="number" name="end_year" class="form-control" placeholder="e.g., 2024"/></div>
+        <div class="col-md-4"><label class="form-label">Grade / CGPA</label><input type="text" name="grade_cgpa" class="form-control" placeholder="e.g., 3.8 / 4.0"/></div>
       </div>`;
             c.appendChild(d);
         }
@@ -935,14 +937,14 @@
             const d = document.createElement('div'); d.className = 'entry-card';
             d.innerHTML = `<button class="remove-btn" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
       <div class="row g-3">
-        <div class="col-md-6"><label class="form-label">Job Title *</label><input type="text" class="form-control" placeholder="e.g., Backend Engineer"/></div>
-        <div class="col-md-6"><label class="form-label">Company Name *</label><input type="text" class="form-control" placeholder="e.g., Arbisoft"/></div>
-        <div class="col-md-4"><label class="form-label">Start Date</label><input type="month" class="form-control"/></div>
-        <div class="col-md-4"><label class="form-label">End Date</label><input type="month" class="form-control"/></div>
+        <div class="col-md-6"><label class="form-label">Job Title *</label><input type="text" name="job_title" class="form-control" placeholder="e.g., Backend Engineer"/></div>
+        <div class="col-md-6"><label class="form-label">Company Name *</label><input type="text" name="company_name" class="form-control" placeholder="e.g., Arbisoft"/></div>
+        <div class="col-md-4"><label class="form-label">Start Date</label><input type="month" name="start_date" class="form-control"/></div>
+        <div class="col-md-4"><label class="form-label">End Date</label><input type="month" name="end_date" class="form-control"/></div>
         <div class="col-md-4"><label class="form-label">Employment Type</label>
-          <select class="form-select"><option value="">Select</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Internship</option></select>
+          <select class="form-select" name="employment_type"><option value="">Select</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Internship</option></select>
         </div>
-        <div class="col-12"><label class="form-label">Job Description</label><textarea class="form-control" rows="2" placeholder="Briefly describe your responsibilities..."></textarea></div>
+        <div class="col-12"><label class="form-label">Job Description</label><textarea name="achievements" class="form-control" rows="2" placeholder="Briefly describe your responsibilities..."></textarea></div>
       </div>`;
             c.appendChild(d);
         }

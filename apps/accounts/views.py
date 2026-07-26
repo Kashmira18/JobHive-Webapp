@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from .models import CustomUser, CompanyProfile, CompanyRejection
+from company.models import CompanyType
 from django.contrib.auth import get_user_model
 from notifications.models import Notification
 from .forms import (
@@ -406,9 +407,12 @@ def company_registration(request):
     if user.is_approved:
         return redirect("company:company_dashboard")
 
+    # Fetch dynamic company types
+    company_types = CompanyType.objects.filter(is_active=True)
+
     # GET — form dikhao
     if request.method == "GET":
-        return render(request, "accounts/company_registration.html", {"user": user})
+        return render(request, "accounts/company_registration.html", {"user": user, "company_types": company_types})
 
     # POST — form process karo
     # ── User fields update ──
@@ -470,7 +474,7 @@ def company_registration(request):
     if errors:
         for err in errors:
             messages.error(request, err)
-        return render(request, "accounts/company_registration.html", {"user": user})
+        return render(request, "accounts/company_registration.html", {"user": user, "company_types": company_types})
 
     # ── Save ──
     user.save()
@@ -576,11 +580,14 @@ def company_resubmit(request):
         messages.success(request, "Your updates have been resubmitted successfully!")
         return redirect("accounts:company_pending")
 
+    company_types = CompanyType.objects.filter(is_active=True)
+
     context = {
         "user":             user,
         "profile":          profile,
         "latest_rejection": latest_rejection,
         "status":           status,
+        "company_types":    company_types,
     }
     return render(request, "accounts/company_resubmit.html", context)
 

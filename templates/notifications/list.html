@@ -1,0 +1,36 @@
+{% extends base_template %}
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow-sm border-0" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-white border-0 py-3 d-flex align-items-center">
+            <h5 class="mb-0 fw-bold" style="color: #1f2c3d;"><i class="fas fa-bell me-2 text-primary"></i> All Notifications</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                {% for notification in notifications %}
+                <div class="list-group-item p-3 border-bottom {% if not notification.is_read %}bg-light{% endif %}">
+                    <div class="d-flex align-items-start">
+                        <div class="me-3 mt-1">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background: #e3f2fd; color: #2196f3; font-size: 1.2rem;">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 fw-bold text-dark">{{ notification.title|default:"Notification" }}</h6>
+                            <p class="mb-1 text-secondary" style="font-size: 0.95rem;">{{ notification.message }}</p>
+                            <small class="text-muted"><i class="far fa-clock me-1"></i> {{ notification.created_at|timesince }} ago</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="list-group-item p-5 text-center text-muted">
+                    <i class="far fa-bell-slash mb-3" style="font-size: 3rem; color: #cbd5e1;"></i>
+                    <h5 class="fw-bold text-secondary">No notifications yet</h5>
+                    <p class="mb-0">When you receive notifications, they will show up here.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
