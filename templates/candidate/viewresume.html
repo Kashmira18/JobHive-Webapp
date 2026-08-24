@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume - Khandaker Raufur Rahman</title>
+    <title>Resume - {{ candidate.first_name }} {{ candidate.last_name }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
@@ -132,83 +132,107 @@
 
             <div class="row align-items-center">
                 <div class="col-md-2">
-                    <img src="https://via.placeholder.com/120" alt="Profile" class="profile-img">
+                    {% if candidate.profile_photo %}
+                    <img src="{{ candidate.profile_photo.url }}" alt="Profile" class="profile-img">
+                    {% else %}
+                    <div class="profile-img d-flex align-items-center justify-content-center" style="background:#e0e8ff;font-size:2rem;font-weight:700;color:#4f7cff;">
+                        {{ candidate.first_name|slice:':1'|upper }}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
-                    <h3 class="mb-0" style="color: var(--primary-navy);">Khandaker Raufur Rahman</h3>
-                    <p class="text-muted">Manager</p>
+                    <h3 class="mb-0" style="color: var(--primary-navy);">{{ candidate.first_name }} {{ candidate.last_name }}</h3>
+                    <p class="text-muted">{% if professional %}{{ professional.job_title }}{% else %}Candidate{% endif %}</p>
                 </div>
                 <div class="col-md-4 text-end contact-info">
-                    <p class="mb-1 meta-text"><i class="fa-solid fa-phone"></i> Phone: 018XXXXXXXX</p>
-                    <p class="mb-0 meta-text"><i class="fa-solid fa-envelope"></i> Email: candidate@gmail.com</p>
+                    <p class="mb-1 meta-text"><i class="fa-solid fa-phone"></i> Phone: {{ candidate.phone_number|default:"Not provided" }}</p>
+                    <p class="mb-0 meta-text"><i class="fa-solid fa-envelope"></i> Email: {{ candidate.email }}</p>
+                    {% if location %}
+                    <p class="mb-0 meta-text"><i class="fa-solid fa-map-marker-alt"></i> {{ location.city }}, {{ location.province }}</p>
+                    {% endif %}
                 </div>
             </div>
 
             <div class="section-header">Career Objective</div>
-            <p class="meta-text">
-                I am passionate and detail-oriented Frontend Developer with 3+ years of experience in creating
-                responsive, user-friendly web applications. Skilled in HTML, CSS, JavaScript, React, and UI/UX
-                principles.
-            </p>
+            {% if about %}
+            <p class="meta-text">{{ about.career_objective|default:about.professional_summary }}</p>
+            {% else %}
+            <p class="meta-text text-muted"><em>No career objective added yet.</em></p>
+            {% endif %}
 
             <div class="section-header">Personal Information</div>
             <div class="row meta-text">
-                <div class="col-6 mb-2"><strong>Father's Name:</strong> Khandaker Mizanur Rahman</div>
-                <div class="col-6 mb-2"><strong>National ID:</strong> 541011354814</div>
-                <div class="col-6 mb-2"><strong>Mother's Name:</strong> Morjahan Begum</div>
-                <div class="col-6 mb-2"><strong>Height:</strong> 5'7"</div>
-                <div class="col-6 mb-2"><strong>Date of Birth:</strong> 22 Nov 1992</div>
-                <div class="col-6 mb-2"><strong>Weight:</strong> 65k</div>
-                <div class="col-6 mb-2"><strong>Nationality:</strong> Bangladeshi</div>
-                <div class="col-6 mb-2"><strong>Blood Group:</strong> A+</div>
+                <div class="col-6 mb-2"><strong>Date of Birth:</strong> {{ candidate.date_of_birth|date:"d M Y"|default:"Not provided" }}</div>
+                <div class="col-6 mb-2"><strong>Gender:</strong> {{ candidate.get_gender_display|default:"Not provided" }}</div>
+                <div class="col-6 mb-2"><strong>CNIC:</strong> {{ candidate.cnic_number|default:"Not provided" }}</div>
+                {% if location %}
+                <div class="col-6 mb-2"><strong>Address:</strong> {{ location.full_address|default:location.city }}</div>
+                {% endif %}
+                {% if professional %}
+                <div class="col-6 mb-2"><strong>Experience:</strong> {{ professional.years_of_experience }} year(s)</div>
+                <div class="col-6 mb-2"><strong>Job Type:</strong> {{ professional.get_job_type_preference_display }}</div>
+                {% endif %}
             </div>
 
             <div class="section-header">Educational Qualifications</div>
+            {% for edu in educations %}
             <div class="timeline-item">
-                <div class="timeline-line"></div>
+                {% if not forloop.last %}<div class="timeline-line"></div>{% endif %}
                 <div class="row">
-                    <div class="col-4 meta-text">17 Jul, 2010 - 17 Jun, 2012</div>
+                    <div class="col-4 meta-text">{{ edu.start_year }} – {{ edu.end_year|default:"Present" }}</div>
                     <div class="col-8">
-                        <strong style="color: var(--primary-navy);">Rangpur Govt College</strong>
+                        <strong style="color: var(--primary-navy);">{{ edu.institution_name }}</strong>
                         <div class="row mt-1 meta-text">
-                            <div class="col-4">Education Level: HSC</div>
-                            <div class="col-4">My Major: Science</div>
-                            <div class="col-4">Result/GPA: 4.8</div>
+                            <div class="col-4">Level: {{ edu.degree }}</div>
+                            {% if edu.field_of_study %}<div class="col-4">Field: {{ edu.field_of_study }}</div>{% endif %}
+                            {% if edu.grade_cgpa %}<div class="col-4">GPA: {{ edu.grade_cgpa }}</div>{% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="timeline-item">
-                <div class="row">
-                    <div class="col-4 meta-text">05 Sep, 2013 - 05 Aug, 2017</div>
-                    <div class="col-8">
-                        <strong style="color: var(--primary-navy);">IUBAT</strong>
-                        <div class="row mt-1 meta-text">
-                            <div class="col-4">Education Level: BBA</div>
-                            <div class="col-4">My Major: Marketing</div>
-                            <div class="col-4">Result/GPA: 3.33/4.00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% empty %}
+            <p class="meta-text text-muted"><em>No education records added yet.</em></p>
+            {% endfor %}
 
-            <div class="section-header">Professional Information</div>
+            <div class="section-header">Work Experience</div>
+            {% for exp in experiences %}
             <div class="timeline-item">
-                <div class="timeline-line"></div>
+                {% if not forloop.last %}<div class="timeline-line"></div>{% endif %}
                 <div class="row">
-                    <div class="col-4 meta-text">30 Dec, 2024 - 30 Dec, 2024</div>
+                    <div class="col-4 meta-text">{{ exp.start_date|date:"M Y" }} – {{ exp.end_date|date:"M Y"|default:"Present" }}</div>
                     <div class="col-8">
-                        <strong>CNCEC</strong>
-                        <p class="mb-0 meta-text"><strong>Position:</strong> Assistant Manager</p>
-                        <p class="mb-0 meta-text"><strong>Responsibility:</strong> Managing Site work and vendors.</p>
+                        <strong>{{ exp.company_name }}</strong>
+                        <p class="mb-0 meta-text"><strong>Position:</strong> {{ exp.job_title }}</p>
+                        {% if exp.achievements %}<p class="mb-0 meta-text"><strong>Achievements:</strong> {{ exp.achievements }}</p>{% endif %}
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <p class="meta-text text-muted"><em>No work experience added yet.</em></p>
+            {% endfor %}
+
+            {% if skills %}
+            <div class="section-header">Skills</div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                {% for skill in skills %}
+                <span class="badge" style="background:#e0e8ff;color:#4f7cff;font-size:0.85rem;padding:6px 12px;">{{ skill.skill_name }} {% if skill.proficiency %}({{ skill.proficiency }}){% endif %}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if social %}
+            <div class="section-header">Social & Portfolio Links</div>
+            <div class="row meta-text">
+                {% if social.linkedin %}<div class="col-6 mb-1"><i class="fab fa-linkedin"></i> <a href="{{ social.linkedin }}" target="_blank">LinkedIn</a></div>{% endif %}
+                {% if social.github %}<div class="col-6 mb-1"><i class="fab fa-github"></i> <a href="{{ social.github }}" target="_blank">GitHub</a></div>{% endif %}
+                {% if social.portfolio %}<div class="col-6 mb-1"><i class="fas fa-globe"></i> <a href="{{ social.portfolio }}" target="_blank">Portfolio</a></div>{% endif %}
+            </div>
+            {% endif %}
 
             <div class="mt-4">
-                <button class="btn btn-download" id="downloadBtn">
+                <a href="{% url 'candidate:download_resume_pdf' %}" class="btn btn-download">
                     <i class="fa-solid fa-download"></i> Download CV
-                </button>
+                </a>
             </div>
         </div>
     </div>

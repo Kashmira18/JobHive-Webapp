@@ -10,6 +10,8 @@ class CandidateProfile(models.Model):
         ('OTHER',  'Other'),
     ]
 
+    generated_resume_pdf = models.FileField(upload_to='resumes/generated/', blank=True, null=True)
+    resume_pdf_updated_at = models.DateTimeField(blank=True, null=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='candidate_profile')
 
     # Profile photo
@@ -83,6 +85,7 @@ class AboutMe(models.Model):
 class Resume(models.Model):
     candidate = models.OneToOneField(CandidateProfile, on_delete=models.CASCADE, related_name='resume')
     file = models.FileField(upload_to='candidate/resumes/') # PDF or DOCX, max 5 MB (enforce in form/serializer)
+    parsed_data = models.JSONField(null=True, blank=True)  # Stores extracted CV data as JSON
     uploaded_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

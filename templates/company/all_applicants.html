@@ -1,0 +1,90 @@
+{% extends 'company/company_base.html' %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 1400px; margin: 30px auto; padding: 0 20px;">
+
+    <!-- List View -->
+    <div class="applicant-section" style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h3 class="section-title" style="font-size: 1.4rem; font-weight: 600; color: #425262;">All Applicants</h3>
+        </div>
+
+        <div class="table-header" style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr; padding: 15px 20px; background: #f9fafb; border-radius: 8px; margin-bottom: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">
+            <div>APPLICANT INFO</div>
+            <div>JOB DETAILS</div>
+            <div style="text-align: center;">STATUS</div>
+            <div style="text-align: center;">ACTION</div>
+        </div>
+
+        <div id="applicantContainer">
+            {% for app in applications %}
+            <div class="applicant-row" style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr; align-items: center; padding: 20px; border-bottom: 1px solid #e5e7eb;">
+                
+                <!-- Applicant Info -->
+                <div class="applicant-info-cell" style="display: flex; align-items: center; gap: 15px;">
+                    {% if app.candidate.profile_picture %}
+                        <img src="{{ app.candidate.profile_picture.url }}" 
+                             style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; flex-shrink: 0;" alt="{{ app.candidate.user.get_full_name }}">
+                    {% else %}
+                        <div style="width: 60px; height: 60px; background:#31C2EF; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; border-radius:50%; flex-shrink: 0;">
+                            {{ app.candidate.user.get_full_name|slice:":1"|upper }}
+                        </div>
+                    {% endif %}
+                    <div class="applicant-details" style="display: flex; flex-direction: column;">
+                        <div class="applicant-name" style="font-size: 1rem; font-weight: 600; color: #425262; margin-bottom: 3px;">
+                            {{ app.candidate.user.get_full_name|default:app.candidate.user.username }}
+                        </div>
+                        <div class="applicant-email" style="font-size: 0.9rem; color: #6b7280;">{{ app.candidate.user.email }}</div>
+                        <div style="font-size:0.8rem; color:#6b7280;">
+                            Applied: {{ app.applied_at|date:"d M, Y" }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Details -->
+                <div class="job-details-cell" style="display: flex; flex-direction: column; font-size: 0.8rem;">
+                    <div class="company-name-cell" style="font-weight: 600; font-size: 0.9rem; color: #425262; margin-bottom: 3px;">{{ app.job.title }}</div>
+                    <div style="font-size:0.85rem; color:#6b7280;">
+                        {{ app.job.job_type }} · {{ app.job.work_mode }}
+                    </div>
+                    <div style="font-size:0.85rem; color:#6b7280;">
+                        {{ app.job.salary_display }}
+                    </div>
+                </div>
+
+                <!-- Status Badge -->
+                <div class="status-cell" style="display: flex; justify-content: center;">
+                    {% if app.status == "APPLIED" %}
+                        <span style="background:#DBEAFE; color:#3B82F6; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Applied</span>
+                    {% elif app.status == "SHORTLISTED" %}
+                        <span style="background:#D1FAE5; color:#10B981; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Shortlisted</span>
+                    {% elif app.status == "REJECTED" %}
+                        <span style="background:#FEE2E2; color:#EF4444; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Rejected</span>
+                    {% elif app.status == "INTERVIEW" %}
+                        <span style="background:#FEF3C7; color:#F59E0B; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Interview</span>
+                    {% else %}
+                        <span style="background:#F3F4F6; color:#6b7280; padding:4px 12px; border-radius:20px; font-size:0.8rem;">{{ app.get_status_display }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Action -->
+                <div class="action-cell" style="display: flex; justify-content: center;">
+                    <a href="{% url 'company:job_applications' app.job.id %}" 
+                       style="background:#31C2EF; color:white; padding:7px 16px; border-radius:6px; font-size:0.85rem; text-decoration:none;">
+                        <i class="fas fa-eye"></i> View Job
+                    </a>
+                </div>
+
+            </div>
+            {% empty %}
+            <div style="text-align:center; padding:50px; color:#6b7280;">
+                <i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
+                No applications found.
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

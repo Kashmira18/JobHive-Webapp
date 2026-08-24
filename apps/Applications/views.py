@@ -2,38 +2,38 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from job.models import JobPost
-from candidate.models import CandidateProfile, Resume
+from candidate.models import CandidateProfile, WorkExperience, Education, Resume
 from .models import Applications
 from .forms import JobApplicationForm
 app_name = "applications" 
 @login_required() 
 def apply_job(request, job_id):
     job = get_object_or_404(JobPost, id=job_id, status="PUBLISHED")
-    candidate = request.user.candidate_profile
-    # Check candidate profile exists
     try:
         candidate = request.user.candidate_profile
     except CandidateProfile.DoesNotExist:
         messages.error(request, "Please create your candidate profile first")
         return redirect('candidate:candidate_edit_profile')
     
-    # Check profile is complete
-    if not candidate.first_name or not candidate.last_name:
+    if not candidate.first_name:
         messages.error(request, "Please fill your name first")
         return redirect('candidate:candidate_edit_profile')
-    
-    if not hasattr(candidate, 'location_info'):
-        messages.error(request, "Please add your location first")
-        return redirect('candidate:candidate_edit_profile')
-    
+   
     if not candidate.educations.exists():
         messages.error(request, "Please add your education first")
         return redirect('candidate:candidate_edit_profile')
     
+    # Sirf ye check chahiye — years_of_experience > 0 lekin koi experience entry nahi
+    professional = getattr(candidate, 'professional_info', None)
+    if professional and professional.years_of_experience and professional.years_of_experience > 0:
+        if not candidate.work_experiences.exists():
+            messages.error(request, f"Tumne {professional.years_of_experience} years experience mention kiya hai — apna work experience add karo apply karne se pehle")
+            return redirect('candidate:candidate_edit_profile')
+
     # Check not already applied
     if Applications.objects.filter(candidate=candidate, job=job).exists():
         messages.warning(request, "You already applied for this job")
-        return redirect('job_detail', job_id=job.id)
+        return redirect('job:job_detail', pk=job.id)
     
     # Check if saved resume exists
     has_saved_resume = hasattr(candidate, 'resume')
@@ -68,7 +68,7 @@ def apply_job(request, job_id):
             )
             
             messages.success(request, "Application submitted successfully!")
-            return redirect('application_success', app_id=application.id)
+            return redirect('applications:application_success', app_id=application.id)
         else:
             # Show form errors
             for field, errors in form.errors.items():
@@ -92,7 +92,7 @@ def application_success(request, app_id):
     # Make sure only the user who applied can see it
     if application.candidate.user != request.user:
         messages.error(request, "Unauthorized access")
-        return redirect('candidate_dashboard')
+        return redirect('candidate:candidate_dashboard')
     
     return render(request, 'applications/success.html', {
         'application': application

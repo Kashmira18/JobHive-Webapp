@@ -13,6 +13,9 @@ from .forms import JobPostForm
 from custom_admin.decorators import admin_login_required
 # from .decorators import approved_company_required
 from applications.models import Applications
+from notifications.models import Notification
+from django.views.decorators.http import require_POST
+import json
 from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import JobPostForm, CompanyUserUpdateForm, CompanyProfileUpdateForm
@@ -56,15 +59,13 @@ def company_dashboard(request):
     
     total_jobs = jobs.count()
     live_jobs = jobs.filter(status="PUBLISHED").count()
-    pending_jobs = jobs.filter(status="PENDING_REVIEW").count()
     total_applied = applications.count()
     return render(request, 'company/company_dashboard.html', {
         'profile': profile,
         'total_jobs': total_jobs,
         'live_jobs': live_jobs,
-        'pending_jobs': pending_jobs,
         'total_applied': total_applied,                   
-        'recent_applicants': applications[:10],           
+        'recent_applicants': applications[:5],           
 
     })
 
@@ -235,8 +236,21 @@ def company_job_post(request, job_id=None):
 
         if is_publishing and not was_published:
             credits, _ = CompanyCredit.objects.get_or_create(company=profile)
-            if credits.available_credits <= 0:
-                error_msg = "Insufficient credits to publish this job. Please purchase credits or subscribe to a plan."
+            
+            try:
+                subscription = profile.subscription
+                limit = subscription.current_plan.job_post_limit if subscription.current_plan else 0
+            except Exception:
+                limit = 0
+                
+            published_count = JobPost.objects.filter(company=profile, status="PUBLISHED").count()
+            
+            if published_count < limit:
+                pass # allowed via plan limit
+            elif credits.available_credits > 0:
+                credits.deduct_credit() # allowed via credits
+            else:
+                error_msg = f"You have reached your limit of {limit} jobs for your current plan. Please purchase credits or subscribe to a plan."
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return JsonResponse({
                         "success": False,
@@ -248,8 +262,6 @@ def company_job_post(request, job_id=None):
                     "job": job,
                     "post_data": request.POST,
                 })
-            # Deduct credit (subscription first, then addon)
-            credits.deduct_credit()
 
         # Set status based on action
         job.status = "PUBLISHED" if action == "publish" else "DRAFT"
@@ -359,12 +371,23 @@ def publish_job(request, job_id):
         messages.info(request, f'"{job.title}" is already published.')
         return redirect("company:company_job_list")
 
+    try:
+        subscription = profile.subscription
+        limit = subscription.current_plan.job_post_limit if subscription.current_plan else 0
+    except Exception:
+        limit = 0
+        
+    published_count = JobPost.objects.filter(company=profile, status="PUBLISHED").count()
     credits, _ = CompanyCredit.objects.get_or_create(company=profile)
-    if credits.available_credits <= 0:
-        messages.error(request, "Insufficient credits to publish this job. Please purchase credits or subscribe to a plan.")
+    
+    if published_count < limit:
+        pass # allowed via plan limit
+    elif credits.available_credits > 0:
+        credits.deduct_credit()
+    else:
+        messages.error(request, f"You have reached your limit of {limit} jobs for your current plan. Please purchase credits or subscribe to a plan.")
         return redirect("company:company_job_list")
 
-    credits.deduct_credit()
     job.status = "PUBLISHED"
     job.save()
     messages.success(request, f'"{job.title}" has been published successfully.')
@@ -392,8 +415,49 @@ def job_applications(request, job_id):
         }
     )
 
+@login_required(login_url='login')
+@require_POST
+def update_application_status(request):
+    try:
+        data = json.loads(request.body)
+        app_id = data.get('application_id')
+        new_status = data.get('status')
+        
+        profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+        application = get_object_or_404(Applications, id=app_id, job__company=profile)
+        
+        valid_statuses = [choice[0] for choice in Applications.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return JsonResponse({'success': False, 'error': 'Invalid status'}, status=400)
+            
+        old_status = application.status
+        application.status = new_status
+        application.save()
+        
+        # Create notification for candidate
+        Notification.objects.create(
+            user=application.candidate.user,
+            notification_type='JOB_UPDATE',
+            title='Application Status Update',
+            message=f'Your application for {application.job.title} at {profile.trade_name} has been updated to {application.get_status_display()}.',
+            link=f'/application/success/{application.id}/' # Just a placeholder link, can be whatever the candidate dashboard is
+        )
+        
+        return JsonResponse({'success': True, 'status': new_status})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-
+@login_required(login_url='login')
+def company_all_applicants(request):
+    profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
+    
+    applications = Applications.objects.filter(
+        job__company=profile
+    ).select_related('candidate__user', 'job').order_by('-applied_at')
+    
+    return render(request, 'company/all_applicants.html', {
+        'applications': applications
+    })
 
 # ════════════════════════════════
 #  ACCOUNT SETTINGS

@@ -2,6 +2,7 @@
 
 {% block content %}
 <div style="max-width:1200px; margin:30px auto; padding:0 20px;">
+    {% csrf_token %}
 
     <!-- Header -->
     <div style="background:white; border-radius:12px; padding:25px 30px; 
@@ -77,21 +78,20 @@
                 {{ app.applied_at|date:"d M, Y" }}
             </div>
 
-            <!-- Status Badge -->
+            <!-- Status Dropdown -->
             <div>
-                {% if app.status == "APPLIED" %}
-                    <span style="background:#DBEAFE; color:#3B82F6; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Applied</span>
-                {% elif app.status == "REVIEWING" %}
-                    <span style="background:#FEF3C7; color:#F59E0B; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Reviewing</span>
-                {% elif app.status == "SHORTLISTED" %}
-                    <span style="background:#D1FAE5; color:#10B981; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Shortlisted</span>
-                {% elif app.status == "INTERVIEW" %}
-                    <span style="background:#EDE9FE; color:#7C3AED; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Interview</span>
-                {% elif app.status == "REJECTED" %}
-                    <span style="background:#FEE2E2; color:#EF4444; padding:4px 12px; border-radius:20px; font-size:0.8rem;">Rejected</span>
-                {% else %}
-                    <span style="background:#F3F4F6; color:#6b7280; padding:4px 12px; border-radius:20px; font-size:0.8rem;">{{ app.get_status_display }}</span>
-                {% endif %}
+                <select class="status-select" data-app-id="{{ app.id }}" 
+                        style="padding:6px 12px; border-radius:6px; border:1px solid #e5e7eb; 
+                               background-color:#f9fafb; font-size:0.85rem; color:#425262; 
+                               outline:none; cursor:pointer;">
+                    <option value="APPLIED" {% if app.status == "APPLIED" %}selected{% endif %}>Applied</option>
+                    <option value="REVIEWING" {% if app.status == "REVIEWING" %}selected{% endif %}>Reviewing</option>
+                    <option value="SHORTLISTED" {% if app.status == "SHORTLISTED" %}selected{% endif %}>Shortlisted</option>
+                    <option value="INTERVIEW" {% if app.status == "INTERVIEW" %}selected{% endif %}>Interview</option>
+                    <option value="OFFERED" {% if app.status == "OFFERED" %}selected{% endif %}>Offered</option>
+                    <option value="HIRED" {% if app.status == "HIRED" %}selected{% endif %}>Hired</option>
+                    <option value="REJECTED" {% if app.status == "REJECTED" %}selected{% endif %}>Rejected</option>
+                </select>
             </div>
 
             <!-- CV Download -->
@@ -117,4 +117,48 @@
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelects = document.querySelectorAll('.status-select');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    statusSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            const appId = this.getAttribute('data-app-id');
+            const newStatus = this.value;
+            const originalValue = this.querySelector('option[selected]') ? this.querySelector('option[selected]').value : null;
+            
+            fetch('{% url "company:update_application_status" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    'application_id': appId,
+                    'status': newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    // Show a quick success toast or feedback (optional)
+                    const option = this.querySelector(`option[value="${newStatus}"]`);
+                    Array.from(this.options).forEach(opt => opt.removeAttribute('selected'));
+                    option.setAttribute('selected', 'selected');
+                } else {
+                    alert('Failed to update status: ' + data.error);
+                    this.value = originalValue; // Revert change
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the status.');
+                this.value = originalValue; // Revert change
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

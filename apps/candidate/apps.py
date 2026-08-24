@@ -5,4 +5,5 @@ class CandidateConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'candidate'
     verbose_name = "candidate"
-
+    def ready(self):
+        import candidate.signals

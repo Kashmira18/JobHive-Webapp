@@ -1,7 +1,8 @@
 from django import forms
-from job.models import JobPost
+from job.models import JobPost, JobCategory
 from django.contrib.auth import get_user_model
 from accounts.models import CompanyProfile
+from company.models import CompanyType
 
 User = get_user_model()
 
@@ -48,16 +49,6 @@ class JobPostForm(forms.ModelForm):
     # ── Choice fields defined manually for clean options ──
     CATEGORY_CHOICES = [
         ("", "Select category"),
-        ("Information Technology", "Information Technology"),
-        ("Design & Creative",      "Design & Creative"),
-        ("Marketing & Sales",      "Marketing & Sales"),
-        ("Finance & Accounting",   "Finance & Accounting"),
-        ("Engineering",            "Engineering"),
-        ("Human Resources",        "Human Resources"),
-        ("Healthcare",             "Healthcare"),
-        ("Education & Training",   "Education & Training"),
-        ("Legal",                  "Legal"),
-        ("Customer Support",       "Customer Support"),
     ]
     EXP_CHOICES = [
         ("",                           "Select level"),
@@ -120,6 +111,14 @@ class JobPostForm(forms.ModelForm):
     salary_type       = forms.ChoiceField(choices=SALARY_TYPE_CHOICES, widget=forms.Select(attrs={"id": "salaryType", "onchange": "toggleSalary()"}))
     currency          = forms.ChoiceField(choices=CURRENCY_CHOICES,    widget=forms.Select(attrs={"id": "currency"}))
     visibility        = forms.ChoiceField(choices=VISIBILITY_CHOICES,  widget=forms.RadioSelect(), initial="public")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            active_categories = JobCategory.objects.filter(is_active=True).values_list('name', 'name')
+            self.fields['category'].choices = [('', 'Select category')] + list(active_categories)
+        except Exception:
+            pass
 
     def clean_vacancies(self):
         v = self.cleaned_data.get("vacancies", 1)
@@ -187,3 +186,11 @@ class CompanyProfileUpdateForm(forms.ModelForm):
             'overview': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe your company'}),
             'logo': forms.FileInput(attrs={'class': 'd-none', 'id': 'logoUpload', 'onchange': 'previewMyLogo(this)'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            active_types = CompanyType.objects.filter(is_active=True).values_list('name', 'name')
+            self.fields['company_type'].widget.choices = [('', 'Select type')] + list(active_types)
+        except Exception:
+            self.fields['company_type'].widget.choices = [('', 'Select type')]

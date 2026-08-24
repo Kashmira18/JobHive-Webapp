@@ -554,12 +554,21 @@
                     <div class="user-name">{{ request.user.username }}</div>
                     <div class="user-role">Job Seeker</div>
                 </div>
-                <img src="https://ui-avatars.com/api/?name=TechSolutions&background=31C2EF&color=fff&bold=true"
+                {% if request.user.candidate_profile and request.user.candidate_profile.profile_photo %}
+                <img src="{{ request.user.candidate_profile.profile_photo.url }}" class="user-img" alt="Profile">
+                {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=31C2EF&color=fff&bold=true"
                     class="user-img" alt="Profile">
+                {% endif %}
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                 <div class="profile-dropdown-box" id="profileDropdown">
                     <a href="{% url 'candidate:candidate_edit_profile' %}">
-                        <i class="fas fa-building"></i> {{ request.user.username }}
+                        <i class="fas fa-user"></i> 
+                        {% if request.user.candidate_profile and request.user.candidate_profile.first_name %}
+                            {{ request.user.candidate_profile.first_name }} {{ request.user.candidate_profile.last_name }}
+                        {% else %}
+                            {{ request.user.username }}
+                        {% endif %}
                     </a>
                     <a href="{% url 'candidate:candidate_setting' %}">
                         <i class="fas fa-cog"></i> Settings

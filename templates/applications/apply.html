@@ -1,65 +1,284 @@
 {% extends 'candidate/candidate_base.html' %}
 {% load static %}
-<style>
-.alert {
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
 
-.alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.error {
-    color: red;
-    font-size: 12px;
-    display: block;
-    margin-top: 4px;
-}
-
-.note.success {
-    color: green;
-    background: #e8f5e9;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-.note.warning {
-    color: #f57c00;
-    background: #fff3e0;
-    padding: 10px;
-    border-radius: 4px;
-}
-</style>
 {% block content %}
+<style>
+    :root {
+        --primary: #150b83;
+        --primary-dark: #1a1a2e;
+        --section-color: #423d79;
+        --label: #444;
+        --input-border: #d8dde3;
+        --input-focus: #175ec8;
+        --red: #e74c3c;
+        --green: #1f9d55;
+        --amber: #f57c00;
+    }
 
-<div class="container">
-    <div class="apply-card">
-        
-        <h2>Apply: {{ job.title }}</h2>
+    .apply-page-wrapper {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 28px 20px 52px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .apply-banner {
+        background: linear-gradient(105deg, var(--primary), var(--primary-dark));
+        border-radius: 10px;
+        padding: 22px 28px;
+        color: #fff;
+        margin-bottom: 22px;
+    }
+
+    .apply-banner h2 {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin: 0 0 6px;
+    }
+
+    .apply-banner .job-info {
+        font-size: 0.85rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .apply-banner .job-info strong {
+        font-weight: 700;
+    }
+
+    .apply-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e4eaef;
+        padding: 24px 26px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-group:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--label);
+        margin-bottom: 7px;
+    }
+
+    .form-group textarea,
+    .form-group input[type="file"] {
+        width: 100%;
+        border: 1px solid var(--input-border);
+        border-radius: 7px;
+        font-size: 0.85rem;
+        color: #333;
+        padding: 10px 13px;
+        font-family: 'DM Sans', sans-serif;
+        background: #fff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .form-group textarea:focus,
+    .form-group input[type="file"]:focus {
+        border-color: var(--input-focus);
+        box-shadow: 0 0 0 3px rgba(23, 94, 200, 0.12);
+        outline: none;
+    }
+
+    .form-group textarea::placeholder {
+        color: #b0b8c1;
+    }
+
+    .file-box {
+        border: 1.5px dashed #c5d8dc;
+        border-radius: 8px;
+        padding: 16px;
+        background: #f9fdfd;
+    }
+
+    .file-box input[type="file"] {
+        margin-top: 10px;
+        border-style: dashed;
+    }
+
+    .note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 9px 13px;
+        border-radius: 7px;
+        margin: 0;
+    }
+
+    .note.success {
+        color: var(--green);
+        background: rgba(31, 157, 85, 0.1);
+    }
+
+    .note.warning {
+        color: var(--amber);
+        background: rgba(245, 124, 0, 0.1);
+    }
+
+    .file-name {
+        font-size: 0.78rem;
+        color: #777;
+        margin-top: 6px;
+    }
+
+    .error {
+        color: var(--red);
+        font-size: 0.76rem;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .alert {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .alert-success {
+        background: #e6f6ea;
+        color: #1f9d55;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background: #fdecea;
+        color: var(--red);
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert-warning {
+        background: #fff3e0;
+        color: var(--amber);
+        border: 1px solid #ffe0b2;
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 11px 28px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: background 0.2s, transform 0.15s;
+        margin-top: 24px;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+        .apply-page-wrapper {
+            padding: 18px 14px 40px;
+        }
+
+        .apply-banner {
+            padding: 18px 20px;
+            border-radius: 10px;
+        }
+
+        .apply-banner h2 {
+            font-size: 1.05rem;
+        }
+
+        .apply-banner .job-info {
+            font-size: 0.8rem;
+        }
+
+        .apply-card {
+            padding: 18px 16px;
+            border-radius: 10px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        .file-box {
+            padding: 12px;
+        }
+
+        .file-box input[type="file"] {
+            font-size: 0.78rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .apply-banner h2 {
+            font-size: 0.95rem;
+        }
+
+        .apply-banner .job-info {
+            font-size: 0.75rem;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+        }
+
+        .btn-submit {
+            padding: 12px 20px;
+            font-size: 0.82rem;
+        }
+    }
+</style>
+
+<div class="apply-page-wrapper">
+
+    <div class="apply-banner">
+        <h2><i class="bi bi-send-check-fill me-2"></i>Apply: {{ job.title }}</h2>
         <p class="job-info">
-            <strong>{{ job.company.trade_name }}</strong> | 
+            <strong>{{ job.company.trade_name }}</strong> &middot;
             Deadline: {{ job.deadline|date:"d M, Y" }}
         </p>
+    </div>
 
-        <!-- Show any error/success messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
+    <div class="apply-card">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
@@ -75,16 +294,16 @@
             <!-- Resume -->
             <div class="form-group">
                 <label>CV / Resume</label>
-                
+
                 <div class="file-box">
                     {% if has_saved_resume %}
-                        <p class="note success">✅ Saved CV available</p>
+                        <p class="note success"><i class="bi bi-check-circle-fill"></i> Saved CV available</p>
                     {% else %}
-                        <p class="note warning">⚠️ No saved CV. Upload one.</p>
+                        <p class="note warning"><i class="bi bi-exclamation-triangle-fill"></i> No saved CV. Upload one.</p>
                     {% endif %}
 
                     {{ form.resume_snapshot }}
-                    
+
                     {% if form.resume_snapshot.errors %}
                         <small class="error">{{ form.resume_snapshot.errors.0 }}</small>
                     {% endif %}
@@ -93,10 +312,10 @@
                 </div>
             </div>
 
-            <button class="btn-submit" type="submit">Submit Application</button>
+            <button class="btn-submit" type="submit"><i class="bi bi-send-fill"></i> Submit Application</button>
         </form>
-
     </div>
+
 </div>
 
 <script src="{% static 'js/candidate/apply_job.js' %}"></script>

@@ -354,10 +354,10 @@ body{
         <div class="dropdown">
             <div class="profile-box" data-bs-toggle="dropdown">
                 <div class="profile-text">
-                    Faiqa Eman<br>
+                    {{ request.user.username }}<br>
                     <small>Admin Profile</small>
                 </div>
-                <div class="profile-circle">FE</div>
+                <div class="profile-circle">{{ request.user.username|first|upper }}</div>
                 <i class="bi bi-chevron-down text-white"></i>
             </div>
 

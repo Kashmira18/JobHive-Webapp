@@ -1,43 +1,181 @@
 {% extends 'candidate/candidate_base.html' %}
+{% load static %}
 
 {% block content %}
+<style>
+    :root {
+        --primary: #150b83;
+        --primary-dark: #1a1a2e;
+        --green: #1f9d55;
+        --input-border: #d8dde3;
+    }
 
-<div style="max-width: 600px; margin: 50px auto; padding: 20px;">
-    
-    <div style="background: white; padding: 40px; border-radius: 12px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,.08);">
-        
-        <!-- Success Icon -->
-        <div style="font-size: 60px; margin-bottom: 20px; color: #22c55e;">
-            ✓
+    .success-wrapper {
+        max-width: 560px;
+        margin: 50px auto;
+        padding: 20px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .success-card {
+        background: #fff;
+        border: 1px solid #e4eaef;
+        border-radius: 14px;
+        padding: 44px 36px;
+        text-align: center;
+        box-shadow: 0 8px 26px rgba(21, 11, 131, 0.06);
+    }
+
+    .success-icon-ring {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: rgba(31, 157, 85, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+        font-size: 2.1rem;
+        color: var(--green);
+    }
+
+    .success-card h2 {
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 1.35rem;
+        margin-bottom: 8px;
+    }
+
+    .success-subtext {
+        color: #888;
+        font-size: 0.85rem;
+    }
+
+    .job-detail-box {
+        background: #f9fdfd;
+        border: 1px solid #e0f0e6;
+        border-radius: 10px;
+        padding: 20px 22px;
+        margin: 26px 0;
+        text-align: left;
+    }
+
+    .job-detail-box p {
+        font-size: 0.86rem;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .job-detail-box p:last-child {
+        margin-bottom: 0;
+    }
+
+    .job-detail-box strong {
+        color: var(--primary-dark);
+        font-weight: 700;
+    }
+
+    .status-pill {
+        display: inline-block;
+        background: rgba(21, 11, 131, 0.1);
+        color: var(--primary);
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .success-note {
+        color: #777;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        margin-bottom: 28px;
+    }
+
+    .success-note strong {
+        color: var(--primary-dark);
+    }
+
+    .success-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-success-primary,
+    .btn-success-secondary {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.85rem;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-success-primary {
+        background: var(--primary);
+        color: #fff;
+    }
+
+    .btn-success-primary:hover {
+        background: var(--primary-dark);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-success-secondary {
+        background: #f1f2f6;
+        color: #444;
+        border: 1px solid var(--input-border);
+    }
+
+    .btn-success-secondary:hover {
+        background: #e9ebf0;
+        color: var(--primary-dark);
+    }
+
+    @media (max-width: 480px) {
+        .success-card {
+            padding: 30px 22px;
+        }
+
+        .success-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="success-wrapper">
+    <div class="success-card">
+
+        <div class="success-icon-ring">
+            <i class="bi bi-check-lg"></i>
         </div>
 
-        <h2 style="color: #166534; margin-bottom: 10px;">Application Submitted!</h2>
-        
-        <!-- Job Details -->
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px; margin: 30px 0; text-align: left;">
+        <h2>Application Submitted!</h2>
+        <p class="success-subtext">Your application has been sent successfully</p>
+
+        <div class="job-detail-box">
             <p><strong>Job:</strong> {{ application.job.title }}</p>
             <p><strong>Company:</strong> {{ application.job.company.trade_name }}</p>
             <p><strong>Applied On:</strong> {{ application.applied_at|date:"d M, Y" }}</p>
-            <p><strong>Status:</strong> <span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 20px; font-size: 12px;">{{ application.get_status_display }}</span></p>
+            <p><strong>Status:</strong> <span class="status-pill">{{ application.get_status_display }}</span></p>
         </div>
 
-        <p style="color: #666; font-size: 14px; line-height: 1.6;">
+        <p class="success-note">
             The company will review your application and contact you within the deadline.<br><br>
             <strong>Keep checking your email for updates!</strong>
         </p>
 
-        <!-- Buttons -->
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <a href="{% url 'candidate:applied_jobs' %}" style="flex: 1; background: #0d6efd; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                My Applications
+        <div class="success-actions">
+            <a href="{% url 'candidate:applied_jobs' %}" class="btn-success-primary">
+                <i class="bi bi-file-earmark-text-fill me-1"></i> My Applications
             </a>
-            <a href="{% url 'candidate:candidate_dashboard' %}" style="flex: 1; background: #e5e7eb; color: #333; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                Back Home
+            <a href="{% url 'candidate:candidate_dashboard' %}" class="btn-success-secondary">
+                <i class="bi bi-house-fill me-1"></i> Back Home
             </a>
         </div>
 
     </div>
-
 </div>
-
 {% endblock %}

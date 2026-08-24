@@ -45,5 +45,9 @@ urlpatterns = [
     # Job edit
     path('job-post/<int:job_id>/edit/', views.company_job_post, name='company_job_edit'),
     
+    # Applicants management
+    path('all-applicants/', views.company_all_applicants, name='company_all_applicants'),
+    path('update-application-status/', views.update_application_status, name='update_application_status'),
+
 
 ]

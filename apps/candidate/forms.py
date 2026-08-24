@@ -20,7 +20,7 @@ class RequiredFieldsMixin:
 
 
 class CandidateProfileForm(RequiredFieldsMixin, forms.ModelForm):
-    required_fields = ['first_name', 'last_name', 'username', 'email', 'phone_number']
+    required_fields = ['first_name', 'username', 'email', 'phone_number']
     class Meta:
         model = CandidateProfile
         fields = [
@@ -39,7 +39,7 @@ class CandidateProfileForm(RequiredFieldsMixin, forms.ModelForm):
     def clean_phone_number(self):
         phone = self.cleaned_data.get('phone_number')
         if phone and not re.match(r'^03\d{9}$', phone):
-            raise forms.ValidationError("Phone: 03XXXXXXXXX format mein hona chahiye")
+            raise forms.ValidationError("Phone must be in 03XXXXXXXXX format.")
         return phone
 
 
@@ -75,10 +75,10 @@ class ResumeForm(forms.ModelForm):
             # Sirf PDF/DOCX allow karo
             ext = file.name.split('.')[-1].lower()
             if ext not in ['pdf', 'docx']:
-                raise forms.ValidationError("Sirf PDF ya DOCX allowed hai.")
+                raise forms.ValidationError("Only PDF and DOCX files are allowed.")
             # Max 5MB
             if file.size > 5 * 1024 * 1024:
-                raise forms.ValidationError("File 5MB se bari nahi honi chahiye.")
+                raise forms.ValidationError("File size cannot exceed 5MB.")
         return file
 
 
@@ -100,7 +100,7 @@ class EducationForm(RequiredFieldsMixin, forms.ModelForm):
         start = cleaned.get('start_year')
         end = cleaned.get('end_year')
         if start and end and end < start:
-            raise forms.ValidationError("End year start year se pehle nahi ho sakta.")
+            raise forms.ValidationError("End year must not be earlier than start year.")
         return cleaned
 
 
@@ -116,7 +116,7 @@ class WorkExperienceForm(RequiredFieldsMixin, forms.ModelForm):
         start = cleaned.get('start_date')
         end = cleaned.get('end_date')
         if start and end and end < start:
-            raise forms.ValidationError("End date start date se pehle nahi ho sakti.")
+            raise forms.ValidationError("End date must not be earlier than start date.")
         return cleaned
 
 

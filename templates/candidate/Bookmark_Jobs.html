@@ -106,73 +106,50 @@
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="bookmark-table-body">
+                    <tbody>
+                        {% for app in jobs %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if app.job.company.logo %}
+                                    <img src="{{ app.job.company.logo.url }}" class="job-logo me-3" alt="company logo">
+                                    {% else %}
+                                    <div class="job-logo me-3 d-flex align-items-center justify-content-center" style="background:#e0e8ff;font-weight:700;font-size:1rem;color:#4f7cff;">{{ app.job.company.trade_name|slice:':2'|upper }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="job-title">{{ app.job.title }}</div>
+                                        <div class="job-meta">
+                                            <div><i class="fa-solid fa-location-dot"></i> {{ app.job.location }}</div>
+                                            <div><i class="fa-regular fa-compass"></i> Salary: {{ app.job.salary_display }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="deadline-text">{{ app.job.deadline|date:"d M, Y" }}</span></td>
+                            <td><span class="company-text">{{ app.job.company.trade_name }}</span></td>
+                            <td class="text-center">
+                                <a href="{% url 'job_detail' app.job.id %}" class="apply-now">View Job</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">
+                                <i class="fas fa-bookmark fa-2x mb-2 d-block"></i>
+                                No saved jobs yet. <a href="{% url 'job_list' %}">Browse Jobs</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
 
             <div class="card-footer bg-white py-3 border-top-0">
-                <p class="mb-0 text-muted small" id="result-count">3 Results Showing In 3 Jobs</p>
+                <p class="mb-0 text-muted small" id="result-count">{{ jobs|length }} Results Showing</p>
             </div>
         </div>
     </div>
 
-    <script>
-        const bookmarkJobs = [
-            {
-                title: "Front End Devloper",
-                location: "Mirpur, Bangladesh",
-                salary: "Negotiable",
-                deadline: "28 Feb, 2026",
-                company: "City Life Travel",
-                logo: "{% static 'images/3.webp'%}" // Replace with actual logo URL
-            },
-            {
-                title: "Ready to hire a Lead Designer",
-                location: "Mirpur, Bangladesh",
-                salary: "Negotiable",
-                deadline: "28 Feb, 2026",
-                company: "New Desire Solution",
-                logo: "{% static 'images/4.webp'%}" // Replace with actual logo URL
-            },
-            {
-                title: "We are Hiring Legal Advisor",
-                location: "Mirpur, Bangladesh",
-                salary: "R$20000 - R$30000 /Per Month",
-                deadline: "28 Feb, 2026",
-                company: "Best Solution",
-                logo: "{% static 'images/5.webp'%}" // Replace with actual logo URL
-            }
-        ];
-
-        const tableBody = document.getElementById('bookmark-table-body');
-
-        // Map through data and create rows
-        bookmarkJobs.forEach(job => {
-            const row = `
-        <tr>
-            <td>
-                <div class="d-flex align-items-center">
-                    <img src="${job.logo}" class="job-logo me-3" alt="company logo">
-                    <div>
-                        <div class="job-title">${job.title}</div>
-                        <div class="job-meta">
-                            <div><i class="fa-solid fa-location-dot"></i> ${job.location}</div>
-                            <div><i class="fa-regular fa-compass"></i> Salary: ${job.salary}</div>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td><span class="deadline-text">${job.deadline}</span></td>
-            <td><span class="company-text">${job.company}</span></td>
-            <td class="text-center">
-                <a href="#" class="apply-now">Apply Now</a>
-            </td>
-        </tr>
-    `;
-            tableBody.innerHTML += row;
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

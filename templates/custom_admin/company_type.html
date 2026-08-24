@@ -296,7 +296,10 @@ window.onload = function(){
     // TOGGLE
     document.querySelectorAll('.toggle').forEach(t => {
 
-        t.onclick = () => t.classList.toggle('active');
+        t.onclick = () => {
+            t.classList.toggle('active');
+            t.parentNode.submit();
+        };
 
     });
 

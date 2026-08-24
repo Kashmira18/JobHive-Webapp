@@ -11,8 +11,11 @@ from .forms import (
     CandidateProfileForm, ProfessionalInfoForm, LocationInfoForm,
     AboutMeForm, ResumeForm, SocialLinksForm, EducationForm, WorkExperienceForm
 )
+from django.forms import inlineformset_factory
 from applications.models import Applications
-
+from django.db.models import Q
+from django.http import FileResponse
+from .utils import generate_resume_pdf, PDF_ENABLED
 @login_required
 def candidate_dashboard(request):
     candidate, _ = CandidateProfile.objects.get_or_create(
@@ -30,6 +33,8 @@ def candidate_dashboard(request):
     applications = Applications.objects.filter(
         candidate=candidate
     ).select_related('job', 'job__company').order_by('-applied_at')
+
+    recent_applications = applications[:3]
 
     # Stats
     total_applied = applications.count()
@@ -50,12 +55,30 @@ def candidate_dashboard(request):
     ]
     completion_percentage = int((sum(fields) / len(fields)) * 100)
 
+
+    # Featured jobs (general)
     featured_jobs = JobPost.objects.filter(
         status="PUBLISHED",
         visibility="public"
     ).select_related("company").order_by("-created_at")[:6]
 
+    # Recommended jobs based on candidate skills
+    skill_names = list(candidate.skills.values_list('skill_name', flat=True))
+    if skill_names:
+        skill_q = Q()
+        for skill in skill_names:
+            skill_q |= Q(title__icontains=skill) | Q(description__icontains=skill)
+        recommended_jobs = JobPost.objects.filter(
+            skill_q,
+            status="PUBLISHED",
+            visibility="public"
+        ).exclude(id__in=featured_jobs.values_list('id', flat=True)).distinct()[:6]
+    else:
+        recommended_jobs = JobPost.objects.none()
+
+
     context = {
+        "recommended_jobs": recommended_jobs,
         "featured_jobs": featured_jobs,
         "candidate": candidate,
         "applications": applications,
@@ -64,48 +87,13 @@ def candidate_dashboard(request):
         "saved_jobs": saved_jobs,
         "profile_views": profile_views,
         "completion_percentage": completion_percentage,
+        "recent_applications": recent_applications,
     }
 
     return render(request, 'candidate/candidate_dashboard.html', context)
 
-# @login_required
-# def candidate_dashboard(request):
-#     candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
-#         # Applications
-#     applications = Applications.objects.filter(
-#         candidate=candidate
-#     ).select_related('job', 'job__company').order_by('-applied_at')
-
-#     # Stats
-#     total_applied = applications.count()
-
-#     featured_jobs = JobPost.objects.filter(
-#         status="PUBLISHED",
-#         visibility="public"
-#     ).select_related("company").order_by("-created_at")[:6]
-#     context={
-#         "featured_jobs": featured_jobs,
-#         "candidate": candidate,
-#         "applications":  applications,
-#         "total_applied": total_applied,
-#     }
-
-#     return render(request, 'candidate/candidate_dashboard.html', context)
-
-
-# @candidate_login_required
-# def profile(request):
-#     return render(request, 'candidate/profile.html')
-# CANDIDATE DASHBOARD
-def candidate_base(request):
-    return render(request, "candidate/candidate_base.html")
-
-# def candidate_edit_profile(request):
-#     return render(request,"candidate/candidate_edit_profile.html")
-
 @login_required
 def candidate_edit_profile(request):
-    # Profile exist kare ya create ho
     candidate, _ = CandidateProfile.objects.get_or_create(
         user=request.user,
         defaults={
@@ -117,16 +105,27 @@ def candidate_edit_profile(request):
         }
     )
 
+    # ── Formsets ──
+    EducationFormSet = inlineformset_factory(
+        CandidateProfile, Education,
+        form=EducationForm,
+        extra=0, can_delete=True
+    )
+    ExperienceFormSet = inlineformset_factory(
+        CandidateProfile, WorkExperience,
+        form=WorkExperienceForm,
+        extra=0, can_delete=True
+    )
+
     context = {
         'candidate': candidate,
-        # Related objects — exist na karein toh None ayega
         'professional': getattr(candidate, 'professional_info', None),
         'location':     getattr(candidate, 'location_info', None),
         'about':        getattr(candidate, 'about_me', None),
         'resume':       getattr(candidate, 'resume', None),
         'skills':       candidate.skills.all(),
-        'educations':   candidate.educations.all(),
-        'experiences':  candidate.work_experiences.all(),
+        'education_formset':   EducationFormSet(instance=candidate, prefix='edu'),
+        'experience_formset':  ExperienceFormSet(instance=candidate, prefix='exp'),
         'social':       getattr(candidate, 'social_links', None),
     }
     return render(request, 'candidate/candidate_edit_profile.html', context)
@@ -139,7 +138,7 @@ def save_personal_info(request):
         form = CandidateProfileForm(request.POST, request.FILES, instance=candidate)
         if form.is_valid():
             form.save()
-            messages.success(request, "Personal info save ho gayi!")
+            messages.success(request, "Personal info saved!")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -154,7 +153,7 @@ def save_professional_info(request):
         form = ProfessionalInfoForm(request.POST, instance=prof)
         if form.is_valid():
             form.save()
-            messages.success(request, "Professional info save ho gayi!")
+            messages.success(request, "Professional info saved!")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -169,7 +168,7 @@ def save_location(request):
         form = LocationInfoForm(request.POST, instance=loc)
         if form.is_valid():
             form.save()
-            messages.success(request, "Location save ho gayi!")
+            messages.success(request, "Location saved")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -184,7 +183,7 @@ def save_about_me(request):
         form = AboutMeForm(request.POST, instance=about)
         if form.is_valid():
             form.save()
-            messages.success(request, "About Me save ho gaya!")
+            messages.success(request, "About Me saved!")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -199,7 +198,7 @@ def save_resume(request):
         form = ResumeForm(request.POST, request.FILES, instance=resume)
         if form.is_valid():
             form.save()
-            messages.success(request, "Resume save ho gaya!")
+            messages.success(request, "Resume saved!")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -215,7 +214,7 @@ def save_skills(request):
         candidate.skills.all().delete()
         for skill_name in skill_list:
             Skill.objects.create(candidate=candidate, skill_name=skill_name)
-        messages.success(request, "Skills save ho gayi!")
+        messages.success(request, "Skills saved!")
     return redirect('candidate:candidate_edit_profile')
     # Skills ka form nahi banaya — simple hai, direct theek hai
 
@@ -223,56 +222,49 @@ def save_skills(request):
 def save_education(request):
     if request.method == 'POST':
         candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
-        candidate.educations.all().delete()
-        degrees      = request.POST.getlist('degree')
-        institutions = request.POST.getlist('institution_name')
-        start_years  = request.POST.getlist('start_year')
-        end_years    = request.POST.getlist('end_year')
-        grades       = request.POST.getlist('grade_cgpa')
-        for i in range(len(degrees)):
-            if degrees[i]:
-                # Basic validation
-                try:
-                    Education.objects.create(
-                        candidate        = candidate,
-                        degree           = degrees[i],
-                        institution_name = institutions[i] if i < len(institutions) else '',
-                        start_year       = int(start_years[i]) if start_years[i] else 2000,
-                        end_year         = int(end_years[i]) if end_years[i] else None,
-                        grade_cgpa       = grades[i] if i < len(grades) else '',
-                    )
-                except Exception as e:
-                    messages.error(request, f"Education entry {i+1} mein error: {e}")
-                    return redirect('candidate:candidate_edit_profile')
-        messages.success(request, "Education save ho gayi!")
+        EducationFormSet = inlineformset_factory(
+            CandidateProfile, Education,
+            form=EducationForm,
+            extra=0, can_delete=True
+        )
+        formset = EducationFormSet(request.POST, instance=candidate, prefix='edu')
+        if formset.is_valid():
+            formset.save()
+            messages.success(request, "Education saved!")
+        else:
+            for form in formset:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"{error}")
     return redirect('candidate:candidate_edit_profile')
-    # Education/Experience ka bhi form nahi — multiple entries hain, direct theek hai
 
 
 def save_experience(request):
     if request.method == 'POST':
         candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
-        candidate.work_experiences.all().delete()
-        job_titles  = request.POST.getlist('job_title')
-        companies   = request.POST.getlist('company_name')
-        start_dates = request.POST.getlist('start_date')
-        end_dates   = request.POST.getlist('end_date')
-        emp_types   = request.POST.getlist('employment_type')
-        for i in range(len(job_titles)):
-            if job_titles[i]:
-                try:
-                    WorkExperience.objects.create(
-                        candidate       = candidate,
-                        job_title       = job_titles[i],
-                        company_name    = companies[i] if i < len(companies) else '',
-                        start_date      = start_dates[i] if start_dates[i] else None,
-                        end_date        = end_dates[i] if end_dates[i] else None,
-                        employment_type = emp_types[i] if i < len(emp_types) else '',
-                    )
-                except Exception as e:
-                    messages.error(request, f"Experience entry {i+1} mein error: {e}")
-                    return redirect('candidate:candidate_edit_profile')
-        messages.success(request, "Experience save ho gayi!")
+        # Fresher/experience toggle save karo
+        candidate.has_experience = 'is_fresher' not in request.POST
+        candidate.save()
+        ExperienceFormSet = inlineformset_factory(
+            CandidateProfile, WorkExperience,
+            form=WorkExperienceForm,
+            extra=0, can_delete=True
+        )
+        if candidate.has_experience:
+            formset = ExperienceFormSet(request.POST, instance=candidate, prefix='exp')
+            if formset.is_valid():
+                formset.save()
+                messages.success(request, "Experience is saved!")
+            else:
+                for form in formset:
+                    for field, errors in form.errors.items():
+                        for error in errors:
+                            messages.error(request, f"{error}")
+        else:
+            # Agar fresher select kiya to purani experience entries delete kar do
+            candidate.work_experiences.all().delete()
+            messages.success(request, "Marked as fresher, experience cleared.")
+
     return redirect('candidate:candidate_edit_profile')
 
 
@@ -283,26 +275,124 @@ def save_social_links(request):
         form = SocialLinksForm(request.POST, instance=social)
         if form.is_valid():
             form.save()
-            messages.success(request, "Social links save ho gayi!")
+            messages.success(request, "Social links are saved!")
         else:
             for error in form.errors.values():
                 messages.error(request, error.as_text())
     return redirect('candidate:candidate_edit_profile')
 
 
+@login_required
 def bookmark_jobs(request):
-    return render(request,"candidate/Bookmark_Jobs.html")
+    candidate, _ = CandidateProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name or request.user.username,
+            "last_name": request.user.last_name or "",
+            "phone_number": "",
+        }
+    )
+    # Until a dedicated SavedJob model is created, show recent applied jobs
+    applied = Applications.objects.filter(candidate=candidate).select_related('job', 'job__company').order_by('-applied_at')
+    return render(request, "candidate/Bookmark_Jobs.html", {'jobs': applied})
+@login_required
 def applied_jobs(request):
-    return render(request,"candidate/applied_jobs.html")
-def candidate_edit_resume(request):
-    return render(request,"candidate/edit_resume.html")
-def job_alert(request):
-    return render(request,"candidate/job_alert.html")
+
+    candidate, _ = CandidateProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name or request.user.username,
+            "last_name": request.user.last_name or "",
+            "phone_number": "",
+        }
+    )
+
+    applications = Applications.objects.filter(
+        candidate=candidate
+    ).select_related(
+        'job',
+        'job__company'
+    ).order_by('-applied_at')
+
+    return render(
+        request,
+        'candidate/applied_jobs.html',
+        {
+            'applications': applications
+        }
+    )
+
+@login_required
 def candidate_notifications(request):
-    return render(request,"candidate/notifications.html")
+    from notifications.models import Notification
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, "candidate/notifications.html", {'notifications': notifications})
+@login_required
 def candidate_view_resume(request):
-    return render(request,"candidate/viewresume.html")
+    candidate, _ = CandidateProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "username": request.user.username,
+            "email": request.user.email,
+            "first_name": request.user.first_name or request.user.username,
+            "last_name": request.user.last_name or "",
+            "phone_number": "",
+        }
+    )
+    educations = candidate.educations.all()
+    experiences = candidate.work_experiences.all()
+    skills = candidate.skills.all()
+    about = getattr(candidate, 'about_me', None)
+    professional = getattr(candidate, 'professional_info', None)
+    social = getattr(candidate, 'social_links', None)
+    location = getattr(candidate, 'location_info', None)
+    return render(request, "candidate/viewresume.html", {
+        'candidate': candidate,
+        'educations': educations,
+        'experiences': experiences,
+        'skills': skills,
+        'about': about,
+        'professional': professional,
+        'social': social,
+        'location': location,
+    })
+@login_required
 def candidate_setting(request):
-    return render(request, "candidate/candidate_setting.html")
+    candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
+    return render(request, "candidate/candidate_setting.html", {'candidate': candidate})
 def messenger(request):
     return render(request, 'candidate/messenger.html')
+@login_required
+def print_resume(request):
+    """Print-friendly resume page — works without WeasyPrint (browser handles PDF via Ctrl+P)."""
+    candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
+    return render(request, "candidate/viewresume_pdf.html", {
+        "candidate": candidate,
+        "educations": candidate.educations.all(),
+        "experiences": candidate.work_experiences.all(),
+        "skills": candidate.skills.all(),
+        "about": getattr(candidate, "about_me", None),
+        "professional": getattr(candidate, "professional_info", None),
+        "social": getattr(candidate, "social_links", None),
+        "location": getattr(candidate, "location_info", None),
+    })
+
+
+@login_required
+def download_resume_pdf(request):
+    candidate, _ = CandidateProfile.objects.get_or_create(user=request.user)
+
+    if not PDF_ENABLED:
+        # Fallback: send user to the print-friendly page instead of a real download
+        return redirect('candidate:print_resume')
+
+    generate_resume_pdf(candidate)
+    return FileResponse(
+        candidate.generated_resume_pdf.open('rb'),
+        as_attachment=True,
+        filename=f"{candidate.username}_resume.pdf"
+    )

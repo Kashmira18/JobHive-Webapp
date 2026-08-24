@@ -338,23 +338,23 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label required-field">First Name</label>
-                        <input type="text" class="form-control" placeholder="Enter first name">
+                        <input type="text" class="form-control" placeholder="Enter first name" value="{{ profile.user.first_name }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">Last Name</label>
-                        <input type="text" class="form-control" placeholder="Enter last name">
+                        <input type="text" class="form-control" placeholder="Enter last name" value="{{ profile.user.last_name }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required-field">Username</label>
-                        <input type="text" class="form-control" placeholder="Enter username">
+                        <input type="text" class="form-control" placeholder="Enter username" value="{{ profile.user.username }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required-field">Phone Number</label>
-                        <input type="tel" class="form-control" placeholder="+92 300 1234567">
+                        <input type="tel" class="form-control" placeholder="+92 300 1234567" value="{{ profile.company_phone }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label required-field">Email Address</label>
-                        <input type="email" class="form-control" placeholder="owner@example.com">
+                        <input type="email" class="form-control" placeholder="owner@example.com" value="{{ profile.user.email }}" readonly>
                     </div>
                 </div>
             </div>
@@ -368,50 +368,50 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label required-field">Company Trade Name</label>
-                        <input type="text" class="form-control" placeholder="Enter trade name">
+                        <input type="text" class="form-control" placeholder="Enter trade name" value="{{ profile.trade_name }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">Company Legal Name</label>
-                        <input type="text" class="form-control" placeholder="Enter legal name">
+                        <input type="text" class="form-control" placeholder="Enter legal name" value="{{ profile.legal_name }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">NTN/CUIN Number</label>
-                        <input type="text" class="form-control" placeholder="Enter NTN/CUIN">
+                        <input type="text" class="form-control" placeholder="Enter NTN/CUIN" value="{{ profile.ntn_number }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">Company Email</label>
-                        <input type="email" class="form-control" placeholder="info@company.com">
+                        <input type="email" class="form-control" placeholder="info@company.com" value="{{ profile.company_email }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Total Employees</label>
-                        <input type="number" class="form-control" placeholder="e.g., 50">
+                        <input type="number" class="form-control" placeholder="e.g., 50" value="{{ profile.total_employees }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Company Landline</label>
-                        <input type="tel" class="form-control" placeholder="+92 21 12345678">
+                        <input type="tel" class="form-control" placeholder="+92 21 12345678" value="{{ profile.landline }}" readonly>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Company Phone</label>
-                        <input type="tel" class="form-control" placeholder="+92 300 1234567">
+                        <input type="tel" class="form-control" placeholder="+92 300 1234567" value="{{ profile.company_phone }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Website</label>
-                        <input type="url" class="form-control" placeholder="https://www.company.com">
+                        <input type="url" class="form-control" placeholder="https://www.company.com" value="{{ profile.website }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">Company Type</label>
-                        <select class="form-select">
-                            <option value="">Select company type</option>
-                            <option value="private">Private Limited</option>
-                            <option value="public">Public Limited</option>
-                            <option value="partnership">Partnership</option>
-                            <option value="sole">Sole Proprietorship</option>
-                            <option value="llc">LLC</option>
+                        <select class="form-select" disabled>
+                            <option value="" {% if not profile.company_type %}selected{% endif %}>Select company type</option>
+                            <option value="private" {% if profile.company_type == "private" %}selected{% endif %}>Private Limited</option>
+                            <option value="public" {% if profile.company_type == "public" %}selected{% endif %}>Public Limited</option>
+                            <option value="partnership" {% if profile.company_type == "partnership" %}selected{% endif %}>Partnership</option>
+                            <option value="sole" {% if profile.company_type == "sole" %}selected{% endif %}>Sole Proprietorship</option>
+                            <option value="llc" {% if profile.company_type == "llc" %}selected{% endif %}>LLC</option>
                         </select>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Establishment Date</label>
-                        <input type="date" class="form-control">
+                        <input type="date" class="form-control" value="{{ profile.est_date|date:'Y-m-d' }}" readonly>
                     </div>
                 </div>
             </div>
@@ -425,29 +425,29 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label required-field">Country</label>
-                        <select class="form-select">
-                            <option value="">Select country</option>
-                            <option value="pk">Pakistan</option>
-                            <option value="us">United States</option>
-                            <option value="uk">United Kingdom</option>
-                            <option value="ae">UAE</option>
+                        <select class="form-select" disabled>
+                            <option value="" {% if not profile.country %}selected{% endif %}>Select country</option>
+                            <option value="pk" {% if profile.country == "pk" %}selected{% endif %}>Pakistan</option>
+                            <option value="us" {% if profile.country == "us" %}selected{% endif %}>United States</option>
+                            <option value="uk" {% if profile.country == "uk" %}selected{% endif %}>United Kingdom</option>
+                            <option value="ae" {% if profile.country == "ae" %}selected{% endif %}>UAE</option>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">State/Province</label>
-                        <input type="text" class="form-control" placeholder="Enter state or province">
+                        <input type="text" class="form-control" placeholder="Enter state or province" value="{{ profile.province }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label required-field">City</label>
-                        <input type="text" class="form-control" placeholder="Enter city">
+                        <input type="text" class="form-control" placeholder="Enter city" value="{{ profile.city }}" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Postal Code</label>
-                        <input type="text" class="form-control" placeholder="Enter postal code">
+                        <input type="text" class="form-control" placeholder="Enter postal code" value="{{ profile.postal_code }}" readonly>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label required-field">Legal Address</label>
-                        <textarea class="form-control" placeholder="Enter complete address including street, area, and landmarks"></textarea>
+                        <textarea class="form-control" placeholder="Enter complete address including street, area, and landmarks" readonly>{{ profile.legal_address }}</textarea>
                     </div>
                 </div>
             </div>
@@ -461,11 +461,11 @@
                 <div class="row g-3">
                     <div class="col-md-12">
                         <label class="form-label">Company Overview</label>
-                        <textarea class="form-control" placeholder="Describe your company, its services, and what makes it unique"></textarea>
+                        <textarea class="form-control" placeholder="Describe your company, its services, and what makes it unique" readonly>{{ profile.overview }}</textarea>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Vision Statement</label>
-                        <textarea class="form-control" placeholder="Share your company's vision and future goals"></textarea>
+                        <textarea class="form-control" placeholder="Share your company's vision and future goals" readonly>{{ profile.vision }}</textarea>
                     </div>
                 </div>
             </div>
@@ -482,7 +482,7 @@
                     <h5>Choose an image file or drag it here</h5>
                     <p class="text-muted">PNG, JPG or JPEG (Max 5MB)</p>
                 </div>
-                <img id="imagePreview" class="image-preview" alt="Logo Preview">
+                <img id="imagePreview" class="image-preview" alt="Logo Preview" {% if profile.logo %}src="{{ profile.logo.url }}" style="display:block;"{% endif %}>
             </div>
 
             <!-- Social Information -->
@@ -496,28 +496,28 @@
                         <label class="form-label">Facebook</label>
                         <div class="social-input-group">
                             <i class="fab fa-facebook social-icon"></i>
-                            <input type="url" class="form-control" placeholder="https://facebook.com/yourcompany">
+                            <input type="url" class="form-control" placeholder="https://facebook.com/yourcompany" value="{{ profile.facebook }}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Twitter</label>
                         <div class="social-input-group">
                             <i class="fab fa-twitter social-icon"></i>
-                            <input type="url" class="form-control" placeholder="https://twitter.com/yourcompany">
+                            <input type="url" class="form-control" placeholder="https://twitter.com/yourcompany" value="{{ profile.twitter }}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">LinkedIn</label>
                         <div class="social-input-group">
                             <i class="fab fa-linkedin social-icon"></i>
-                            <input type="url" class="form-control" placeholder="https://linkedin.com/company/yourcompany">
+                            <input type="url" class="form-control" placeholder="https://linkedin.com/company/yourcompany" value="{{ profile.linkedin }}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Pinterest</label>
                         <div class="social-input-group">
                             <i class="fab fa-pinterest social-icon"></i>
-                            <input type="url" class="form-control" placeholder="https://pinterest.com/yourcompany">
+                            <input type="url" class="form-control" placeholder="https://pinterest.com/yourcompany" value="{{ profile.pinterest }}" readonly>
                         </div>
                     </div>
                     <!-- <div class="col-md-6">
@@ -566,15 +566,7 @@
                 </button>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button type="button" class="btn-cancel">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </button>
-                <button type="submit" class="btn-save">
-                    <i class="fas fa-save me-2"></i>Save Profile
-                </button>
-            </div>
+            <!-- Action Buttons hidden for readonly view -->
             </form>
         </div>
     </div>

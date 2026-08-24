@@ -47,15 +47,25 @@
             </div>
         </div>
     </div>
-    <div class="completion-widget" style="width: 250px;">
-        <div class="d-flex justify-content-between mb-1">
-            <span class="small fw-bold">Profile Completion</span>
-            <span class="small text-primary fw-bold">{{ completion_percentage }}%</span>
-        </div>
-        <div class="progress" style="height: 10px; border-radius: 5px;">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ completion_percentage }}%; border-radius: 5px;" aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
+<div class="completion-widget" style="width: 250px;">
+    <div class="d-flex justify-content-between mb-1">
+        <span class="small fw-bold">Profile Completion</span>
+        <span class="small text-primary fw-bold">{{ completion_percentage }}%</span>
     </div>
+    <div class="progress" style="height: 10px; border-radius: 5px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{ completion_percentage }}%; border-radius: 5px;" aria-valuenow="{{ completion_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    {% if completion_percentage == 100 %}
+        <a href="{% url 'candidate:download_resume_pdf' %}" class="btn btn-sm btn-success mt-2 w-100">
+            <i class="fas fa-file-pdf"></i> Download CV (PDF)
+        </a>
+    {% else %}
+        <a href="{% url 'candidate:candidate_edit_profile' %}" class="btn btn-sm btn-outline-primary mt-2 w-100">
+            Complete Profile to Unlock CV
+        </a>
+    {% endif %}
+</div>
 </div>
 
         <div class="row g-4 mb-5">
@@ -112,79 +122,32 @@
                 </div>
             </div>
         </div>
+        <!-- ================================
+        RECENT APPLICATIONS
+        ================================= -->
 
-        <h5 class="text-primary mb-3">Current Applied Jobs:</h5>
-        <div class="table-responsive mb-5 shadow-sm rounded">
-            <table class="table job-table mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col" style="width: 40%;">Job Title</th>
-                        <th scope="col">Apply Date</th>
-                        <th scope="col">Summary</th>
-                        <th scope="col" class="text-center">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% if applications %}
-                    {% for app in applications %}
-                        <tr>
-                        <td>
-                            <div class="d-flex align-items-start">
-                                <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center text-white me-3"
-                                    style="width:50px; height:50px; font-size: 0.8rem;">
-                                    {% if app.job.company.logo %}
-                                    <img src="{{ app.job.company.logo.url }}"
-                                        style="width:50px;height:50px;object-fit:contain;border-radius:50%;">
-                                    {% else %}
-                                    {{ app.job.company.trade_name|slice:':2'|upper }}
-                                    {% endif %}
-                                </div>
-                                <div>
-                                    <div class="job-title">{{ app.job.title }}</div>
-                                    <div><a href="#" class="company-name"><i class="fas fa-briefcase small"></i>
-                                            {{ app.job.company.trade_name }}</a></div>
-                                    <div class="text-muted small"><i class="fas fa-map-marker-alt"></i> {{app.job.location }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>{{ app.applied_at|date:"d M," }}</div>
-                            <div>{{ app.applied_at|date:"Y" }}</div>
-                        </td>
-                        <td>
-                            <div class="small fw-bold">Job Type:
-                                <span class="fw-normal">{{ app.job.job_type }}</span>
-                            </div>
-                            <div class="small fw-bold">Salary:
-                                <span class="fw-normal">{{ app.job.salary_display }}</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                                        <button class="btn status-btn"
-                {% if app.status == 'HIRED' %}btn-hired
-                {% elif app.status == 'REJECTED' %}btn-danger
-                {% elif app.status == 'INTERVIEW' %}btn-warning
-                {% else %}btn-applied{% endif %}">
-                {{ app.status }}
-            </button>
-                        </td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="4" class="text-center text-muted py-4">
-                            Abhi koi application nahi hai!
-                        </td>
-                    </tr>
-                {% endif %}
-                </tbody>       
-            </table>        
-        </div> 
+            <div class="d-flex align-items-center justify-content-between mb-3">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="text-primary fw-bold">Featured Jobs:</h3>
-                        <a href="{% url 'job_list' %}" class="text-danger text-decoration-none fw-bold">Explore More</a>
-                    </div>
+                <h5 class="text-primary mb-0">
+                  My Applications
+                </h5>
+                <a
+                    href="{% url 'candidate:applied_jobs' %}"
+                    class="text-primary fw-semibold text-decoration-none"
+                >
+                    See More
+                </a>
+
+            </div>
+
+
+
+        {% include "candidate/applied_jobs_table.html" with applications=recent_applications dashboard=True %}
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="text-primary fw-bold">Featured Jobs:</h3>
+                <a href="{% url 'job_list' %}" class="text-danger text-decoration-none fw-bold">Explore More</a>
+        </div>
 
                 {% if featured_jobs %}
                     {% for job in featured_jobs %}

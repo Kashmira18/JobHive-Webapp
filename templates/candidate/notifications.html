@@ -3,11 +3,6 @@
 {% block content %}
 {%load static%}
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notifications & Message Modal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -191,20 +186,36 @@
                         </tr>
                     </thead>
                     <tbody id="notificationList">
+                        {% for notification in notifications %}
+                        <tr>
+                            <td>{{ notification.title|default:notification.notification_type }}</td>
+                            <td class="text-center">
+                                <button class="btn-show-message" onclick="openMessage('{{ notification.title|escapejs }}', '{{ notification.message|escapejs }}', '{{ notification.created_at|timesince|escapejs }} ago')">
+                                    Show Message
+                                </button>
+                            </td>
+                            <td class="text-center">{{ notification.created_at|date:"M d, Y" }}</td>
+                            <td class="text-center">
+                                <!-- <i class="fa-solid fa-trash-can action-delete" onclick="deleteNote({{ notification.id }})"></i> -->
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No notifications yet.</td>
+                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
 
         <div class="footer-area">
-            <div id="resultsInfo">10 Results Showing In 26 Notifications</div>
+            <div id="resultsInfo">Showing {{ notifications|length }} Notifications</div>
             <nav>
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item disabled"><a class="page-link" href="#"><i
                                 class="fa-solid fa-chevron-left"></i></a></li>
                     <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item"><a class="page-link" href="#"><i class="fa-solid fa-chevron-right"></i></a>
                     </li>
                 </ul>
@@ -217,14 +228,13 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header custom-modal-header">
-                    <h5 class="modal-title" id="modalTitle">Interview</h5>
+                    <h5 class="modal-title" id="modalTitle">Message</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="message-body-styled" id="modalBodyText">
                     </div>
                     <div class="modal-timestamp" id="modalDate">
-                        2 months ago
                     </div>
                 </div>
             </div>
@@ -233,101 +243,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Data mimicking Image 1
-        const notifications = [
-            {
-                id: 1, title: "Joining Letter", date: "2 weeks ago", type: "Joining Letter",
-                body: "Congratulations! We are pleased to offer you the position. Please find the attached joining letter."
-            },
-            {
-                id: 2, title: "Interview", date: "3 weeks ago", type: "Interview",
-                body: "Dear Candidate, your interview is scheduled for next Monday. Please be prepared."
-            },
-            {
-                id: 3, title: "Interview", date: "1 month ago", type: "Interview",
-                body: "Dear Khandaker Raufur Rahman<br><br>You are shortlisted for the post of Hiring Assistant Manager from Egens. Your interview date is 17/10/2025 at 12:00 PM at the office arena. Thank you and we wish you best of luck.<br>With Regards<br>HR Department<br>Egens"
-            },
-            {
-                id: 4, title: "Sorry for not selected", date: "1 month ago", type: "Rejection",
-                body: "Thank you for your interest. Unfortunately, we have decided to move forward with other candidates."
-            },
-            {
-                id: 5, title: "Sorry for not selected", date: "1 month ago", type: "Rejection",
-                body: "Thank you for your interest. Unfortunately, we have decided to move forward with other candidates."
-            },
-            {
-                id: 6, title: "Joining Letter", date: "1 month ago", type: "Joining Letter",
-                body: "Welcome to the team! We are excited to have you on board."
-            },
-            {
-                id: 7, title: "Interview", date: "1 month ago", type: "Interview",
-                body: "Your technical round is scheduled."
-            },
-            {
-                id: 8, title: "Interview", date: "2 months ago", type: "Interview",
-                body: "Initial screening call schedule."
-            },
-            {
-                id: 9, title: "Joining Letter", date: "2 months ago", type: "Joining Letter",
-                body: "Here is your offer letter."
-            },
-            {
-                id: 10, title: "Sorry for not selected", date: "2 months ago", type: "Rejection",
-                body: "We regret to inform you that you were not selected."
-            }
-        ];
-
-        const tableBody = document.getElementById('notificationList');
         const modalElement = new bootstrap.Modal(document.getElementById('messageModal'));
-
-        // Elements to update inside Modal
         const modalTitle = document.getElementById('modalTitle');
         const modalBodyText = document.getElementById('modalBodyText');
         const modalDate = document.getElementById('modalDate');
 
-        // Render Table
-        function renderTable() {
-            let html = '';
-            notifications.forEach((note, index) => {
-                html += `
-                <tr>
-                    <td>${note.title}</td>
-                    <td class="text-center">
-                        <button class="btn-show-message" onclick="openMessage(${index})">
-                            Show Message
-                        </button>
-                    </td>
-                    <td class="text-center">${note.date}</td>
-                    <td class="text-center">
-                        <i class="fa-solid fa-trash-can action-delete" onclick="deleteNote(${index})"></i>
-                    </td>
-                </tr>
-                `;
-            });
-            tableBody.innerHTML = html;
-        }
-
-        // Open Modal with specific data
-        window.openMessage = function (index) {
-            const note = notifications[index];
-
-            modalTitle.innerText = note.title;
-            modalBodyText.innerHTML = note.body; // Using innerHTML to allow <br> breaks
-            modalDate.innerText = note.date;
-
+        window.openMessage = function (title, body, date) {
+            modalTitle.innerText = title;
+            modalBodyText.textContent = body.replace(/<br\s*\/?>/gi, "\n");
+            modalBodyText.style.whiteSpace = 'pre-wrap';
+            modalDate.innerText = date;
             modalElement.show();
         }
-
-        // Delete (visual only for demo)
-        window.deleteNote = function (index) {
-            if (confirm("Are you sure you want to delete this notification?")) {
-                notifications.splice(index, 1);
-                renderTable();
-            }
-        }
-
-        // Initial Load
-        renderTable();
     </script>
 </body>
 

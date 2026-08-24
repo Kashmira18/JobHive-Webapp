@@ -496,7 +496,7 @@
 <!-- ── MAIN FORM (single POST form wrapping all steps) ── -->
 <div class="container pb-5" style="max-width:820px">
   <form method="POST"
-    action="{% if job %}{% url 'company:company_job_edit' job.id %}{% else %}{% url 'company:company_job_post' %}{% endif %}"
+    action="{% if job.id %}{% url 'company:company_job_edit' job.id %}{% else %}{% url 'company:company_job_post' %}{% endif %}"
     id="jobForm" novalidate>
     {% csrf_token %}
 
