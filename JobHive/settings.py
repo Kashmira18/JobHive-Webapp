@@ -136,7 +136,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "jobhive_db",  # database name
         "USER": "postgres",
-        "PASSWORD": "1234",
+        "PASSWORD": "root",
         "HOST": "localhost",
         "PORT": "5432",
     }

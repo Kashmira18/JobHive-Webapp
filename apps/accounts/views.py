@@ -116,7 +116,7 @@ def login_view(request):
                     user,
                     backend="django.contrib.auth.backends.ModelBackend"
                 )
-                return redirect("custom_admin:dashboard")  
+                return redirect("custom_admin:admin_dashboard")
             # ───────── ADMIN ─────────
             else:
                 # CANDIDATE 
@@ -198,12 +198,12 @@ def company_pending(request):
 def company_documents_review(request):
     user_id = request.session.get("pending_user_id")
     if not user_id:
-        return redirect("login")
+        return redirect("accounts:login")
 
     try:
         user = CustomUser.objects.get(pk=user_id)
     except CustomUser.DoesNotExist:
-        return redirect("login")
+        return redirect("accounts:login")
 
     if request.method == "POST":
 
@@ -652,7 +652,7 @@ def update_user_status(request, user_id, action):
     elif action == 'perm_suspend':
         user_to_mod.status = 'Permanently Suspended'
         user_to_mod.is_active = False
-        messages.danger(request, f"{user_to_mod.email} has been permanently suspended.")
+        messages.error(request, f"{user_to_mod.email} has been permanently suspended.")
         
     user_to_mod.save()
     return redirect('accounts:admin_user_list')

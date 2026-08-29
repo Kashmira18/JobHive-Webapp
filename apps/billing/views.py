@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .models import PaymentLog, SubscriptionPlan
 
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def initiate_payment(request):
     if request.method == 'POST':
         company = getattr(request.user, 'company_profile', None)
@@ -63,7 +63,7 @@ def simulate_webhook_success(txn_id, gateway, package_type):
         credits.save()
 
 
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def checkout_view(request, plan_id):
     if request.user.role != 'COMPANY':
         return redirect('home')

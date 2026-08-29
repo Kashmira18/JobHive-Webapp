@@ -35,6 +35,7 @@ def home(request):
             "jobs",
             filter=Q(jobs__status="PUBLISHED", jobs__visibility="public")
         ))
+        .filter(open_jobs__gt=0)
         .order_by("-open_jobs", "trade_name")
     )
     return render(request, "portal/home.html", {

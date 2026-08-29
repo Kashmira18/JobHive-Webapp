@@ -12,27 +12,26 @@ def apply_job(request, job_id):
     try:
         candidate = request.user.candidate_profile
     except CandidateProfile.DoesNotExist:
-        messages.error(request, "Please create your candidate profile first")
+        messages.error(request, "Please create your candidate profile first.")
         return redirect('candidate:candidate_edit_profile')
     
     if not candidate.first_name:
-        messages.error(request, "Please fill your name first")
+        messages.error(request, "Please complete your profile details first.")
         return redirect('candidate:candidate_edit_profile')
    
     if not candidate.educations.exists():
-        messages.error(request, "Please add your education first")
+        messages.error(request, "Please add your education details before applying.")
         return redirect('candidate:candidate_edit_profile')
     
-    # Sirf ye check chahiye — years_of_experience > 0 lekin koi experience entry nahi
     professional = getattr(candidate, 'professional_info', None)
     if professional and professional.years_of_experience and professional.years_of_experience > 0:
         if not candidate.work_experiences.exists():
-            messages.error(request, f"Tumne {professional.years_of_experience} years experience mention kiya hai — apna work experience add karo apply karne se pehle")
+            messages.error(request, f"You indicated {professional.years_of_experience} years of experience. Please add your work experience before applying.")
             return redirect('candidate:candidate_edit_profile')
 
     # Check not already applied
     if Applications.objects.filter(candidate=candidate, job=job).exists():
-        messages.warning(request, "You already applied for this job")
+        messages.warning(request, "You have already applied for this job.")
         return redirect('job:job_detail', pk=job.id)
     
     # Check if saved resume exists

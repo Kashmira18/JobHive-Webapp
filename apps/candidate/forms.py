@@ -15,7 +15,7 @@ class RequiredFieldsMixin:
             value = cleaned_data.get(field)
             if not value:
                 label = self.fields[field].label or field
-                self.add_error(field, f"{label} fill karna zaruri hai!")
+                self.add_error(field, f"{label} is required.")
         return cleaned_data
 
 

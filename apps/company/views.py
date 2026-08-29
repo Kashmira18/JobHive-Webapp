@@ -48,7 +48,7 @@ def base(request):
 # @company_required
 # @login_required
 # @approved_company_required
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def company_dashboard(request):
     profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
     jobs = JobPost.objects.filter(company=profile)
@@ -158,7 +158,7 @@ def company_account_settings(request):
 # ─────────────────────────────────────────────────────────
 # @approved_company_required
 # def create_job(request):
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def company_job_post(request, job_id=None):
     """
     Multi-step job posting form.
@@ -415,7 +415,7 @@ def job_applications(request, job_id):
         }
     )
 
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 @require_POST
 def update_application_status(request):
     try:
@@ -447,7 +447,7 @@ def update_application_status(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def company_all_applicants(request):
     profile, _ = CompanyProfile.objects.get_or_create(user=request.user)
     
@@ -462,7 +462,7 @@ def company_all_applicants(request):
 # ════════════════════════════════
 #  ACCOUNT SETTINGS
 # ════════════════════════════════
-@login_required(login_url='login')
+@login_required(login_url='accounts:login')
 def company_account_settings(request):
     # Read active tab from query params, default to myprofile
     tab = request.GET.get('tab', 'myprofile')
@@ -516,7 +516,7 @@ def company_account_settings(request):
             user.save()
             logout(request)
             messages.info(request, "Your account has been deactivated.")
-            return redirect('login')
+            return redirect('accounts:login')
 
         elif action == 'delete_account':
             confirm_text = request.POST.get('deleteConfirm', '').strip()

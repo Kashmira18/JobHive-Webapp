@@ -45,7 +45,7 @@
                 {% if user.is_authenticated %}
                     <a href="{% url 'applications:apply_job' job.id %}" class="btn btn-success px-4">Apply Now</a>
                 {% else %}
-                    <a href="{% url 'login' %}?next={% url 'applications:apply_job' job.id %}" class="btn btn-success px-4">Apply Now</a>
+                    <a href="{% url 'accounts:login' %}?next={% url 'applications:apply_job' job.id %}" class="btn btn-success px-4">Apply Now</a>
                 {% endif %}
             </div>
         </div>
@@ -96,7 +96,7 @@
                             {% if user.is_authenticated %}
                                 <a href="{% url 'applications:apply_job' job.id %}" class="btn btn-success px-5">Apply Now</a>
                             {% else %}
-                                <a href="{% url 'login' %}?next={% url 'applications:apply_job' job.id %}" class="btn btn-success px-5">Apply Now</a>
+                                <a href="{% url 'accounts:login' %}?next={% url 'applications:apply_job' job.id %}" class="btn btn-success px-5">Apply Now</a>
                             {% endif %}
                         </div>
                     </div>
