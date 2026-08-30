@@ -47,6 +47,32 @@
             overflow-x: hidden;
         }
 
+        .home-link {
+            position: fixed;
+            top: 24px;
+            left: 28px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 8px;
+            background: rgba(11, 20, 55, .58);
+            color: #f0f4ff;
+            font-size: .78rem;
+            font-weight: 600;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+            transition: border-color .2s, background .2s, color .2s;
+        }
+
+        .home-link:hover {
+            border-color: var(--accent);
+            background: rgba(26, 196, 248, .12);
+            color: var(--white);
+        }
+
         .split {
             display: flex;
             min-height: 100vh;
@@ -116,21 +142,27 @@
         .logo-row {
             display: flex;
             align-items: center;
-            gap: 12px;
             margin-bottom: 48px;
         }
 
         .logo-row img {
-            width: 42px;
-            height: 42px;
+            height: 2.5rem;
+            width: auto;
             object-fit: contain;
+        }
+
+        .logo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
         }
 
         .logo-name {
             font-family: 'Sora', sans-serif;
             font-weight: 800;
             font-size: 1.15rem;
-            color: var(--white);
+            color: #ffffff;
             letter-spacing: -.02em;
         }
 
@@ -574,6 +606,9 @@
 </head>
 
 <body>
+    <a class="home-link" href="/">
+        <i class="bi bi-arrow-left"></i> Back to Home
+    </a>
     <div class="split">
 
         <!-- ═══════ LEFT ═══════ -->
@@ -584,12 +619,14 @@
 
             <div class="branding">
                 <div class="logo-row">
-                    <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive" />
-                    <div>
-                        <div class="logo-name">JobHive</div>
-                        <div class="logo-sub">Secure access ·
-                            Enterprise-grade</div>
-                    </div>
+                    <a class="logo-link" href="/" aria-label="JobHive home">
+                        <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive" />
+                        <span>
+                            <!-- <span class="logo-name">JobHive</span> -->
+                            <span class="logo-sub">Secure access ·
+                                Enterprise-grade</span>
+                        </span>
+                    </a>
                 </div>
 
                 <h1>Join thousands —<br><span class="hl">your career starts

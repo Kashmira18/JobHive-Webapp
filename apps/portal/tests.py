@@ -48,6 +48,23 @@ class HomePublishedJobsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Backend Engineer")
 
+    def test_home_view_shows_all_approved_companies_without_live_jobs(self):
+        user = CustomUser.objects.create_user(
+            username="registeredcompany",
+            email="registered@example.com",
+            password="secret",
+        )
+        CompanyProfile.objects.create(
+            user=user,
+            trade_name="Registered Company",
+            company_status="APPROVED",
+        )
+
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Registered Company")
+
 
 class JobListingFilterTests(TestCase):
     def setUp(self):

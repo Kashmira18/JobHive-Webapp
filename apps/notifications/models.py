@@ -14,6 +14,7 @@ class Notification(models.Model):
         ('KYC_APPROVED', 'KYC_Approved'),
         ('KYC_REJECTED', 'KYC_Rejected'), 
         ('KYC_ROLLBACK', 'KYC_Rollback'),
+        ('KYC_RESUBMITTED', 'KYC_Resubmitted'),
         ('NEW_APPLICATION','New-Application'),
         ('SHORTLISTED', 'Shortlisted'),
         ('INTERVIEW_SCHEDULED', 'Interview_Scheduled'), 

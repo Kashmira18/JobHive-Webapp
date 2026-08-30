@@ -13,25 +13,61 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 import sys
 
-
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+load_dotenv(BASE_DIR / ".env")
+
+
+def env(name, default=""):
+    return os.getenv(name, default).strip()
+
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+# Payment gateway configuration. Keep credentials in the environment, never in source.
+PAYMENT_MODE = env("PAYMENT_MODE", "sandbox").lower()
+if PAYMENT_MODE not in {"sandbox", "production"}:
+    PAYMENT_MODE = "sandbox"
 
-# Email backend 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+PAYMENT_GATEWAY_TIMEOUT = int(env("PAYMENT_GATEWAY_TIMEOUT", "10"))
+PAYMENT_CALLBACK_PATH = env("PAYMENT_CALLBACK_PATH", "/billing/payment/callback/")
+PAYMENT_GATEWAYS = {
+    "JazzCash": {
+        "merchant_id": env("JAZZCASH_MERCHANT_ID"),
+        "password": env("JAZZCASH_PASSWORD"),
+        "integrity_salt": env("JAZZCASH_INTEGRITY_SALT"),
+        "store_id": env("JAZZCASH_STORE_ID"),
+        "sandbox_url": env(
+            "JAZZCASH_SANDBOX_URL",
+            "https://sandbox.jazzcash.com.pk/ApplicationAPI/API/Payment/DoTransaction",
+        ),
+        "production_url": env(
+            "JAZZCASH_PRODUCTION_URL",
+            "https://payments.jazzcash.com.pk/ApplicationAPI/API/Payment/DoTransaction",
+        ),
+    },
+    "EasyPaisa": {
+        "merchant_id": env("EASYPAISA_MERCHANT_ID"),
+        "password": env("EASYPAISA_PASSWORD"),
+        "integrity_salt": env("EASYPAISA_INTEGRITY_SALT"),
+        "store_id": env("EASYPAISA_STORE_ID"),
+        "sandbox_url": env("EASYPAISA_SANDBOX_URL"),
+        "production_url": env("EASYPAISA_PRODUCTION_URL"),
+    },
+}
 
-# Production Gmail:
-# EMAIL_BACKEND    = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST       = 'smtp.gmail.com'
-# EMAIL_PORT       = 587
-# EMAIL_USE_TLS    = True
-# EMAIL_HOST_USER  = 'test@jobhive.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'  # Gmail App Password
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(env("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = env("EMAIL_USE_TLS", "True").lower() in {"1", "true", "yes", "on"}
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Quick-start development settings - unsuitable for production
@@ -192,6 +228,16 @@ LOGIN_URL = 'login'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
+ACCOUNT_ADAPTER = "accounts.account_adapter.CustomAccountAdapter"
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+    }
+}
+SOCIALACCOUNT_AUTO_SIGNUP = True
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
 
 
 SITE_ID = 1

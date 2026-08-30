@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
@@ -18,6 +19,7 @@ from job.models import JobPost
 
 # from django.contrib import messages
 from billing.models import PaymentLog, CompanySubscription, CompanyCredit
+from billing.services import settle_payment
 # from notifications.models import Notification
 from django.utils import timezone
 # from .decorators import admin_login_required
@@ -32,6 +34,8 @@ User = get_user_model()
 
 
 def admin_login(request):
+    # Admin login is a clean entry point; discard messages from the previous session.
+    list(get_messages(request))
     form = AdminLoginForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -669,36 +673,8 @@ def approve_payment(request, log_id):
     log = get_object_or_404(PaymentLog, id=log_id)
     
     if log.status == 'Pending':
-        # 1. Mark as Approved
-        log.status = 'Approved'
-        log.save()
-        
-        # Get or create the company's credit tracker
-        credit, _ = CompanyCredit.objects.get_or_create(company=log.company)
-        
-        plan_name = "Credit Bundle"
-        
-        # 2. Check if this payment was for a Subscription Plan
-        if log.plan:
-            # Upgrade the Company's Subscription
-            sub, _ = CompanySubscription.objects.get_or_create(company=log.company)
-            sub.current_plan = log.plan
-            sub.status = 'Active'
-            sub.start_date = timezone.now()
-            sub.save()
-            
-            # Add the plan's Monthly Credits and reset date
-            from datetime import timedelta
-            credit.subscription_credits = log.plan.monthly_credits
-            credit.reset_date = timezone.now() + timedelta(days=30)
-            credit.save()
-            
-            plan_name = log.plan.name
-        else:
-            # 3. Handle standalone Credit Bundle (or fallback if plan was missing)
-            # Based on your UI, the Credit Bundle gives 10 credits.
-            credit.addon_credits += 10
-            credit.save()
+        settle_payment(log, "SUCCESS")
+        plan_name = log.plan.name if log.plan else "Credit Bundle"
         
         # 4. Trigger Notification
         Notification.objects.create(

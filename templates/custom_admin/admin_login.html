@@ -292,15 +292,6 @@
                 <span>{{ form.non_field_errors.0 }}</span>
             </div>
             {% endif %}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert-box">
-                <i class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
-                <span>{{ message }}</span>
-            </div>
-            {% endfor %}
-            {% endif %}
-
             <form method="POST" id="adminForm" novalidate>
                 {% csrf_token %}
 

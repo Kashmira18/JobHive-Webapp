@@ -37,3 +37,19 @@ class CustomAdminCompanyListTests(TestCase):
         self.assertContains(response, "Acme Corp")
         self.assertContains(response, "globex@example.com")
         self.assertContains(response, "Globex Ltd")
+
+
+class CustomAdminLoginMessageTests(TestCase):
+    def test_logout_message_is_not_rendered_on_admin_login(self):
+        admin = CustomUser.objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="secret123",
+        )
+        self.client.force_login(admin)
+
+        logout_response = self.client.get(reverse("custom_admin:logout"))
+        login_response = self.client.get(logout_response.url)
+
+        self.assertEqual(login_response.status_code, 200)
+        self.assertNotContains(login_response, "You have been logged out.")

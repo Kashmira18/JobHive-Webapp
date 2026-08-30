@@ -53,6 +53,32 @@
       overflow-x: hidden;
     }
 
+    .home-link {
+      position: fixed;
+      top: 24px;
+      left: 28px;
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 13px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 8px;
+      background: rgba(11, 20, 55, .58);
+      color: var(--off-white);
+      font-size: .78rem;
+      font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: border-color .2s, background .2s, color .2s;
+    }
+
+    .home-link:hover {
+      border-color: var(--accent);
+      background: rgba(26, 196, 248, .12);
+      color: var(--white);
+    }
+
     /* ── SPLIT LAYOUT ── */
     .split {
       display: flex;
@@ -127,21 +153,27 @@
     .logo-row {
       display: flex;
       align-items: center;
-      gap: 12px;
       margin-bottom: 48px;
     }
 
     .logo-row img {
-      width: 42px;
-      height: 42px;
+      height: 2.5rem;
+      width: auto;
       object-fit: contain;
+    }
+
+    .logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
     }
 
     .logo-name {
       font-family: 'Sora', sans-serif;
       font-weight: 800;
       font-size: 1.15rem;
-      color: var(--white);
+      color: #ffffff;
       letter-spacing: -.02em;
     }
 
@@ -525,6 +557,9 @@
 </head>
 
 <body>
+  <a class="home-link" href="/">
+    <i class="bi bi-arrow-left"></i> Back to Home
+  </a>
   <div class="split">
 
     <!-- ══════════════════════════════
@@ -537,13 +572,13 @@
 
       <div class="branding">
         <div class="logo-row">
-          <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
-          <div>
-            <div class="logo-name"><img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /></div>
-            <!-- <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" /> -->
-
-            <div class="logo-sub">Secure access · Enterprise-grade</div>
-          </div>
+          <a class="logo-link" href="/" aria-label="JobHive home">
+            <img src="{% static 'images/jobhive logo final.png' %}" alt="JobHive Logo" />
+            <span>
+              <!-- <span class="logo-name">JobHive</span> -->
+              <span class="logo-sub">Secure access · Enterprise-grade</span>
+            </span>
+          </a>
         </div>
 
         <h1>Welcome back —<br><span class="highlight">your next hire awaits.</span></h1>
@@ -576,17 +611,6 @@
         <h3>Sign In</h3>
         <p class="subtitle">Enter your credentials to access your account.</p>
 
-        <!-- ── Django Messages ── -->
-        {% if messages %}
-        {% for message in messages %}
-        <div class="django-alert {{ message.tags }}">
-          <i
-            class="bi bi-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
-          <span>{{ message }}</span>
-        </div>
-        {% endfor %}
-        {% endif %}
-
         <!-- ── Django Form Non-field Errors ── -->
         {% if form.non_field_errors %}
         <div class="django-alert error">
@@ -598,11 +622,9 @@
         <!-- ── GOOGLE SIGN-IN ── -->
 
 
-          <form action="#" method="post"></form>
-          {% csrf_token %}
-          <button class="btn-google">          
+          <a href="{% url 'google_login' %}" class="btn-google">
             Sign in with Google
-          </button>
+          </a>
         </form>
 
         <!-- ── DIVIDER ── -->

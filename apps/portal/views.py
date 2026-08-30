@@ -26,7 +26,7 @@ def home(request):
         .annotate(count=Count("id"))
         .order_by("category")
     )
-    # All approved companies with their open job count
+    # Show every approved company, including companies without live jobs yet.
     top_companies = (
         CompanyProfile.objects
         .filter(company_status="APPROVED")
@@ -35,7 +35,6 @@ def home(request):
             "jobs",
             filter=Q(jobs__status="PUBLISHED", jobs__visibility="public")
         ))
-        .filter(open_jobs__gt=0)
         .order_by("-open_jobs", "trade_name")
     )
     return render(request, "portal/home.html", {

@@ -29,12 +29,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts import views as account_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("auth/", include("accounts.urls")),
     path("", include("portal.urls")),
     path("admin/", include("custom_admin.urls")),
+    path("accounts/google/login/", account_views.google_login, name="google_login"),
+    path("accounts/google/login/callback/", account_views.google_callback, name="google_callback"),
     path('accounts/', include('allauth.urls')),
     path('candidate/', include('candidate.urls')),
     path("job/",    include("job.urls")),

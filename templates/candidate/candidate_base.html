@@ -586,19 +586,19 @@
     <nav class="sidebar" id="sidebar">
         <!-- <div class="sidebar-header">MAIN</div> -->
         <ul class="sidebar-menu">
-            <li><a href="{% url 'candidate:candidate_dashboard' %}" class="active"><i class="fas fa-home"></i> <span
+            <li><a href="{% url 'candidate:candidate_dashboard' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'candidate_dashboard' %}active{% endif %}"><i class="fas fa-home"></i> <span
                         class="menu-text">Dashboard</span></a></li>
         </ul>
 
         <!-- <div class="sidebar-header">Jobs</div> -->
         <ul class="sidebar-menu">
-            <li><a href="{% url 'candidate:candidate_edit_profile' %}"><i class="fas fa-user"></i><span
+            <li><a href="{% url 'candidate:candidate_edit_profile' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'candidate_edit_profile' %}active{% endif %}"><i class="fas fa-user"></i><span
                         class="menu-text">Profile
                         Setup</span></a>
             </li>
-            <li><a href="{%url 'job_list'%}"><i class="fas fa-search"></i> <span class="menu-text">Browse
+            <li><a href="{%url 'job_list'%}" class="{% if request.resolver_match and request.resolver_match.url_name == 'job_list' %}active{% endif %}"><i class="fas fa-search"></i> <span class="menu-text">Browse
                         Jobs</span></a></li>
-            <li><a href="{% url 'candidate:applied_jobs' %}"><i class="fas fa-paper-plane"></i> <span
+            <li><a href="{% url 'candidate:applied_jobs' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'applied_jobs' %}active{% endif %}"><i class="fas fa-paper-plane"></i> <span
                         class="menu-text">Applied
                         Jobs</span></a></li>
 
@@ -608,10 +608,10 @@
         <div class="sidebar-header">Profile</div>
         <ul class="sidebar-menu">
             </li>
-            <li><a href="{% url 'candidate:candidate_setting' %}"><i class="fas fa-gear"></i> <span
+            <li><a href="{% url 'candidate:candidate_setting' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'candidate_setting' %}active{% endif %}"><i class="fas fa-gear"></i> <span
                         class="menu-text">Settings</span></a>
             </li>
-            <li><a href="{% url 'candidate:messenger' %}"><i class="fas fa-paper-plane"></i> <span
+            <li><a href="{% url 'candidate:messenger' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'messenger' %}active{% endif %}"><i class="fas fa-paper-plane"></i> <span
                         class="menu-text">Messages</span></a></li>
             <li><a class="sidebar-link text-danger" href="{% url 'accounts:logout' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
         </ul>

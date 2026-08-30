@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render,get_object_or_404, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -12,6 +13,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
 from django.urls import reverse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from allauth.socialaccount.providers.google.views import oauth2_callback, oauth2_login
 from .models import CustomUser, CompanyProfile, CompanyRejection
 from company.models import CompanyType
 from django.contrib.auth import get_user_model
@@ -24,6 +26,7 @@ from .forms import (
 )
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 # ── REGISTER ──
 def register_view(request):
@@ -128,6 +131,20 @@ def login_view(request):
 
     return render(request, "accounts/login.html", {"form": form})
 
+def google_login(request):
+    if not settings.GOOGLE_CLIENT_ID or not settings.GOOGLE_CLIENT_SECRET:
+        messages.warning(request, "Google sign-in is not configured yet. Please use email and password.")
+        return redirect("accounts:login")
+    return oauth2_login(request)
+
+
+def google_callback(request):
+    if not settings.GOOGLE_CLIENT_ID or not settings.GOOGLE_CLIENT_SECRET:
+        messages.warning(request, "Google sign-in is not configured yet. Please use email and password.")
+        return redirect("accounts:login")
+    return oauth2_callback(request)
+
+
 def company_approved(request):
     user_id = request.session.get("pending_user_id")
 
@@ -230,34 +247,53 @@ def company_documents_review(request):
 
 # ── FORGOT PASSWORD ──
 def custom_forget_password(request):
+    form = ForgotPasswordForm(request.POST or None)
+
     if request.method == "POST":
-        email = request.POST.get("email")
-        users = CustomUser.objects.filter(email=email)
+        if not form.is_valid():
+            return render(request, "accounts/forget_password.html", {"form": form})
+
+        email = form.cleaned_data["email"]
+        users = CustomUser.objects.filter(email__iexact=email)
 
         if users.exists():
-            for user in users:
-                uid = urlsafe_base64_encode(force_bytes(user.pk))
-                token = default_token_generator.make_token(user)
-                reset_url = f"{request.scheme}://{request.get_host()}/auth/reset-password/{uid}/{token}/"
+            try:
+                for user in users:
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    token = default_token_generator.make_token(user)
+                    reset_path = reverse(
+                        "accounts:password_reset_confirm",
+                        kwargs={"uidb64": uid, "token": token},
+                    )
+                    reset_url = request.build_absolute_uri(reset_path)
 
-                subject = "Reset Your JobHive Password"
-                email_template = "accounts/email/forget_password_email.html"
-                parameters = {"user": user, "reset_url": reset_url}
-                msg_html = render_to_string(email_template, parameters)
+                    subject = "Reset Your JobHive Password"
+                    email_template = "accounts/email/forget_password_email.html"
+                    parameters = {"user": user, "reset_url": reset_url}
+                    msg_html = render_to_string(email_template, parameters)
 
-                send_mail(
-                    subject,
-                    "Please reset your password using the link provided.",
-                    settings.EMAIL_HOST_USER,
-                    [user.email],
-                    html_message=msg_html,
-                    fail_silently=False,
+                    send_mail(
+                        subject,
+                        "Please reset your password using the link provided.",
+                        settings.DEFAULT_FROM_EMAIL,
+                        [user.email],
+                        html_message=msg_html,
+                        fail_silently=False,
+                    )
+            except Exception as exc:
+                logger.exception("Password reset email dispatch failed: %s", exc)
+                messages.error(
+                    request,
+                    "We couldn't send the reset email right now. Please try again later.",
                 )
+                return render(request, "accounts/forget_password.html", {"form": form})
+
             messages.success(request, "Password reset link sent to your email.")
             return redirect("accounts:login")
         else:
             messages.error(request, "No account found with this email address.")
-    return render(request, "accounts/forget_password.html")
+
+    return render(request, "accounts/forget_password.html", {"form": form})
 
 
 # ── RESET PASSWORD CONFIRM ──
@@ -477,6 +513,16 @@ def company_resubmit(request):
         # Status wapas PENDING karo
         profile.company_status = "PENDING"
         profile.save()
+
+        admins = CustomUser.objects.filter(is_superuser=True)
+        for admin in admins:
+            Notification.objects.create(
+                user=admin,
+                notification_type="KYC_RESUBMITTED",
+                title="Company Resubmission Received 📝",
+                message=f"The company '{user.username}' has resubmitted their profile for review.",
+                link="/custom_admin/companies/pending/",
+            )
 
         # Session set karo taake pending page user dhund sake
         request.session["pending_user_id"] = user.pk
