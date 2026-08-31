@@ -1,0 +1,208 @@
+{% extends base_template %}
+
+{% block content %}
+<style>
+.chat-container {
+    height: 75vh;
+    border: 1px solid #e1e4e8;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+}
+.chat-sidebar {
+    border-right: 1px solid #e1e4e8;
+    background: #f8f9fa;
+    overflow-y: auto;
+}
+.chat-thread-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.chat-thread-item {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+.chat-thread-item:hover, .chat-thread-item.active {
+    background: #e9ecef;
+}
+.chat-thread-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+}
+.chat-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e4e8;
+    background: #fff;
+    display: flex;
+    align-items: center;
+}
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f4f6f9;
+}
+.chat-message {
+    max-width: 70%;
+    margin-bottom: 15px;
+    padding: 12px 18px;
+    border-radius: 18px;
+    line-height: 1.4;
+    position: relative;
+    clear: both;
+}
+.chat-message.sent {
+    float: right;
+    background: #0d6efd;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+.chat-message.received {
+    float: left;
+    background: #e9ecef;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+}
+.chat-timestamp {
+    font-size: 0.75rem;
+    margin-top: 5px;
+    opacity: 0.7;
+    display: block;
+}
+.chat-input-area {
+    padding: 15px 20px;
+    border-top: 1px solid #e1e4e8;
+    background: #fff;
+}
+.unread-badge {
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    margin-left: auto;
+}
+</style>
+
+<div class="row chat-container mx-2 mt-4 shadow-sm">
+    <!-- Sidebar -->
+    <div class="col-md-4 chat-sidebar p-0">
+        <div class="p-3 border-bottom bg-white">
+            <h5 class="mb-0 fw-bold">Messages</h5>
+        </div>
+        <ul class="chat-thread-list">
+            {% for t in threads %}
+            <a href="{% url 'chat:chat_room' t.id %}" class="chat-thread-item {% if thread and thread.id == t.id %}active{% endif %}">
+                {% if request.user == t.employer %}
+                    <div class="chat-thread-avatar bg-primary">{{ t.candidate.username|make_list|first|upper }}</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1 text-truncate">{{ t.candidate.username }}</h6>
+                        </div>
+                        <small class="text-muted d-block text-truncate">Re: {{ t.job.title|default:"Job Application" }}</small>
+                    </div>
+                {% else %}
+                    <div class="chat-thread-avatar bg-success">{{ t.employer.username|make_list|first|upper }}</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1 text-truncate">{{ t.employer.company_profile.trade_name|default:t.employer.username }}</h6>
+                        </div>
+                        <small class="text-muted d-block text-truncate">Re: {{ t.job.title|default:"Job Application" }}</small>
+                    </div>
+                {% endif %}
+            </a>
+            {% empty %}
+            <div class="p-4 text-center text-muted">
+                <p>No conversations yet.</p>
+            </div>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="col-md-8 p-0 chat-main">
+        {% if thread %}
+        <div class="chat-header">
+            {% if request.user == thread.employer %}
+                <div class="chat-thread-avatar bg-primary">{{ thread.candidate.username|make_list|first|upper }}</div>
+                <div>
+                    <h5 class="mb-0 fw-bold">{{ thread.candidate.username }}</h5>
+                    <small class="text-muted">{{ thread.job.title|default:"Job Application" }}</small>
+                </div>
+            {% else %}
+                <div class="chat-thread-avatar bg-success">{{ thread.employer.username|make_list|first|upper }}</div>
+                <div>
+                    <h5 class="mb-0 fw-bold">{{ thread.employer.company_profile.trade_name|default:thread.employer.username }}</h5>
+                    <small class="text-muted">{{ thread.job.title|default:"Job Application" }}</small>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            {% for msg in messages %}
+                <div class="chat-message {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                    {{ msg.message }}
+                    <span class="chat-timestamp">{{ msg.timestamp|date:"M d, Y h:i A" }}</span>
+                </div>
+            {% empty %}
+                <div class="text-center text-muted mt-5">
+                    <p>No messages yet. Send a message to start the conversation.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="chat-input-area">
+            <form method="post" id="chat-form" class="d-flex align-items-center">
+                {% csrf_token %}
+                <input type="text" name="message" id="message-input" class="form-control me-2 rounded-pill px-4" placeholder="Type a message..." required autocomplete="off">
+                <button type="submit" class="btn btn-primary rounded-circle" style="width:45px;height:45px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="d-flex align-items-center justify-content-center h-100 bg-light text-muted flex-column">
+            <i class="far fa-comments fa-4x mb-3 text-secondary"></i>
+            <h4>Select a conversation to start messaging</h4>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const chatMessages = document.getElementById("chat-messages");
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        const chatForm = document.getElementById("chat-form");
+        if (chatForm) {
+            chatForm.addEventListener("submit", function(e) {
+                // Let the browser handle standard form submission to refresh the page, 
+                // but we could also do AJAX here. Keeping it simple as requested in the plan (POST/AJAX).
+            });
+        }
+    });
+</script>
+{% endblock %}

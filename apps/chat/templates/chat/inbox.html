@@ -1,0 +1,97 @@
+{% extends base_template %}
+
+{% block content %}
+<style>
+.chat-container {
+    height: 75vh;
+    border: 1px solid #e1e4e8;
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+}
+.chat-sidebar {
+    border-right: 1px solid #e1e4e8;
+    background: #f8f9fa;
+    overflow-y: auto;
+}
+.chat-thread-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.chat-thread-item {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+.chat-thread-item:hover, .chat-thread-item.active {
+    background: #e9ecef;
+}
+.chat-thread-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+}
+.chat-main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+</style>
+
+<div class="row chat-container mx-2 mt-4 shadow-sm">
+    <!-- Sidebar -->
+    <div class="col-md-4 chat-sidebar p-0">
+        <div class="p-3 border-bottom bg-white">
+            <h5 class="mb-0 fw-bold">Messages</h5>
+        </div>
+        <ul class="chat-thread-list">
+            {% for t in threads %}
+            <a href="{% url 'chat:chat_room' t.id %}" class="chat-thread-item">
+                {% if request.user == t.employer %}
+                    <div class="chat-thread-avatar bg-primary">{{ t.candidate.username|make_list|first|upper }}</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1 text-truncate">{{ t.candidate.username }}</h6>
+                        </div>
+                        <small class="text-muted d-block text-truncate">Re: {{ t.job.title|default:"Job Application" }}</small>
+                    </div>
+                {% else %}
+                    <div class="chat-thread-avatar bg-success">{{ t.employer.username|make_list|first|upper }}</div>
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-1 text-truncate">{{ t.employer.company_profile.trade_name|default:t.employer.username }}</h6>
+                        </div>
+                        <small class="text-muted d-block text-truncate">Re: {{ t.job.title|default:"Job Application" }}</small>
+                    </div>
+                {% endif %}
+            </a>
+            {% empty %}
+            <div class="p-4 text-center text-muted">
+                <p>No conversations yet.</p>
+            </div>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="col-md-8 p-0 chat-main">
+        <div class="d-flex align-items-center justify-content-center h-100 bg-light text-muted flex-column">
+            <i class="far fa-comments fa-4x mb-3 text-secondary"></i>
+            <h4>Select a conversation to start messaging</h4>
+        </div>
+    </div>
+</div>
+{% endblock %}

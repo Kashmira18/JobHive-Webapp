@@ -104,6 +104,7 @@ INSTALLED_APPS = [
     'applications',
     'notifications',
     'billing',
+    'chat',
 
     #All-Auth
     "allauth",
@@ -154,6 +155,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 'notifications.context_processors.notification_context',
                 'job.context_processors.global_job_categories',
+                'chat.context_processors.unread_messages_count',
             ],
         },
     },

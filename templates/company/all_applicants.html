@@ -68,10 +68,14 @@
                 </div>
 
                 <!-- Action -->
-                <div class="action-cell" style="display: flex; justify-content: center;">
+                <div class="action-cell" style="display: flex; justify-content: center; gap: 8px;">
                     <a href="{% url 'company:job_applications' app.job.id %}" 
-                       style="background:#31C2EF; color:white; padding:7px 16px; border-radius:6px; font-size:0.85rem; text-decoration:none;">
-                        <i class="fas fa-eye"></i> View Job
+                       style="background:#31C2EF; color:white; padding:7px 12px; border-radius:6px; font-size:0.85rem; text-decoration:none;" title="View Job">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{% url 'chat:start_chat' app.id %}"
+                       style="background:#10b981; color:white; padding:7px 12px; border-radius:6px; font-size:0.85rem; text-decoration:none;" title="Message Candidate">
+                        <i class="fas fa-comment-dots"></i>
                     </a>
                 </div>
 

@@ -41,7 +41,7 @@
             <div>Applicant</div>
             <div>Applied On</div>
             <div>Status</div>
-            <div style="text-align:center;">CV</div>
+            <div style="text-align:center;">Actions</div>
         </div>
 
         <!-- Rows -->
@@ -94,17 +94,20 @@
                 </select>
             </div>
 
-            <!-- CV Download -->
-            <div style="text-align:center;">
+            <!-- Actions -->
+            <div style="display:flex; gap:8px; justify-content:center;">
                 {% if app.resume_snapshot %}
                     <a href="{{ app.resume_snapshot.url }}" target="_blank"
-                       style="background:#31C2EF; color:white; padding:6px 14px;
-                              border-radius:6px; font-size:0.85rem; text-decoration:none;">
-                        <i class="fas fa-download"></i> CV
+                       style="background:#31C2EF; color:white; padding:6px 10px;
+                              border-radius:6px; font-size:0.85rem; text-decoration:none;" title="Download CV">
+                        <i class="fas fa-download"></i>
                     </a>
-                {% else %}
-                    <span style="color:#d1d5db; font-size:0.85rem;">N/A</span>
                 {% endif %}
+                <a href="{% url 'chat:start_chat' app.id %}"
+                   style="background:#10b981; color:white; padding:6px 10px;
+                          border-radius:6px; font-size:0.85rem; text-decoration:none;" title="Message Candidate">
+                    <i class="fas fa-comment-dots"></i>
+                </a>
             </div>
 
         </div>
