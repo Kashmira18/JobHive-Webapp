@@ -16,6 +16,7 @@ class CandidateProfile(models.Model):
 
     # Profile photo
     profile_photo = models.ImageField(upload_to='candidate/profile_photos/', blank=True, null=True)
+    is_fresher = models.BooleanField(default=False)
 
     # Personal Information
     first_name = models.CharField(max_length=50)
@@ -31,6 +32,28 @@ class CandidateProfile(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def profile_picture(self):
+        return self.profile_photo
+
+    @property
+    def phone(self):
+        return self.phone_number
+
+    @property
+    def linkedin(self):
+        if hasattr(self, 'social_links') and self.social_links:
+            return self.social_links.linkedin
+        return ''
+
+    @property
+    def education_set(self):
+        return self.educations
+
+    @property
+    def experience_set(self):
+        return self.work_experiences
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"

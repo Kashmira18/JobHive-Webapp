@@ -19,16 +19,7 @@
 
 <div class="profile-section d-flex align-items-center justify-content-between mb-5 bg-white p-4 rounded shadow-sm">
     <div class="d-flex align-items-center">
-        <!-- Dynamic photo -->
-        {% if candidate.profile_photo %}
-            <img src="{{ candidate.profile_photo.url }}" alt="Profile" class="me-3 shadow-sm rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-        {% else %}
-            <!-- Default donut/avatar -->
-            <div class="me-3 shadow-sm d-flex align-items-center justify-content-center rounded-circle"
-                 style="width:80px;height:80px;background:#e0e8ff;font-size:2rem;font-weight:700;color:#4f7cff;">
-                {{ candidate.username|slice:':1'|upper }}
-            </div>
-        {% endif %}
+        <img src="{{ profile_photo_url }}" alt="Profile" class="me-3 shadow-sm rounded-circle" style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #e7eaf3; background: #f2f5ff;">
 
         <div>
             <h4 class="user-name mb-1" style="color:#0f0c2e; font-weight:700;">

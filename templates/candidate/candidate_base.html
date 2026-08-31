@@ -557,8 +557,7 @@
                 {% if request.user.candidate_profile and request.user.candidate_profile.profile_photo %}
                 <img src="{{ request.user.candidate_profile.profile_photo.url }}" class="user-img" alt="Profile">
                 {% else %}
-                <img src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=31C2EF&color=fff&bold=true"
-                    class="user-img" alt="Profile">
+                <img src="{% static 'images/default-avatar.svg' %}" class="user-img" alt="Profile">
                 {% endif %}
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
                 <div class="profile-dropdown-box" id="profileDropdown">
