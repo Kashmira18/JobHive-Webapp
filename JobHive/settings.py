@@ -79,7 +79,8 @@ SECRET_KEY = "django-insecure-f5=-ork#!_z#(1#emdkv4&g%u5#+f+u7_o5203^(ys641*ce95
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jobhive.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -218,6 +219,7 @@ USE_TZ = True
 # STATIC_URL = 'static/'
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
