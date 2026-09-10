@@ -63,7 +63,20 @@ def footer(request):
 
 
 def about(request):
-    return render(request, "portal/about.html")
+    active_job_seekers = CandidateProfile.objects.filter(user__is_active=True).count()
+    registered_companies = CompanyProfile.objects.count()
+    posted_jobs = JobPost.objects.filter(
+        status="PUBLISHED",
+        visibility="public"
+    ).count()
+    successful_placements = Applications.objects.filter(status="HIRED").count()
+
+    return render(request, "portal/about.html", {
+        "active_job_seekers": active_job_seekers,
+        "registered_companies": registered_companies,
+        "posted_jobs": posted_jobs,
+        "successful_placements": successful_placements,
+    })
 
 def find_jobs(request):
     return render(request, "portal/find_jobs.html")

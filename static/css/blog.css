@@ -16,6 +16,20 @@
     padding: 0;
 }
 
+/* Hero Background */
+.candidate-hero {
+
+    position: relative;
+    height: 75vh;
+    /* background: linear-gradient(rgba(10, 30, 60, 0.7),
+            rgba(5, 45, 110, 0.75)),
+        url("../images/slider-bg.webp") center/cover no-repeat; */
+    background:
+        url("../images/slider-bg.webp") center/cover no-repeat;
+    color: #fff;
+    overflow: hidden;
+}
+
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--white);

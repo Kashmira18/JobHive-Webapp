@@ -278,12 +278,15 @@
 
                   <li><a href="{% url 'home' %}"><span>Home</span></a></li>
 
-                  <li class="has-submenu">
-                    <a href="{% url 'job_list' %}"><span>Find Jobs</span></a>
+                  <li><a href="{% url 'job_list' %}"><span>Find Jobs</span></a></li>
+
+
+                  <!-- <li class="has-submenu">
+                    <a href="{% url 'job_list' %}"><span>Find Jobs</span></a> -->
                     <!-- <ul class="submenu-nav">
                       <li><a href="{% url 'job_list' %}"><span>Jobs List</span></a></li>
                     </ul> -->
-                  </li>
+                  <!-- </li> -->
 
 
 
@@ -296,21 +299,24 @@
                   <!-- </ul>
                 </li> -->
 
-                  <li class="has-submenu">
+                  <!-- <li class="has-submenu">
                     <a href="{% url 'blog' %}"><span>Blog</span></a>
                     <ul class="submenu-nav">
                       <li><a href="{% url 'blog' %}">Blog Grid</a></li>
                       <li><a href="{% url 'blog_detail' %}">Blog Details</a></li>
                     </ul>
-                  </li>
+                  </li> -->
 
-                  <li class="has-submenu">
+                  <li><a href="{% url 'blog' %}"><span>Blog</span></a></li>
+
+                  <!-- <li class="has-submenu">
                     <a href="#"><span>Pages</span></a>
                     <ul class="submenu-nav">
                       <li><a href="{% url 'about' %}"><span>About Us</span></a></li>
-                      <li><a href="#"><span>Login</span></a></li>
                     </ul>
-                  </li>
+                  </li> -->
+
+                  <li><a href="{% url 'about' %}"><span>About Us</span></a></li>
 
                   <li><a href="{% url 'contact' %}"><span>Contact Us</span></a></li>
 

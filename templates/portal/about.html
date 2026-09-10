@@ -11,7 +11,6 @@
 <section class="jh-about-hero">
   <div class="jh-hero-overlay"></div>
   <div class="container position-relative text-white text-center jh-hero-inner">
-    <span class="jh-eyebrow"><i class="fas fa-info-circle me-1"></i> About Us</span>
     <h1 class="jh-hero-title">Pakistan's Most Trusted <span>Job Portal</span></h1>
     <p class="jh-hero-sub">Connecting ambitious talent with forward-thinking companies across Pakistan and beyond.</p>
     <nav aria-label="breadcrumb">
@@ -59,28 +58,28 @@
       <div class="col-6 col-md-3">
         <div class="jh-stat-card">
           <div class="jh-stat-icon"><i class="fas fa-users"></i></div>
-          <div class="jh-stat-num">200K+</div>
+          <div class="jh-stat-num">{{ active_job_seekers }}</div>
           <div class="jh-stat-label">Active Job Seekers</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="jh-stat-card">
           <div class="jh-stat-icon"><i class="fas fa-building"></i></div>
-          <div class="jh-stat-num">12K+</div>
-          <div class="jh-stat-label">Verified Companies</div>
+          <div class="jh-stat-num">{{ registered_companies }}</div>
+          <div class="jh-stat-label">Registered Companies</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="jh-stat-card">
           <div class="jh-stat-icon"><i class="fas fa-briefcase"></i></div>
-          <div class="jh-stat-num">50K+</div>
+          <div class="jh-stat-num">{{ posted_jobs }}</div>
           <div class="jh-stat-label">Jobs Posted</div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="jh-stat-card">
           <div class="jh-stat-icon"><i class="fas fa-handshake"></i></div>
-          <div class="jh-stat-num">35K+</div>
+          <div class="jh-stat-num">{{ successful_placements }}</div>
           <div class="jh-stat-label">Successful Placements</div>
         </div>
       </div>
@@ -323,17 +322,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="col-6 col-md-4 col-lg-3">
-        <div class="jh-team-card">
-          <div class="jh-team-avatar" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);">ZM</div>
-          <h6>Zeeshan Malik</h6>
-          <span>HR & Partnerships</span>
-          <div class="jh-team-socials">
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-          </div>
-        </div>
-      </div> -->
+      
     </div>
   </div>
 </section>

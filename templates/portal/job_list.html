@@ -18,8 +18,10 @@
     }
 
     .jh-hero {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #0e2740 100%);
-      padding: 72px 24px 64px;
+      background:
+        linear-gradient(rgba(15, 28, 46, .78), rgba(14, 39, 64, .84)),
+        url("{% static 'images/slider-bg.webp' %}") center/cover no-repeat;
+      padding: 100px 24px 100px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -331,7 +333,7 @@
 {% block content %}
   <!-- ── HERO ── -->
   <section class="jh-hero">
-    <span class="eyebrow"><i class="bi bi-briefcase me-1"></i> Browse Opportunities</span>
+    
     <h1>Find Your <span>Dream Job</span></h1>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">

@@ -104,6 +104,25 @@ body {
     color: #33C2E8;
 }
 
+/* ======= Authentication Buttons ======= */
+.auth-links .btn-long,
+.mobile-auth .btn-long {
+    background-color: #33C2E8;
+    border: 1px solid #33C2E8;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-links .btn-long:hover,
+.auth-links .btn-long:focus,
+.mobile-auth .btn-long:hover,
+.mobile-auth .btn-long:focus {
+    background-color: #14A1C5;
+    border-color: #14A1C5;
+    color: #fff;
+}
+
 /* ======= Dropdown Arrow Icon ======= */
 .has-submenu>a::after {
     content: "▾";

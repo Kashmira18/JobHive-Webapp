@@ -460,22 +460,22 @@ body{
             </a>
         </li>
 
-        <li>
+        <!-- <li>
             <a href="#" class="menu-link">
                 <i class="bi bi-shield-lock-fill"></i>
                 <span class="menu-text">Role & Permission</span>
             </a>
-        </li>
+        </li> -->
     </ul>
 
     <div class="section-title">APPEARANCE</div>
     <ul>
-        <li>
+        <!-- <li>
             <a href="#" class="menu-link">
                 <i class="bi bi-envelope-fill"></i>
                 <span class="menu-text">Email Template</span>
             </a>
-        </li>
+        </li> -->
 
         <li>
             <a href="{% url 'custom_admin:admin_payments' %}" class="menu-link{% if request.resolver_match and request.resolver_match.url_name == 'admin_payments' %} active{% endif %}">
