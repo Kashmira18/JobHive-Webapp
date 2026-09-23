@@ -42,7 +42,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
+            z-index: 1200;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -295,6 +295,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 1300;
         }
 
         .user-img {
@@ -344,7 +345,7 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            z-index: 1100;
+            z-index: 1300;
             animation: fadeIn 0.2s ease-in-out;
         }
 
@@ -451,6 +452,21 @@
             transition: margin 0.3s;
         }
 
+        .sidebar-menu .sidebar-logout {
+            color: #ffb3b3;
+        }
+
+        .sidebar-menu .sidebar-logout i {
+            color: #ff8f8f;
+        }
+
+        .sidebar-menu .sidebar-logout:hover,
+        .sidebar-menu .sidebar-logout:focus-visible {
+            color: #fff;
+            background: rgba(220, 53, 69, 0.2);
+            border-left-color: #ff7b86;
+        }
+
         .menu-text {
             transition: opacity 0.3s;
             white-space: nowrap;
@@ -476,6 +492,128 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #main-content table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        #main-content,
+        #main-content > * {
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+                z-index: 1100;
+                box-shadow: 8px 0 24px rgba(0, 0, 0, 0.18);
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .sidebar-backdrop {
+                display: block;
+                position: fixed;
+                inset: var(--header-height) 0 0;
+                background: rgba(15, 24, 35, 0.38);
+                z-index: 1090;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+
+            .sidebar-backdrop.visible {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            #main-content,
+            #main-content.expanded {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .header {
+                padding: 0 12px;
+            }
+
+            .header-right {
+                gap: 10px;
+                min-width: 0;
+            }
+
+            #main-content .btn,
+            #main-content button,
+            #main-content input,
+            #main-content select,
+            #main-content textarea,
+            #main-content .stat-card,
+            #main-content .form-control,
+            #main-content .form-select,
+            #main-content .btn-post {
+                width: 100%;
+            }
+
+            #main-content .table-responsive {
+                overflow-x: auto;
+            }
+
+            #main-content .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #main-content .header-section,
+            #main-content .company-info,
+            #main-content .section-header {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .header-left,
+            .header-right {
+                gap: 8px;
+            }
+
+            .logo-section {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .brand-logo-img {
+                max-width: 140px;
+                max-height: 48px;
+            }
+
+            .header-right .btn-post {
+                display: none;
+            }
+
+            .header-dropdown-card {
+                width: min(320px, calc(100vw - 24px));
+                right: -8px;
+            }
+
+            .sidebar-menu li a {
+                min-height: 48px;
+                padding: 14px 20px;
+            }
+
+            #main-content {
+                padding: 16px 12px;
+            }
         }
 
         
@@ -557,7 +695,7 @@
             </div>
 
             <!-- Profile -->
-            <div class="user-menu" onclick="toggleDropdown('profileDropdown', event)" id="userMenuBtn">
+            <div class="user-menu" id="userMenuBtn" role="button" tabindex="0" aria-controls="profileDropdown" aria-expanded="false">
                 <div class="user-info d-none d-md-block">
                     <div class="user-name">{{ request.user.company_profile.trade_name|default:request.user.company_profile.legal_name|default:"Company" }}</div>
                     <div class="user-role">Company Profile</div>
@@ -575,7 +713,7 @@
                     <a href="{% url 'company:company_account_settings' %}">
                         <i class="fas fa-cog"></i> Settings
                     </a>
-                    <a href="{% url 'accounts:logout' %}" style="color: #dc3545;">
+                    <a href="{% url 'accounts:logout' %}" class="text-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </div>
@@ -604,12 +742,16 @@
             <li><a href="{% url 'company:company_account_settings' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'company_account_settings' %}active{% endif %}"><i class="fas fa-gear"></i> <span class="menu-text">Settings</span></a></li>
             <li><a href="{% url 'company:company_job_post' %}" class="{% if request.resolver_match and request.resolver_match.url_name == 'company_job_post' %}active{% endif %}"><i class="fa-solid fa-plus-square"></i> <span class="menu-text">Post a Job</span></a></li>
             <li><a href="{% url 'chat:inbox' %}" class="{% if request.resolver_match and request.resolver_match.app_name == 'chat' %}active{% endif %}"><i class="fas fa-comment-dots"></i> <span class="menu-text">Messages {% if unread_messages_count %}<span class="badge bg-danger rounded-pill" style="font-size:0.65rem;">{{ unread_messages_count }}</span>{% endif %}</span></a></li>
-            <a class="sidebar-link text-danger" href="{% url 'accounts:logout' %}">
-    <i class="fas fa-right-from-bracket"></i> Logout
-</a>
+            <li>
+                <a class="sidebar-logout" href="{% url 'accounts:logout' %}">
+                    <i class="fas fa-right-from-bracket"></i>
+                    <span class="menu-text">Logout</span>
+                </a>
+            </li>
 
         </ul>
     </nav>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
 
     
 
@@ -623,10 +765,48 @@
         const toggleBtn = document.getElementById('toggle_btn');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        function closeMobileSidebar() {
+            sidebar.classList.remove('mobile-open');
+            sidebarBackdrop.classList.remove('visible');
+        }
 
         toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth <= 992) {
+                sidebar.classList.toggle('mobile-open');
+                sidebarBackdrop.classList.toggle('visible', sidebar.classList.contains('mobile-open'));
+                return;
+            }
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
+        });
+
+        sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+        function toggleProfileDropdown(event) {
+            event.stopPropagation();
+            const isOpen = profileDropdown.classList.toggle('show');
+            userMenuBtn.classList.toggle('active', isOpen);
+            userMenuBtn.setAttribute('aria-expanded', String(isOpen));
+        }
+
+        userMenuBtn.addEventListener('click', toggleProfileDropdown);
+        userMenuBtn.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleProfileDropdown(event);
+            }
+        });
+
+        profileDropdown.addEventListener('click', (event) => event.stopPropagation());
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                closeMobileSidebar();
+            }
         });
 
         // Dropdown Toggle
@@ -648,8 +828,7 @@
         function toggleDropdown(dropdownId, event) {
             event.stopPropagation();
             
-            const allDropdowns = ['msgDropdown', 'notifDropdown', 'profileDropdown'];
-            const userMenuBtn = document.getElementById('userMenuBtn');
+            const allDropdowns = ['notifDropdown', 'profileDropdown'];
             
             allDropdowns.forEach(id => {
                 const el = document.getElementById(id);
@@ -657,6 +836,7 @@
                     el.classList.toggle('show');
                     if (dropdownId === 'profileDropdown') {
                         userMenuBtn.classList.toggle('active');
+                        userMenuBtn.setAttribute('aria-expanded', String(el.classList.contains('show')));
                     }
                     if (dropdownId === 'notifDropdown' && el.classList.contains('show')) {
                         fetch("{% url 'notifications:mark_all_read' %}", {
@@ -676,6 +856,7 @@
                     el.classList.remove('show');
                     if (id === 'profileDropdown') {
                         userMenuBtn.classList.remove('active');
+                        userMenuBtn.setAttribute('aria-expanded', 'false');
                     }
                 }
             });
@@ -683,11 +864,12 @@
 
         // Close dropdowns when clicking outside
         window.addEventListener('click', function () {
-            const allDropdowns = ['msgDropdown', 'notifDropdown', 'profileDropdown'];
+            const allDropdowns = ['notifDropdown', 'profileDropdown'];
             allDropdowns.forEach(id => {
                 document.getElementById(id).classList.remove('show');
             });
             document.getElementById('userMenuBtn').classList.remove('active');
+            document.getElementById('userMenuBtn').setAttribute('aria-expanded', 'false');
         });
 
         // Prevent dropdown from closing when clicking inside

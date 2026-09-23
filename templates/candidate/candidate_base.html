@@ -42,7 +42,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
+            z-index: 1200;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -70,8 +70,9 @@
         }
 
         .brand-logo-img {
-            max-width: 250%;
-            max-height: 250%;
+            width: 130px;
+            max-width: 100%;
+            max-height: 48px;
             object-fit: contain;
             border-radius: 8px;
         }
@@ -84,6 +85,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            min-width: 0;
         }
 
         .logo-section {
@@ -124,6 +126,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            min-width: 0;
         }
 
 
@@ -280,6 +283,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            z-index: 1300;
         }
 
         .user-img {
@@ -329,7 +333,7 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            z-index: 1100;
+            z-index: 1300;
             animation: fadeIn 0.2s ease-in-out;
         }
 
@@ -361,6 +365,10 @@
         .profile-dropdown-box a i {
             width: 20px;
             text-align: center;
+        }
+
+        .sidebar-backdrop {
+            display: none;
         }
 
         /* --- SIDEBAR --- */
@@ -482,6 +490,129 @@
             align-items: center;
             gap: 4px;
         }
+
+        #main-content table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+                z-index: 1100;
+                box-shadow: 8px 0 24px rgba(0, 0, 0, 0.18);
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .sidebar-backdrop {
+                display: block;
+                position: fixed;
+                inset: var(--header-height) 0 0;
+                background: rgba(15, 24, 35, 0.38);
+                z-index: 1090;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+
+            .sidebar-backdrop.visible {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            #main-content,
+            #main-content.expanded {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+
+            .header {
+                padding: 0 12px;
+            }
+
+            .header-right {
+                gap: 10px;
+            }
+
+            .logo-section {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .brand-logo-img {
+                width: 130px;
+                max-width: 42vw;
+            }
+
+            .header-left {
+                gap: 10px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .user-menu {
+                gap: 5px;
+            }
+
+            .user-img {
+                width: 36px;
+                height: 36px;
+            }
+
+            .dropdown-arrow {
+                font-size: 0.7rem;
+            }
+
+            .header-dropdown-card,
+            .profile-dropdown-box {
+                max-width: calc(100vw - 24px);
+            }
+
+            .profile-dropdown-box {
+                right: -4px;
+            }
+
+            .search-container,
+            .search-container input {
+                width: 100%;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            #main-content .btn,
+            #main-content button,
+            #main-content input,
+            #main-content select,
+            #main-content textarea,
+            #main-content .stat-card,
+            #main-content .form-control,
+            #main-content .form-select {
+                width: 100%;
+            }
+
+            #main-content .table-responsive {
+                overflow-x: auto;
+            }
+
+            #main-content .profile-section,
+            #main-content .completion-widget {
+                width: 100% !important;
+            }
+
+            #main-content .profile-section {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
     </style>
 </head>
 
@@ -559,7 +690,7 @@
                 </div>
             </div>
             <!-- Profile -->
-            <div class="user-menu" onclick="toggleDropdown('profileDropdown', event)" id="userMenuBtn">
+            <div class="user-menu" id="userMenuBtn" role="button" tabindex="0" aria-controls="profileDropdown" aria-expanded="false">
                 <div class="user-info d-none d-md-block">
                     <div class="user-name">{{ request.user.username }}</div>
                     <div class="user-role">Job Seeker</div>
@@ -625,6 +756,7 @@
             <li><a class="sidebar-link text-danger" href="{% url 'accounts:logout' %}"><i class="fas fa-right-from-bracket"></i> Logout</a></li>
         </ul>
     </nav>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
 
     <!-- MAIN CONTENT -->
     <!-- <main id="main-content">
@@ -665,10 +797,29 @@
         const toggleBtn = document.getElementById('toggle_btn');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+        function closeMobileSidebar() {
+            sidebar.classList.remove('mobile-open');
+            sidebarBackdrop.classList.remove('visible');
+        }
 
         toggleBtn.addEventListener('click', () => {
+            if (window.innerWidth <= 992) {
+                sidebar.classList.toggle('mobile-open');
+                sidebarBackdrop.classList.toggle('visible', sidebar.classList.contains('mobile-open'));
+                return;
+            }
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
+        });
+
+        sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                closeMobileSidebar();
+            }
         });
 
         function getCookie(name) {
@@ -715,16 +866,30 @@
         const userMenuBtn = document.getElementById('userMenuBtn');
         const dropdown = document.getElementById('profileDropdown');
 
-        userMenuBtn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            dropdown.classList.toggle('show');
-            userMenuBtn.classList.toggle('active');
+        function toggleProfileDropdown(event) {
+            event.stopPropagation();
+            const isOpen = dropdown.classList.toggle('show');
+            userMenuBtn.classList.toggle('active', isOpen);
+            userMenuBtn.setAttribute('aria-expanded', String(isOpen));
+        }
+
+        userMenuBtn.addEventListener('click', toggleProfileDropdown);
+        userMenuBtn.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleProfileDropdown(event);
+            }
+        });
+
+        dropdown.addEventListener('click', function (event) {
+            event.stopPropagation();
         });
 
         window.addEventListener('click', function (e) {
             if (!userMenuBtn.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
                 userMenuBtn.classList.remove('active');
+                userMenuBtn.setAttribute('aria-expanded', 'false');
             }
             document.querySelectorAll('.header-dropdown-card').forEach(card => {
                 if (!card.contains(e.target) && card.id !== 'profileDropdown') {

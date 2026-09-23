@@ -26,6 +26,8 @@
         }
 
         .dashboard-container {
+            width: 100%;
+            min-width: 0;
             max-width: 1400px;
             margin: 30px auto;
             padding: 0 20px;
@@ -41,12 +43,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            min-width: 0;
         }
 
         .company-info {
             display: flex;
             align-items: center;
             gap: 20px;
+            min-width: 0;
+        }
+
+        .company-info > div:last-child,
+        .company-domain,
+        .stat-card,
+        .applicant-section {
+            min-width: 0;
         }
 
         .company-logo {
@@ -104,6 +115,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
             transition: all 0.1s;
             border-bottom: 3px solid;
+            min-width: 0;
         }
 
         .stat-card:hover {
@@ -159,6 +171,7 @@
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 0;
         }
 
         .section-header {
@@ -527,6 +540,97 @@
                 margin-bottom: 5px;
                 font-size: 0.85rem;
                 text-transform: uppercase;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .dashboard-container {
+                margin: 16px auto;
+                padding: 0 12px;
+            }
+
+            .header-section {
+                align-items: stretch;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+
+            .company-info {
+                align-items: flex-start;
+                gap: 12px;
+                flex: 1 1 100%;
+            }
+
+            .company-logo {
+                width: 60px;
+                height: 60px;
+                flex: 0 0 60px;
+            }
+
+            .company-domain,
+            .section-title,
+            .applicant-name,
+            .applicant-email,
+            .company-name-cell {
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .company-domain {
+                font-size: clamp(1.15rem, 6vw, 1.5rem);
+            }
+
+            .btn-edit-profile {
+                width: 100%;
+                padding: 10px 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                width: 100%;
+                padding: 16px 20px;
+            }
+
+            .stat-value {
+                margin-left: 0;
+                font-size: 1.4rem;
+            }
+
+            .applicant-section {
+                padding: 20px 16px;
+            }
+
+            .section-header {
+                align-items: stretch;
+            }
+
+            .section-title,
+            .per-page-selector,
+            .per-page-selector select {
+                width: 100%;
+            }
+
+            .applicant-row {
+                padding: 16px;
+            }
+
+            .applicant-info-cell,
+            .job-details-cell,
+            .status-cell,
+            .action-cell {
+                min-width: 0;
+                width: 100%;
+            }
+
+            .action-cell a,
+            .applicant-section > div:last-child > .btn-edit-profile {
+                display: block !important;
+                width: 100%;
+                text-align: center;
             }
         }
     </style>

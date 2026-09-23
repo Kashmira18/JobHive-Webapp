@@ -822,41 +822,13 @@
             <div class="form-card">
                 <div class="section-title"><i class="bi bi-mortarboard-fill"></i> Education</div>
                 <div id="educationContainer">
-                    {% if educations %}
-                        {% for edu in educations %}
-                        <div class="entry-card">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Degree / Qualification *</label>
-                                    <input type="text" class="form-control" name="degree[]" value="{{ edu.degree }}" placeholder="e.g., Bachelor of CS" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Institution Name *</label>
-                                    <input type="text" class="form-control" name="institution[]" value="{{ edu.institution_name }}" placeholder="e.g., FAST-NUCES" required />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Start Year *</label>
-                                    <input type="number" class="form-control" name="start_year[]" value="{{ edu.start_year }}" placeholder="e.g., 2022" required min="1950" max="2099" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">End Year</label>
-                                    <input type="number" class="form-control" name="end_year[]" value="{{ edu.end_year }}" placeholder="e.g., 2024" min="1950" max="2099" />
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Grade / CGPA</label>
-                                    <input type="text" class="form-control" name="grade[]" value="{{ edu.grade_cgpa }}" placeholder="e.g., 3.8 / 4.0" />
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        {% for form in education_formset %}
+                    {% for form in education_formset %}
                         <div class="entry-card">
                             {{ form.id }}
                             {% if form.instance.pk %}
                             <div class="form-check position-absolute" style="top:12px;right:12px;">
-                                <input class="form-check-input" type="checkbox" name="{{ form.DELETE.html_name }}" id="del_edu_{{ forloop.counter }}">
-                                <label class="form-check-label text-danger small fw-bold" for="del_edu_{{ forloop.counter }}">Delete</label>
+                                {{ form.DELETE }}
+                                <label class="form-check-label text-danger small fw-bold" for="{{ form.DELETE.id_for_label }}">Delete</label>
                             </div>
                             {% else %}
                             <button type="button" class="remove-btn" onclick="this.closest('.entry-card').remove()"><i class="bi bi-x"></i></button>
@@ -887,8 +859,9 @@
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}
-                    {% endif %}
+                    {% empty %}
+                    <p class="text-muted small">Add your education details below.</p>
+                    {% endfor %}
                 </div>
                 <button type="button" class="btn-add-entry mt-2" onclick="addEduFormset()"><i class="bi bi-plus me-1"></i>Add Education</button>
                 <div class="section-footer">

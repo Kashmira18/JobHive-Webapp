@@ -3,16 +3,17 @@
 {% block content %}
 <style>
 .chat-container {
-    height: 75vh;
+    min-height: 75vh;
     border: 1px solid #e1e4e8;
     border-radius: 10px;
     background: #fff;
-    overflow: hidden;
+    overflow: visible;
 }
 .chat-sidebar {
     border-right: 1px solid #e1e4e8;
     background: #f8f9fa;
     overflow-y: auto;
+    min-width: 0;
 }
 .chat-thread-list {
     list-style: none;
@@ -28,6 +29,7 @@
     color: inherit;
     display: flex;
     align-items: center;
+    min-width: 0;
 }
 .chat-thread-item:hover, .chat-thread-item.active {
     background: #e9ecef;
@@ -47,7 +49,37 @@
 .chat-main {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-width: 0;
+    min-height: 75vh;
+}
+
+@media (max-width: 767px) {
+    .chat-container {
+        height: auto;
+        min-height: 0;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow: visible;
+    }
+
+    .chat-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #e1e4e8;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .chat-main {
+        height: auto;
+        min-height: 0;
+    }
+
+    .chat-main h4 {
+        max-width: 100%;
+        padding: 0 15px;
+        text-align: center;
+        overflow-wrap: anywhere;
+    }
 }
 </style>
 

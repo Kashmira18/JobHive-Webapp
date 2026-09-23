@@ -13,10 +13,20 @@ from .forms import (
     AboutMeForm, ResumeForm, SocialLinksForm, EducationForm, WorkExperienceForm
 )
 from django.forms import inlineformset_factory
+from django.db import transaction
 from applications.models import Applications
 from django.db.models import Q
 from django.http import FileResponse
 from .utils import generate_resume_pdf, PDF_ENABLED
+
+
+EducationFormSet = inlineformset_factory(
+    CandidateProfile,
+    Education,
+    form=EducationForm,
+    extra=0,
+    can_delete=True,
+)
 
 
 def candidate_required(view_func):
@@ -218,31 +228,18 @@ def candidate_edit_profile(request):
             return redirect('candidate:candidate_edit_profile')
 
         if section == 'education':
-            degree_list = request.POST.getlist('degree[]') or request.POST.getlist('education_set-0-degree')
-            institution_list = request.POST.getlist('institution[]') or request.POST.getlist('education_set-0-institution_name')
-            start_year_list = request.POST.getlist('start_year[]') or request.POST.getlist('education_set-0-start_year')
-            end_year_list = request.POST.getlist('end_year[]') or request.POST.getlist('education_set-0-end_year')
-            grade_list = request.POST.getlist('grade[]') or request.POST.getlist('education_set-0-grade_cgpa')
-
-            profile.educations.all().delete()
-            for i in range(max(len(degree_list), len(institution_list), len(start_year_list), len(end_year_list), len(grade_list))):
-                degree = (degree_list[i] if i < len(degree_list) else '').strip()
-                institution = (institution_list[i] if i < len(institution_list) else '').strip()
-                start_year = (start_year_list[i] if i < len(start_year_list) else '').strip()
-                end_year = (end_year_list[i] if i < len(end_year_list) else '').strip()
-                grade = (grade_list[i] if i < len(grade_list) else '').strip()
-                if not degree and not institution and not start_year and not end_year and not grade:
-                    continue
-                Education.objects.create(
-                    candidate=profile,
-                    degree=degree,
-                    institution_name=institution,
-                    start_year=int(start_year) if start_year else 0,
-                    end_year=int(end_year) if end_year else None,
-                    grade_cgpa=grade,
-                )
-
-            messages.success(request, 'Section updated successfully!')
+            formset = EducationFormSet(request.POST, instance=profile, prefix='edu')
+            if formset.is_valid():
+                with transaction.atomic():
+                    formset.save()
+                messages.success(request, 'Section updated successfully!')
+            else:
+                for error in formset.non_form_errors():
+                    messages.error(request, error)
+                for form in formset:
+                    for field, errors in form.errors.items():
+                        for error in errors:
+                            messages.error(request, f'{field}: {error}')
             return redirect('candidate:candidate_edit_profile')
 
         if section == 'experience':
@@ -310,7 +307,6 @@ def candidate_edit_profile(request):
                         messages.error(request, f'{field}: {error}')
             return redirect('candidate:candidate_edit_profile')
 
-    EducationFormSet = inlineformset_factory(CandidateProfile, Education, form=EducationForm, extra=0, can_delete=True)
     ExperienceFormSet = inlineformset_factory(CandidateProfile, WorkExperience, form=WorkExperienceForm, extra=0, can_delete=True)
 
     education_records = list(profile.educations.all())
@@ -444,14 +440,10 @@ def save_skills(request):
 def save_education(request):
     if request.method == 'POST':
         candidate = get_or_create_candidate_profile(request.user)
-        EducationFormSet = inlineformset_factory(
-            CandidateProfile, Education,
-            form=EducationForm,
-            extra=0, can_delete=True,
-        )
         formset = EducationFormSet(request.POST, instance=candidate, prefix='edu')
         if formset.is_valid():
-            formset.save()
+            with transaction.atomic():
+                formset.save()
             messages.success(request, 'Education saved!')
         else:
             for form in formset:

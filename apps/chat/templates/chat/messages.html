@@ -3,16 +3,17 @@
 {% block content %}
 <style>
 .chat-container {
-    height: 75vh;
+    min-height: 75vh;
     border: 1px solid #e1e4e8;
     border-radius: 10px;
     background: #fff;
-    overflow: hidden;
+    overflow: visible;
 }
 .chat-sidebar {
     border-right: 1px solid #e1e4e8;
     background: #f8f9fa;
     overflow-y: auto;
+    min-width: 0;
 }
 .chat-thread-list {
     list-style: none;
@@ -28,6 +29,7 @@
     color: inherit;
     display: flex;
     align-items: center;
+    min-width: 0;
 }
 .chat-thread-item:hover, .chat-thread-item.active {
     background: #e9ecef;
@@ -47,7 +49,8 @@
 .chat-main {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-width: 0;
+    min-height: 75vh;
 }
 .chat-header {
     padding: 15px 20px;
@@ -61,6 +64,7 @@
     padding: 20px;
     overflow-y: auto;
     background: #f4f6f9;
+    min-width: 0;
 }
 .chat-message {
     max-width: 70%;
@@ -70,6 +74,8 @@
     line-height: 1.4;
     position: relative;
     clear: both;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 .chat-message.sent {
     float: right;
@@ -101,6 +107,84 @@
     padding: 2px 6px;
     font-size: 0.7rem;
     margin-left: auto;
+}
+
+.chat-input-area form {
+    min-width: 0;
+}
+
+.chat-input-area .form-control {
+    min-width: 0;
+}
+
+@media (max-width: 767px) {
+    .chat-container {
+        height: auto;
+        min-height: 0;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow: visible;
+    }
+
+    .chat-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #e1e4e8;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .chat-main {
+        height: auto;
+        min-height: 0;
+    }
+
+    .chat-header {
+        padding: 15px;
+    }
+
+    .chat-header > div:last-child {
+        min-width: 0;
+    }
+
+    .chat-header h5,
+    .chat-header small {
+        overflow-wrap: anywhere;
+    }
+
+    .chat-messages {
+        flex: none;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 15px;
+    }
+
+    .chat-message {
+        max-width: 100%;
+        width: fit-content;
+        float: none;
+        clear: none;
+    }
+
+    .chat-message.sent {
+        margin-left: auto;
+    }
+
+    .chat-message.received {
+        margin-right: auto;
+    }
+
+    .chat-input-area {
+        padding: 12px 15px;
+    }
+
+    .chat-input-area form {
+        width: 100%;
+    }
+
+    .chat-input-area .form-control {
+        width: 100%;
+    }
 }
 </style>
 

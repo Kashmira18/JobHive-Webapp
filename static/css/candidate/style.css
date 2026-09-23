@@ -205,3 +205,91 @@
 .table-responsive {
     overflow-x: auto;
 }
+
+@media (max-width: 767px) {
+    .candidate-dashboard-content {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: clip;
+    }
+
+    .candidate-dashboard-content .profile-section {
+        align-items: flex-start !important;
+        gap: 20px;
+        padding: 1rem !important;
+    }
+
+    .candidate-dashboard-content .profile-section > .d-flex:first-child {
+        align-items: flex-start !important;
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .candidate-dashboard-content .profile-section > .d-flex:first-child > div:last-child {
+        min-width: 0;
+    }
+
+    .candidate-dashboard-content .profile-section img {
+        width: 64px !important;
+        height: 64px !important;
+        flex: 0 0 64px;
+    }
+
+    .candidate-dashboard-content .user-name {
+        max-width: 100%;
+        font-size: clamp(1.1rem, 5vw, 1.5rem);
+        overflow-wrap: anywhere;
+    }
+
+    .candidate-dashboard-content .profile-section .gap-2 {
+        flex-wrap: wrap;
+    }
+
+    .candidate-dashboard-content .profile-section .gap-2 .btn,
+    .candidate-dashboard-content .completion-widget {
+        width: 100% !important;
+    }
+
+    .candidate-dashboard-content .row > [class*="col-"] {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .candidate-dashboard-content .stat-card,
+    .candidate-dashboard-content .featured-card {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .candidate-dashboard-content .featured-card > .d-flex,
+    .candidate-dashboard-content .featured-card > .d-flex > .d-flex {
+        min-width: 0;
+        flex-wrap: wrap;
+    }
+
+    .candidate-dashboard-content .featured-card > .d-flex > .d-flex > div:last-child,
+    .candidate-dashboard-content .featured-title {
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .candidate-dashboard-content .featured-card > .d-flex:last-child {
+        gap: 8px;
+    }
+
+    .candidate-dashboard-content .tag-badge,
+    .candidate-dashboard-content .apply-link {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    .search-container input {
+        width: 100%;
+        max-width: 100%;
+    }
+}

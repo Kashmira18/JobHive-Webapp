@@ -280,43 +280,9 @@
 
                   <li><a href="{% url 'job_list' %}"><span>Find Jobs</span></a></li>
 
-
-                  <!-- <li class="has-submenu">
-                    <a href="{% url 'job_list' %}"><span>Find Jobs</span></a> -->
-                    <!-- <ul class="submenu-nav">
-                      <li><a href="{% url 'job_list' %}"><span>Jobs List</span></a></li>
-                    </ul> -->
-                  <!-- </li> -->
-
-
-
-                  <!-- <li class="has-submenu">
-                  <a href="#"><span>Employers</span></a>
-                  <ul class="submenu-nav"> -->
-                  <!-- <li><a href="#"><span>Company List</span></a></li> -->
-                  <!-- <li><a href="#"><span>Company Details</span></a></li> -->
-                  <!-- <li><a href="#"><span>Company Dashboard</span></a></li> -->
-                  <!-- </ul>
-                </li> -->
-
-                  <!-- <li class="has-submenu">
-                    <a href="{% url 'blog' %}"><span>Blog</span></a>
-                    <ul class="submenu-nav">
-                      <li><a href="{% url 'blog' %}">Blog Grid</a></li>
-                      <li><a href="{% url 'blog_detail' %}">Blog Details</a></li>
-                    </ul>
-                  </li> -->
-
                   <li><a href="{% url 'blog' %}"><span>Blog</span></a></li>
 
-                  <!-- <li class="has-submenu">
-                    <a href="#"><span>Pages</span></a>
-                    <ul class="submenu-nav">
-                      <li><a href="{% url 'about' %}"><span>About Us</span></a></li>
-                    </ul>
-                  </li> -->
-
-                  <li><a href="{% url 'about' %}"><span>About Us</span></a></li>
+                  <li><a href="{% url 'about' %}"><span>About us</span></a></li>
 
                   <li><a href="{% url 'contact' %}"><span>Contact Us</span></a></li>
 
@@ -327,7 +293,7 @@
             <!-- Desktop Auth -->
             <div class="header-align-end">
               <div class="auth-links">
-                <a href="{% url 'accounts:login' %}" class="btn btn-outline-info btn-long">Login</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-info btn-long">Login</a>
                 <a href="{% url 'accounts:register' %}" class="btn btn-info btn-long">Sign Up</a>
               </div>
             </div>
@@ -351,66 +317,19 @@
 
       <li><a href="{% url 'home' %}">Home</a></li>
 
-      <li>
-        <button class="mob-parent" onclick="mobToggle(this)">
-          Jobs <i class="bi bi-chevron-down chev"></i>
-        </button>
-        <ul class="mob-sub">
-          <li><a href="{% url 'job_list' %}">Jobs List</a></li>
+      <li><a href="{% url 'job_list' %}">Find Jobs</a></li>
 
-          <li><a href="#">Post a Job</a></li>
-        </ul>
-      </li>
+      <li><a href="{% url 'blog' %}">Blog</a></li>
 
-      <li>
-        <button class="mob-parent" onclick="mobToggle(this)">
-          Candidates <i class="bi bi-chevron-down chev"></i>
-        </button>
-        <ul class="mob-sub">
-          <li><a href="#">Candidate Dashboard</a></li>
-        </ul>
-      </li>
-
-      <li>
-        <button class="mob-parent" onclick="mobToggle(this)">
-          Employers <i class="bi bi-chevron-down chev"></i>
-        </button>
-        <ul class="mob-sub">
-          <!-- <li><a href="#">Company List</a></li> -->
-          <!-- <li><a href="#">Company Details</a></li> -->
-          <li><a href="#">Company Dashboard</a></li>
-        </ul>
-      </li>
-
-      <li>
-        <button class="mob-parent" onclick="mobToggle(this)">
-          Blog <i class="bi bi-chevron-down chev"></i>
-        </button>
-        <ul class="mob-sub">
-          <li><a href="{% url 'blog' %}">Blog Grid</a></li>
-          <li><a href="{% url 'blog_detail' %}">Blog Details</a></li>
-        </ul>
-      </li>
-
-      <li>
-        <button class="mob-parent" onclick="mobToggle(this)">
-          Pages <i class="bi bi-chevron-down chev"></i>
-        </button>
-        <ul class="mob-sub">
-          <li><a href="{% url 'about' %}">About Us</a></li>
-          <li><a href="#">Login</a></li>
-          <li><a href="#">Registration</a></li>
-          <li><a href="{% url 'error_404' %}">Page Not Found</a></li>
-        </ul>
-      </li>
+      <li><a href="{% url 'about' %}">About us</a></li>
 
       <li><a href="{% url 'contact' %}">Contact Us</a></li>
 
     </ul>
 
     <div class="mobile-auth">
-      <a href="#" class="btn btn-outline-info btn-long">Login</a>
-      <a href="#" class="btn btn-info btn-long">Sign Up</a>
+      <a href="{% url 'accounts:login' %}" class="btn btn-info btn-long">Login</a>
+      <a href="{% url 'accounts:register' %}" class="btn btn-info btn-long">Sign Up</a>
     </div>
   </div>
 

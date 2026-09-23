@@ -644,6 +644,42 @@
     }
 }
 
+@media only screen and (max-width: 767px) {
+    .footer-top .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .footer-newsletter-form {
+        margin-top: 18px;
+    }
+
+    .footer-newsletter-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .footer-newsletter-form form [type=email],
+    .footer-newsletter-form form [type=submit] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .footer-newsletter-form form [type=email] {
+        height: 52px;
+        padding: 0 16px;
+    }
+
+    .footer-newsletter-form form [type=submit] {
+        position: static;
+        height: 52px;
+        margin: 0;
+        transform: none;
+    }
+}
+
 /* ============================
    FOOTER LOGO BOX
 ============================ */
