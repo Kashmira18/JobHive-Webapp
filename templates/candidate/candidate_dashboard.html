@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <div class="card stat-card p-3 h-100">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon icon-saved">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="col-md-3">
                 <div class="card stat-card p-3 h-100">
                     <div class="d-flex align-items-center">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
                 <div class="card stat-card p-3 h-100">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon bg-info text-white rounded-circle d-flex justify-content-center align-items-center" style="width: 50px; height: 50px; font-size: 1.5rem;">
@@ -111,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- ================================
         RECENT APPLICATIONS
@@ -157,13 +157,14 @@
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <h5 class="featured-title mb-1">{{ job.title }} <i
-                                            class="far fa-heart text-muted ms-2"></i></h5>
+                                    <h5 class="featured-title mb-1">
+                                        <a href="{% url 'job_details' job.id %}" class="text-decoration-none text-dark">{{ job.title }}</a> 
+                                        <i class="far fa-heart text-muted ms-2"></i>
+                                    </h5>
                                     <p class="text-dark mb-2 small fw-bold">By {{ job.company.trade_name }}</p>
 
                                     <div class="mt-3">
-                                        <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> {{
-                                            job.location }}</span>
+                                        <span class="tag-badge bg-tag-blue"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
                                         <span class="tag-badge bg-tag-pink">{{ job.salary_display }}</span>
                                         <span class="tag-badge bg-tag-green">{{ job.job_type }}</span>
                                     </div>

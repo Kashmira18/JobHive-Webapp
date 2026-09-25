@@ -611,6 +611,16 @@
         <h3>Sign In</h3>
         <p class="subtitle">Enter your credentials to access your account.</p>
 
+        <!-- ── Django Messages ── -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="django-alert {% if message.tags %}{{ message.tags }}{% endif %}">
+          <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% elif message.tags == 'success' %}bi-check-circle{% else %}bi-info-circle{% endif %}"></i>
+          <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+
         <!-- ── Django Form Non-field Errors ── -->
         {% if form.non_field_errors %}
         <div class="django-alert error">

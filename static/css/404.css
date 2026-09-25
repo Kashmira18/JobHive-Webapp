@@ -34,7 +34,7 @@
     font-weight: 700;
 }
 
-/* --- The Subheading (Oops! Page not found!) --- */
+/* --- The Subheading  --- */
 .error-box h3 {
     font-size: 20px;
     color: #333;
@@ -43,7 +43,6 @@
     font-weight: 600;
 }
 
-/* Style for the warning icon, likely from Font Awesome */
 .error-box h3 .fa-warning {
     margin-right: 8px;
     color: #333;

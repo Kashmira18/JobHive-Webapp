@@ -25,6 +25,37 @@
   <body>
     {% include 'portal/navbar.html' %}
 
+    <!-- ═══ GLOBAL DJANGO MESSAGES (auto-dismiss toasts) ═══ -->
+    {% if messages and request.resolver_match.app_name != 'chat' %}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;" id="djangoToastBox">
+        {% for message in messages %}
+        <div class="toast align-items-center border-0 text-bg-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}info{% endif %} show"
+             role="alert" aria-live="assertive" aria-atomic="true"
+             data-bs-autohide="true" data-bs-delay="4000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas {% if message.tags == 'error' %}fa-circle-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% elif message.tags == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %} me-2"></i>
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('#djangoToastBox .toast').forEach(function(el) {
+                var toast = new bootstrap.Toast(el, {delay: 4000});
+                toast.show();
+                el.addEventListener('hidden.bs.toast', function () {
+                    el.remove();
+                });
+            });
+        });
+    </script>
+    {% endif %}
+    <!-- ═══ END DJANGO MESSAGES ═══ -->
+
     {% block content %}{% endblock %}
 
     {% include 'portal/footer.html' %}

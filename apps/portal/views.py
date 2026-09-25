@@ -128,14 +128,32 @@ def job_list(request):
         "locations": locations,
     })
 
-def job_details(request,job_id):
-    job = get_object_or_404(JobPost, id=job_id, status="PUBLISHED")
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+from django.shortcuts import redirect
+
+def job_details(request, job_id):
+    try:
+        job = JobPost.objects.get(id=job_id)
+        if job.status != "PUBLISHED" or job.visibility != "public":
+            messages.warning(request, "This job is no longer available.")
+            return redirect('job_list')
+    except ObjectDoesNotExist:
+        messages.error(request, "This job does not exist.")
+        return redirect('job_list')
+
     return render(request, "portal/job_details.html", {
         "job": job,
     })
 
+from .models import BlogPost
+
 def blog(request):
-    return render(request, "portal/blog.html")
+    category = request.GET.get('category')
+    blogs = BlogPost.objects.all().order_by('-published_date')
+    if category:
+        blogs = blogs.filter(category=category)
+    return render(request, "portal/blog.html", {"blogs": blogs, "active_category": category})
 
 def blog_detail(request):
     return render(request, "portal/blog_detail.html")

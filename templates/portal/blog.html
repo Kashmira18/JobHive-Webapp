@@ -115,40 +115,35 @@
 <div class="container my-5">
 
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
-        <button class="btn btn-primary rounded-pill px-4">All Articles</button>
-        <button class="btn btn-outline-secondary rounded-pill px-4">Resume
-            Tips</button>
-        <button class="btn btn-outline-secondary rounded-pill px-4">Interview
-            Prep</button>
-        <button class="btn btn-outline-secondary rounded-pill px-4">Hiring
-            Guides</button>
+        <a href="?category=" class="btn {% if not active_category %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-4">All Articles</a>
+        <a href="?category=resume-tips" class="btn {% if active_category == 'resume-tips' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-4">Resume Tips</a>
+        <a href="?category=interview-prep" class="btn {% if active_category == 'interview-prep' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-4">Interview Prep</a>
+        <a href="?category=hiring-guides" class="btn {% if active_category == 'hiring-guides' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill px-4">Hiring Guides</a>
     </div>
 
     <div class="row g-4">
+        {% for blog in blogs %}
         <div class="col-lg-4 col-md-6">
             <article class="blog-card">
                 <div class="card-img-container">
-                    <span class="category-badge">Interview Prep</span>
-                    <img src="{% static 'images/blog-img1.webp' %}"
-                        alt="Interview tips">
+                    <span class="category-badge">{{ blog.get_category_display }}</span>
+                    <img src="{% static blog.image_url %}"
+                        alt="{{ blog.title }}">
                 </div>
                 <div class="card-body d-flex flex-column p-4">
                     <div
                         class="d-flex justify-content-between align-items-center text-muted small mb-2">
                         <span><i class="bi bi-person-fill text-primary"></i>
-                            Walter Houston</span>
-                        <span>03 April, 2026</span>
+                            {{ blog.author }}</span>
+                        <span>{{ blog.published_date|date:"d F, Y" }}</span>
                     </div>
                     <h3 class="post-title mb-2">
-                        <a href="{% url 'blog_detail' %}">Top 10 Django & Python
-                            Interview Questions for Tech Grads</a>
+                        <a href="{% url 'blog_detail' %}">{{ blog.title }}</a>
                     </h3>
-                    <p class="post-excerpt mb-4">Prepare yourself for backend
-                        technical rounds with these production-level
-                        explanations and best practices.</p>
+                    <p class="post-excerpt mb-4">{{ blog.excerpt }}</p>
                     <div
                         class="mt-auto d-flex justify-content-between align-items-center border-top pt-3 text-muted small">
-                        <span><i class="bi bi-clock"></i> 10 min read</span>
+                        <span><i class="bi bi-clock"></i> {{ blog.read_time }} min read</span>
                         <a href="{% url 'blog_detail' %}"
                             class="text-primary fw-bold text-decoration-none">Read
                             More &rarr;</a>
@@ -156,70 +151,11 @@
                 </div>
             </article>
         </div>
-
-        <div class="col-lg-4 col-md-6">
-            <article class="blog-card">
-                <div class="card-img-container">
-                    <span class="category-badge">Hiring Guides</span>
-                    <img src="{% static 'images/blog-img2.webp' %}"
-                        alt="Recruitment tools">
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <div
-                        class="d-flex justify-content-between align-items-center text-muted small mb-2">
-                        <span><i class="bi bi-person-fill text-primary"></i>
-                            Admin Team</span>
-                        <span>12 May, 2026</span>
-                    </div>
-                    <h3 class="post-title mb-2">
-                        <a href="{% url 'blog_detail' %}">How Automated Resume
-                            Screening Speeds Up Tech Hiring</a>
-                    </h3>
-                    <p class="post-excerpt mb-4">Learn how algorithms sort
-                        applications efficiently into matchmaking categories
-                        without human bias.</p>
-                    <div
-                        class="mt-auto d-flex justify-content-between align-items-center border-top pt-3 text-muted small">
-                        <span><i class="bi bi-clock"></i> 5 min read</span>
-                        <a href="{% url 'blog_detail' %}"
-                            class="text-primary fw-bold text-decoration-none">Read
-                            More &rarr;</a>
-                    </div>
-                </div>
-            </article>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">No articles found in this category.</h4>
         </div>
-
-        <div class="col-lg-4 col-md-6">
-            <article class="blog-card">
-                <div class="card-img-container">
-                    <span class="category-badge">Resume Tips</span>
-                    <img src="{% static 'images/blog-img3.webp' %}"
-                        alt="Resume development">
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <div
-                        class="d-flex justify-content-between align-items-center text-muted small mb-2">
-                        <span><i class="bi bi-person-fill text-primary"></i>
-                            Sarah Jenkins</span>
-                        <span>28 May, 2026</span>
-                    </div>
-                    <h3 class="post-title mb-2">
-                        <a href="{% url 'blog_detail' %}">Building an Impressive
-                            Portfolio as a Self-Taught Dev</a>
-                    </h3>
-                    <p class="post-excerpt mb-4">Your projects speak louder than
-                        your degrees. Here is how to structure your GitHub repo
-                        for recruiters.</p>
-                    <div
-                        class="mt-auto d-flex justify-content-between align-items-center border-top pt-3 text-muted small">
-                        <span><i class="bi bi-clock"></i> 7 min read</span>
-                        <a href="{% url 'blog_detail' %}"
-                            class="text-primary fw-bold text-decoration-none">Read
-                            More &rarr;</a>
-                    </div>
-                </div>
-            </article>
-        </div>
+        {% endfor %}
     </div>
 
     <nav class="d-flex justify-content-center mt-5">

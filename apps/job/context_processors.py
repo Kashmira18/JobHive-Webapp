@@ -6,7 +6,7 @@ def global_job_categories(request):
     """
     categories = list(JobCategory.objects.filter(is_active=True).order_by('name'))
     for cat in categories:
-        cat.job_count = JobPost.objects.filter(category=cat.name, status="PUBLISHED").count()
+        cat.job_count = JobPost.objects.filter(category=cat.name, status="PUBLISHED", visibility="public").count()
         
     return {
         'global_job_categories': categories
